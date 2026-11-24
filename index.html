@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>엽떡볶이 - 메인</title>
+  <!-- Google Fonts: Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+      <a href="index.html" class="logo">
+        <img src="img/img2.webp" alt="로고">
+      </a>
+      <button type="button" class="menu-btn" id="menuOpenBtn" aria-label="메뉴 열기">
+        <i data-lucide="menu"></i>
+      </button>
+    </header>
+
+    <!-- 슬라이드 사이드 메뉴 -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="side-menu" id="sideMenu" aria-label="전체 메뉴">
+      <div class="side-menu-header">
+        <button type="button" class="menu-close-btn" id="menuCloseBtn" aria-label="메뉴 닫기">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <ul class="side-menu-list">
+        <li><a href="sub/detail/detail.html">리스트 페이지</a></li>
+        <li><a href="#">상세 페이지</a></li>
+        <li><a href="#">결제페이지</a></li>
+        <li><a href="#">결제</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <!-- Hero 섹션 -->
+      <section class="hero" style="background-image: url('images/hero.jpg');">
+      </section>
+
+      <!-- Section 1: 주문/쿠폰 버튼 영역 -->
+      <section class="section_1">
+        <a href="sub1.html" class="btn-order-delivery">
+          <i data-lucide="bike"></i>
+          <span>배달 주문하기</span>
+        </a>
+        <div class="btn-group-half">
+          <a href="sub2.html" class="btn-order-half">
+            <i data-lucide="phone"></i>
+            <span>전화 주문</span>
+          </a>
+          <a href="sub3.html" class="btn-order-half">
+            <i data-lucide="ticket"></i>
+            <span>쿠폰 사용</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 2: 추천 메뉴 -->
+      <section class="section_2">
+        <h2 class="section-title">추천 메뉴</h2>
+        
+        <div class="hashtag-group">
+          <button type="button" class="hashtag-btn active">#해시태그1</button>
+          <button type="button" class="hashtag-btn">#해시태그2</button>
+          <button type="button" class="hashtag-btn">#해시태그3</button>
+        </div>
+
+        <div class="recommend-list">
+          <a href="sub2.html" class="recommend-item side-card">
+            <div class="recommend-img-box">
+              <img src="images/recommend_1.jpg" alt="추천 메뉴 1">
+            </div>
+          </a>
+
+          <a href="sub2.html" class="recommend-item active-card">
+            <div class="recommend-info">
+              <span class="best-badge">BEST 1</span>
+              <p class="recommend-name">로제크림떡볶이</p>
+              <span class="detail-btn">자세히 보기</span>
+            </div>
+            <div class="recommend-img-box">
+              <img src="images/recommend_2.jpg" alt="로제크림떡볶이">
+            </div>
+          </a>
+
+          <a href="sub2.html" class="recommend-item side-card">
+            <div class="recommend-img-box">
+              <img src="images/recommend_3.jpg" alt="추천 메뉴 3">
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 3: 메뉴 -->
+      <section class="section_3">
+        <h2 class="section-title">메뉴</h2>
+
+        <div class="hashtag-group">
+          <button type="button" class="hashtag-btn active">탭메뉴 1</button>
+          <button type="button" class="hashtag-btn">탭메뉴 2</button>
+          <button type="button" class="hashtag-btn">탭메뉴 3</button>
+        </div>
+
+        <div class="menu-grid">
+          <a href="sub2.html" class="menu-card">
+            <div class="menu-thumb">
+              <img src="images/menu_1.jpg" alt="바질 페스토 크림 떡볶이">
+            </div>
+            <p class="menu-title">바질 페스토 크림 떡볶이</p>
+          </a>
+
+          <a href="sub2.html" class="menu-card">
+            <div class="menu-thumb">
+              <img src="images/menu_2.jpg" alt="짜장 떡볶이">
+            </div>
+            <p class="menu-title">짜장 떡볶이</p>
+          </a>
+
+          <a href="sub2.html" class="menu-card">
+            <div class="menu-thumb">
+              <img src="images/menu_3.jpg" alt="까르보나라 크림 떡볶이">
+            </div>
+            <p class="menu-title">까르보나라 크림 떡볶이</p>
+          </a>
+
+          <a href="sub2.html" class="menu-card">
+            <div class="menu-thumb">
+              <img src="images/menu_4.jpg" alt="마라로제 떡볶이">
+            </div>
+            <p class="menu-title">마라로제 떡볶이</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 4: 이벤트 -->
+      <section class="section_4">
+        <h2 class="section-title">이벤트</h2>
+        <p class="section-desc">매일 추가되는 엽떡볶이의 이벤트를 만나보세요!</p>
+
+        <div class="event-tabs">
+          <button type="button" class="event-tab active">진행중</button>
+          <button type="button" class="event-tab">종료</button>
+          <button type="button" class="event-tab">당첨자</button>
+        </div>
+
+        <div class="event-list">
+          <a href="sub4.html" class="event-card">
+            <div class="event-thumb">
+              <img src="images/event_1.jpg" alt="이벤트 배너">
+            </div>
+            <div class="event-body">
+              <p class="event-sub">[할인&amp;이벤트]</p>
+              <h3 class="event-title">매일 추가되는 엽떡볶이의 이벤트 내역입니다<br>자세한 내용은 하단으...</h3>
+              <span class="event-date">2026.11.15 - 12.15</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Lucide 아이콘 렌더링
+    lucide.createIcons();
+
+    // 슬라이드 메뉴 열기/닫기
+    const menuOpenBtn = document.getElementById('menuOpenBtn');
+    const menuCloseBtn = document.getElementById('menuCloseBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    function openMenu() {
+      sideMenu.classList.add('open');
+      menuOverlay.classList.add('open');
+    }
+
+    function closeMenu() {
+      sideMenu.classList.remove('open');
+      menuOverlay.classList.remove('open');
+    }
+
+    menuOpenBtn.addEventListener('click', openMenu);
+    menuCloseBtn.addEventListener('click', closeMenu);
+    menuOverlay.addEventListener('click', closeMenu);
+  </script>
+</body>
+</html>
