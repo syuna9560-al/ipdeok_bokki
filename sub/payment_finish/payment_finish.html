@@ -1,12 +1,1854 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>결제완료 페이지</title>
-    <link rel="stylesheet" href="css/payment_finish.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>떡볶이마켓 - 마라로제 결제완료 & 모바일 주문 앱</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              red: '#E63926',
+              redDark: '#C92A19',
+              orange: '#FF6B2B',
+              cream: '#FFF9F2',
+              creamDark: '#F7EFE5',
+              warmGray: '#5C4F47',
+              ink: '#241B17',
+              basil: '#2E7D4B',
+              basilLight: '#EAF6EE',
+            }
+          },
+          boxShadow: {
+            'app-frame': '0 20px 50px -12px rgba(36, 27, 23, 0.18)',
+            'soft-card': '0 4px 18px -2px rgba(230, 57, 38, 0.06)',
+            'bottom-bar': '0 -6px 20px rgba(36, 27, 23, 0.06)',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #F2ECE4;
+      color: #241B17;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* 모바일 앱 느낌을 위해 스크롤바를 감춤 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      70% { transform: scale(1.45); opacity: 0; }
+      100% { transform: scale(1.45); opacity: 0; }
+    }
+    .animate-pulse-ring {
+      animation: pulseRing 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.24s ease-out;
+    }
+  </style>
 </head>
-<body>
-    <h1>결제완료 페이지</h1>
+<body class="min-h-screen flex justify-center items-start sm:py-5 px-0 sm:px-4">
+
+  <!-- 모바일 앱 카드형 프레임 -->
+  <div class="relative w-full max-w-[420px] min-h-screen sm:min-h-[860px] bg-brand-cream sm:rounded-[34px] shadow-app-frame overflow-hidden flex flex-col border border-[#EADFD3]">
+
+    <!-- 1. 상단 스티키 헤더 및 4개 화면 전환 스위처 -->
+    <header class="sticky top-0 z-30 bg-brand-cream/95 backdrop-blur-md border-b border-[#EFE5D8]">
+      <div class="px-4 h-13 py-2.5 flex items-center justify-between">
+        <button
+          type="button"
+          id="headerBackBtn"
+          onclick="handleHeaderBack()"
+          aria-label="뒤로가기"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-brand-ink hover:bg-brand-creamDark active:scale-95 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <div class="text-center">
+          <h1 id="headerTitle" class="text-[16px] font-extrabold tracking-tight text-brand-ink">마라로제 결제완료</h1>
+          <p id="headerSubtitle" class="text-[10px] font-semibold text-brand-warmGray">기본가 17,000원 · 배달팁 3,000원</p>
+        </div>
+
+        <button
+          type="button"
+          onclick="handleCloseApp()"
+          aria-label="닫기"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-brand-ink hover:bg-brand-creamDark active:scale-95 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 4개 화면 전환 스위처 -->
+      <nav aria-label="화면 전환 스위처" class="px-3 pb-2.5">
+        <div class="grid grid-cols-4 gap-1 bg-[#EFE5D8] p-1 rounded-2xl">
+          <button
+            type="button"
+            data-screen-tab="complete"
+            onclick="switchScreen('complete')"
+            class="screen-tab py-1.5 px-1 rounded-xl text-[11px] font-bold transition truncate bg-brand-red text-white shadow-xs">
+            결제완료
+          </button>
+          <button
+            type="button"
+            data-screen-tab="menu"
+            onclick="switchScreen('menu')"
+            class="screen-tab py-1.5 px-1 rounded-xl text-[11px] font-bold transition truncate text-brand-warmGray hover:text-brand-ink">
+            메뉴(8종)
+          </button>
+          <button
+            type="button"
+            data-screen-tab="basil"
+            onclick="switchScreen('basil')"
+            class="screen-tab py-1.5 px-1 rounded-xl text-[11px] font-bold transition truncate text-brand-warmGray hover:text-brand-ink">
+            바질크림상세
+          </button>
+          <button
+            type="button"
+            data-screen-tab="checkout"
+            onclick="switchScreen('checkout')"
+            class="screen-tab py-1.5 px-1 rounded-xl text-[11px] font-bold transition truncate text-brand-warmGray hover:text-brand-ink">
+            결제페이지
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- =========================================================
+         화면 1: 마라로제 떡볶이 결제완료 화면 (초기 화면)
+    ========================================================= -->
+    <main id="screen-complete" class="app-screen flex-1 overflow-y-auto no-scrollbar px-4 pt-4 pb-28 space-y-4">
+
+      <!-- 히어로 카드 배너 (떡볶이 캐릭터 결제완료 이미지 + Fallback 일러스트 내장) -->
+      <section class="bg-white rounded-3xl p-3 shadow-soft-card border border-[#F3E6D8]">
+        <div class="relative w-full overflow-hidden rounded-2xl bg-[#FCE9D8] aspect-[16/9]">
+          <img
+            id="heroBannerImg"
+            src="image_d850ea.jpg"
+            alt="마라로제 떡볶이 주문 성공 및 결제완료 배너"
+            onerror="handleBannerFallback(this)"
+            class="w-full h-full object-cover object-center"
+          />
+          <!-- 이미지 로드 실패 시 표시될 Fallback 일러스트 -->
+          <div
+            id="heroBannerFallback"
+            class="hidden w-full h-full bg-gradient-to-br from-[#FFE8D6] via-[#FFF3E8] to-[#FFD9C0] flex flex-col items-center justify-center p-4 text-center">
+            <svg class="w-12 h-12 mb-1.5" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <rect x="16" y="12" width="32" height="40" rx="10" fill="#E63926" />
+              <path d="M16 20C22 25 27 17 32 22C37 27 42 18 48 22V28C41 25 36 32 32 28C27 24 22 31 16 27V20Z" fill="#FF9A8B" />
+              <circle cx="26" cy="36" r="2.5" fill="#FFF" />
+              <circle cx="38" cy="36" r="2.5" fill="#FFF" />
+              <path d="M27 42C29 45 35 45 37 42" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <span class="inline-block px-3 py-0.5 rounded-full bg-brand-red text-white text-[11px] font-extrabold tracking-tight">
+              마라로제 떡볶이 주문 성공!
+            </span>
+            <p class="mt-1 text-[19px] font-black text-brand-ink tracking-tight leading-none">결제완료</p>
+            <p class="mt-1 text-[11px] font-semibold text-brand-warmGray">주문이 성공적으로 완료되었습니다!</p>
+          </div>
+
+          <!-- 상단 좌측 주문번호 뱃지 -->
+          <div class="absolute top-2.5 left-2.5 bg-brand-ink/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+            <span id="completeOrderNoBadge">주문번호 #TB-261124</span>
+          </div>
+        </div>
+
+        <!-- 배너 하단 환영 & 원클릭 번호복사 -->
+        <div class="pt-3.5 pb-1 px-1.5 flex items-center justify-between gap-2">
+          <div>
+            <p class="text-[12px] font-semibold text-brand-red">얼큰고소 마라로제 떡볶이가 출발 준비 중!</p>
+            <h2 id="completeMainTitle" class="text-[18px] font-extrabold text-brand-ink tracking-tight mt-0.5">마라로제 떡볶이 결제 완료!</h2>
+          </div>
+          <button
+            type="button"
+            onclick="copyOrderNumber()"
+            class="shrink-0 text-[12px] font-semibold text-brand-warmGray bg-brand-creamDark hover:bg-[#EFE3D5] active:scale-95 px-3 py-1.5 rounded-xl transition">
+            번호복사
+          </button>
+        </div>
+      </section>
+
+      <!-- 4단계 주문 상태 트래커 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8]">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#FFF0EA] text-brand-red shrink-0">
+              실시간 현황
+            </span>
+            <span id="statusHeadline" class="text-[13px] font-bold text-brand-ink truncate">매장에서 마라로제 주문을 확인했어요</span>
+          </div>
+          <button
+            type="button"
+            onclick="advanceOrderStage()"
+            class="shrink-0 text-[11px] font-semibold text-brand-orange underline underline-offset-2 hover:text-brand-red ml-2">
+            단계 시뮬레이션
+          </button>
+        </div>
+
+        <div class="relative pt-1 pb-1">
+          <div class="absolute top-[18px] left-[12%] right-[12%] h-[3px] bg-[#F1E6DA] rounded-full"></div>
+          <div id="trackerProgressBar" class="absolute top-[18px] left-[12%] h-[3px] bg-gradient-to-r from-brand-red to-brand-orange rounded-full transition-all duration-500" style="width: 0%;"></div>
+
+          <div class="relative grid grid-cols-4 text-center">
+            <!-- Step 0: 결제완료 -->
+            <div class="step-item flex flex-col items-center" data-step="0">
+              <div class="relative w-7 h-7 rounded-full flex items-center justify-center bg-brand-red text-white shadow-sm z-10 transition-all">
+                <span class="step-pulse absolute inset-0 rounded-full bg-brand-red animate-pulse-ring"></span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span class="step-label mt-2 text-[12px] font-bold text-brand-red">결제완료</span>
+              <span class="step-time text-[10px] text-brand-warmGray/80 mt-0.5">21:20</span>
+            </div>
+
+            <!-- Step 1: 조리중 -->
+            <div class="step-item flex flex-col items-center" data-step="1">
+              <div class="step-circle relative w-7 h-7 rounded-full flex items-center justify-center bg-[#F5ECE2] text-[#A99B90] border-2 border-white z-10 transition-all">
+                <span class="text-[11px] font-bold">2</span>
+              </div>
+              <span class="step-label mt-2 text-[12px] font-medium text-[#9A8C82]">조리중</span>
+              <span class="step-time text-[10px] text-transparent mt-0.5">-</span>
+            </div>
+
+            <!-- Step 2: 배달출발 -->
+            <div class="step-item flex flex-col items-center" data-step="2">
+              <div class="step-circle relative w-7 h-7 rounded-full flex items-center justify-center bg-[#F5ECE2] text-[#A99B90] border-2 border-white z-10 transition-all">
+                <span class="text-[11px] font-bold">3</span>
+              </div>
+              <span class="step-label mt-2 text-[12px] font-medium text-[#9A8C82]">배달출발</span>
+              <span class="step-time text-[10px] text-transparent mt-0.5">-</span>
+            </div>
+
+            <!-- Step 3: 배달완료 -->
+            <div class="step-item flex flex-col items-center" data-step="3">
+              <div class="step-circle relative w-7 h-7 rounded-full flex items-center justify-center bg-[#F5ECE2] text-[#A99B90] border-2 border-white z-10 transition-all">
+                <span class="text-[11px] font-bold">4</span>
+              </div>
+              <span class="step-label mt-2 text-[12px] font-medium text-[#9A8C82]">배달완료</span>
+              <span class="step-time text-[10px] text-transparent mt-0.5">-</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 예상 도착 시간 및 배달 주소 카드 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-4">
+        <div class="bg-gradient-to-r from-[#FFF4EB] to-[#FFEDE6] rounded-2xl p-4 flex items-center justify-between border border-[#FADCCB]">
+          <div>
+            <p class="text-[12px] font-semibold text-brand-warmGray">예상 도착 시간</p>
+            <div class="flex items-baseline gap-1.5 mt-0.5">
+              <span id="completeEtaTime" class="text-[22px] font-extrabold text-brand-red tracking-tight">오후 9:50</span>
+              <span id="completeEtaNote" class="text-[13px] font-bold text-brand-orange">(약 25~30분 소요)</span>
+            </div>
+          </div>
+          <div id="completeModeIcon" class="w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-sm text-2xl">
+            🛵
+          </div>
+        </div>
+
+        <div class="space-y-2.5 text-[13px]">
+          <div class="flex items-start justify-between gap-3">
+            <span id="completeAddressLabel" class="text-brand-warmGray shrink-0">배달 주소</span>
+            <div class="text-right">
+              <p id="completeAddressMain" class="font-semibold text-brand-ink">인천광역시 연수구 송도과학로 32</p>
+              <p id="completeAddressDetail" class="text-[12px] text-brand-warmGray mt-0.5">송도 테크노파크 IT센터 104동 1205호</p>
+            </div>
+          </div>
+          <div class="h-px bg-[#F4EBE1]"></div>
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-brand-warmGray shrink-0">요청사항</span>
+            <span id="completeRequestNote" class="font-medium text-brand-ink text-right">얼큰하게 마라향 살려주세요 · 문 앞 벨 눌러주세요</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 주문 메뉴 상세 (마라로제 떡볶이 기본 17,000원) -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8]">
+        <div class="flex items-center justify-between mb-3.5">
+          <div>
+            <span class="text-[11px] font-semibold text-brand-orange">가게명</span>
+            <h3 class="text-[16px] font-extrabold text-brand-ink">떡볶이마켓 송도직영점</h3>
+          </div>
+          <span id="completeMenuCountBadge" class="text-[12px] font-semibold text-brand-warmGray bg-brand-creamDark px-2.5 py-1 rounded-lg">
+            총 1개 메뉴
+          </span>
+        </div>
+
+        <div id="completeMenuList" class="divide-y divide-[#F4EBE1]">
+          <!-- JS로 렌더링됨 -->
+        </div>
+      </section>
+
+      <!-- 결제 금액 요약 (기본가 17,000원 + 배달팁 3,000원) -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8]">
+        <h3 class="text-[15px] font-extrabold text-brand-ink mb-3.5">결제 정보</h3>
+
+        <div class="space-y-2 text-[13px]">
+          <div class="flex justify-between text-brand-warmGray">
+            <span>떡볶이 메뉴 금액</span>
+            <span id="completeSubtotal" class="font-medium text-brand-ink">17,000원</span>
+          </div>
+          <div class="flex justify-between text-brand-warmGray">
+            <span id="completeDeliveryLabel">배달팁</span>
+            <span id="completeDeliveryFee" class="font-medium text-brand-ink">3,000원</span>
+          </div>
+          <div class="flex justify-between text-brand-orange">
+            <span>마라로제 첫 주문 쿠폰 할인</span>
+            <span id="completeDiscount" class="font-semibold">-2,000원</span>
+          </div>
+        </div>
+
+        <div class="my-3.5 border-t border-dashed border-[#E6D8C8]"></div>
+
+        <div class="flex items-center justify-between">
+          <span class="text-[15px] font-bold text-brand-ink">총 결제 금액</span>
+          <span id="completeFinalTotal" class="text-[20px] font-extrabold text-brand-red tracking-tight">18,000원</span>
+        </div>
+
+        <div class="mt-3.5 bg-brand-cream rounded-2xl px-3.5 py-2.5 flex items-center justify-between text-[12px] border border-[#EFE3D5]">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-brand-orange"></span>
+            <span class="font-semibold text-brand-ink">결제 수단</span>
+          </div>
+          <span id="completePaymentMethod" class="font-bold text-brand-warmGray">카카오페이 (일시불)</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================================================
+         화면 2: 메뉴 리스트 (떡볶이 8종 · 각 기본가 17,000원)
+    ========================================================= -->
+    <main id="screen-menu" class="app-screen hidden flex-1 overflow-y-auto no-scrollbar px-4 pt-4 pb-28 space-y-4">
+      <!-- 검색 및 요약 배너 -->
+      <section class="bg-white rounded-3xl p-4 shadow-soft-card border border-[#F3E6D8] space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold text-brand-red">전 메뉴 17,000원 균일 기본가</span>
+            <h2 class="text-[17px] font-extrabold text-brand-ink">오늘 당기는 떡볶이 8종</h2>
+          </div>
+          <span class="text-[11px] font-bold bg-[#FFF0EA] text-brand-red px-2.5 py-1 rounded-full">
+            배달팁 3,000원
+          </span>
+        </div>
+
+        <!-- 검색 인풋 -->
+        <div class="relative">
+          <input
+            type="text"
+            id="menuSearchInput"
+            oninput="renderMenuList()"
+            placeholder="떡볶이 이름이나 맛(마라, 로제, 바질, 치즈) 검색"
+            class="w-full h-10 pl-9 pr-8 rounded-2xl bg-brand-cream border border-[#EADFD3] text-[13px] text-brand-ink placeholder-[#9E8F84] focus:outline-none focus:border-brand-red"
+          />
+          <svg class="w-4 h-4 text-[#9E8F84] absolute left-3 top-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+          </svg>
+        </div>
+
+        <!-- 카테고리 필터 -->
+        <div id="menuCategoryFilters" class="flex gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
+          <!-- JS로 렌더링 -->
+        </div>
+      </section>
+
+      <!-- 바질페스토크림떡볶이 상세페이지 바로가기 배너 -->
+      <button
+        type="button"
+        onclick="switchScreen('basil')"
+        class="w-full text-left bg-gradient-to-r from-[#EAF6EE] to-[#F5FBF7] rounded-3xl p-4 border border-[#BFE2CA] flex items-center justify-between gap-3 active:scale-[0.99] transition">
+        <div>
+          <span class="inline-block text-[10px] font-extrabold text-brand-basil bg-white px-2 py-0.5 rounded-full border border-[#C6E6D0]">
+            상세페이지 전용 뷰
+          </span>
+          <p class="text-[14px] font-extrabold text-brand-ink mt-1">바질페스토크림떡볶이 상세보기</p>
+          <p class="text-[11px] text-brand-warmGray">기본가 17,000원 · 떡/소스/토핑 커스텀 & 리뷰 확인</p>
+        </div>
+        <span class="shrink-0 w-9 h-9 rounded-2xl bg-brand-basil text-white flex items-center justify-center font-bold text-sm">
+          →
+        </span>
+      </button>
+
+      <!-- 떡볶이 8종 리스트 -->
+      <section id="menuCardsContainer" class="space-y-3">
+        <!-- JS로 8종 렌더링 -->
+      </section>
+    </main>
+
+    <!-- =========================================================
+         화면 3: 바질페스토크림떡볶이 상세페이지
+    ========================================================= -->
+    <main id="screen-basil" class="app-screen hidden flex-1 overflow-y-auto no-scrollbar pb-28 space-y-4">
+      <!-- 히어로 비주얼 카드 -->
+      <section class="bg-white rounded-b-3xl shadow-soft-card border-b border-[#F3E6D8] overflow-hidden">
+        <div class="bg-gradient-to-br from-[#E7F6EC] via-[#F6FBF7] to-[#FFF4E8] p-5 flex flex-col items-center text-center relative">
+          <span class="px-3 py-1 rounded-full bg-white text-brand-basil text-[11px] font-extrabold border border-[#C8E7D2] shadow-2xs">
+            🌿 시그니처 크림 라인업
+          </span>
+
+          <!-- 바질페스토크림떡볶이 커스텀 SVG 일러스트 -->
+          <svg class="w-40 h-32 my-2 drop-shadow-xs" viewBox="0 0 180 130" fill="none" aria-label="바질페스토크림떡볶이 일러스트">
+            <ellipse cx="90" cy="112" rx="68" ry="11" fill="#D8E5DC" />
+            <path d="M24 62C24 94 53 110 90 110C127 110 156 94 156 62H24Z" fill="#FFFDF9" stroke="#D5C8B8" stroke-width="2.5" />
+            <ellipse cx="90" cy="62" rx="66" ry="18" fill="#FBF5E4" stroke="#E4D7C5" stroke-width="2" />
+            <!-- 바질 페스토 소용돌이 -->
+            <path d="M52 62C64 53 78 70 90 61C102 52 116 69 128 60" stroke="#2E7D4B" stroke-width="4.5" stroke-linecap="round" />
+            <!-- 떡 조각들 -->
+            <rect x="55" y="54" width="22" height="9" rx="4.5" transform="rotate(-10 55 54)" fill="#FFF7E6" stroke="#D8C4AE" stroke-width="1.5" />
+            <rect x="86" y="56" width="24" height="9" rx="4.5" transform="rotate(8 86 56)" fill="#FFF7E6" stroke="#D8C4AE" stroke-width="1.5" />
+            <rect x="70" y="66" width="22" height="9" rx="4.5" transform="rotate(4 70 66)" fill="#FFF7E6" stroke="#D8C4AE" stroke-width="1.5" />
+            <!-- 방울토마토 & 바질 잎 -->
+            <circle cx="114" cy="54" r="6" fill="#E63926" />
+            <circle cx="62" cy="48" r="5" fill="#E63926" />
+            <ellipse cx="98" cy="46" rx="8" ry="4.5" transform="rotate(-22 98 46)" fill="#3D995B" />
+            <ellipse cx="122" cy="66" rx="7" ry="4" transform="rotate(20 122 66)" fill="#3D995B" />
+          </svg>
+
+          <h2 class="text-[20px] font-black text-brand-ink tracking-tight">바질페스토크림떡볶이</h2>
+          <p class="text-[12px] text-brand-warmGray mt-1 max-w-[300px]">
+            향긋한 생바질 페스토와 고소한 생크림 소스가 쫀득한 떡에 촉촉하게 스며든 크리미 떡볶이
+          </p>
+
+          <!-- 평점 & 찜/공유 -->
+          <div class="mt-3 flex items-center gap-2.5 text-[12px]">
+            <span class="bg-white px-2.5 py-1 rounded-full font-extrabold text-brand-ink border border-[#EAE0D5]">
+              ★ 4.9 <span class="text-brand-warmGray font-medium">(428)</span>
+            </span>
+            <span class="bg-white px-2.5 py-1 rounded-full font-bold text-brand-red border border-[#F7D7CE]">
+              기본가 17,000원
+            </span>
+            <button
+              type="button"
+              id="basilWishBtn"
+              onclick="toggleBasilWish()"
+              class="bg-white px-2.5 py-1 rounded-full font-bold text-brand-warmGray border border-[#EAE0D5] active:scale-95 transition">
+              ♡ 찜
+            </button>
+            <button
+              type="button"
+              onclick="shareBasilMenu()"
+              class="bg-white px-2.5 py-1 rounded-full font-bold text-brand-warmGray border border-[#EAE0D5] active:scale-95 transition">
+              공유
+            </button>
+          </div>
+
+          <!-- 맛 포인트 3칩 -->
+          <div class="mt-3 grid grid-cols-3 gap-1.5 w-full text-[11px] font-bold">
+            <div class="bg-white/90 rounded-2xl py-2 px-1.5 border border-[#DCECE2] text-brand-basil">
+              🌿 향긋한 바질풍미
+            </div>
+            <div class="bg-white/90 rounded-2xl py-2 px-1.5 border border-[#DCECE2] text-brand-ink">
+              🥛 꾸덕한 생크림
+            </div>
+            <div class="bg-white/90 rounded-2xl py-2 px-1.5 border border-[#DCECE2] text-brand-orange">
+              🌶️ 맵기 조절가능
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="px-4 space-y-4">
+        <!-- 커스텀 옵션 선택 카드 -->
+        <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[15px] font-extrabold text-brand-ink">맞춤 옵션 선택</h3>
+            <span class="text-[11px] font-semibold text-brand-warmGray">배달팁 3,000원 별도</span>
+          </div>
+
+          <!-- 떡 종류 -->
+          <div>
+            <p class="text-[12px] font-bold text-brand-warmGray mb-2">1. 떡 종류 선택</p>
+            <div class="grid grid-cols-3 gap-2" id="basilDoughOptions">
+              <!-- JS 렌더링 -->
+            </div>
+          </div>
+
+          <!-- 소스/맵기 -->
+          <div>
+            <p class="text-[12px] font-bold text-brand-warmGray mb-2">2. 크림·페스토 소스 농도</p>
+            <div class="grid grid-cols-3 gap-2" id="basilSauceOptions">
+              <!-- JS 렌더링 -->
+            </div>
+          </div>
+
+          <!-- 추가 토핑 -->
+          <div>
+            <p class="text-[12px] font-bold text-brand-warmGray mb-2">3. 추가 토핑 (다중 선택)</p>
+            <div class="space-y-2" id="basilToppingOptions">
+              <!-- JS 렌더링 -->
+            </div>
+          </div>
+
+          <!-- 수량 스테퍼 -->
+          <div class="pt-2 border-t border-[#F4EBE1] flex items-center justify-between">
+            <span class="text-[13px] font-bold text-brand-ink">주문 수량</span>
+            <div class="flex items-center gap-3 bg-brand-cream px-2 py-1 rounded-2xl border border-[#EADFD3]">
+              <button
+                type="button"
+                onclick="changeBasilQty(-1)"
+                class="w-7 h-7 rounded-xl bg-white font-extrabold text-brand-ink shadow-2xs active:scale-95">
+                -
+              </button>
+              <span id="basilQtyDisplay" class="text-[14px] font-extrabold w-5 text-center">1</span>
+              <button
+                type="button"
+                onclick="changeBasilQty(1)"
+                class="w-7 h-7 rounded-xl bg-brand-red text-white font-extrabold shadow-2xs active:scale-95">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- 실시간 금액 요약 박스 -->
+          <div class="bg-[#F7FBF8] rounded-2xl p-3.5 border border-[#D4E9DA] space-y-1.5 text-[12px]">
+            <div class="flex justify-between text-brand-warmGray">
+              <span>메뉴 + 옵션 합계</span>
+              <span id="basilMenuTotalDisplay" class="font-bold text-brand-ink">17,000원</span>
+            </div>
+            <div class="flex justify-between text-brand-warmGray">
+              <span>배달팁</span>
+              <span class="font-bold text-brand-ink">3,000원</span>
+            </div>
+            <div class="pt-1.5 border-t border-[#DFEFE4] flex justify-between items-center">
+              <span class="text-[13px] font-extrabold text-brand-ink">배달 포함 총액</span>
+              <span id="basilGrandTotalDisplay" class="text-[17px] font-black text-brand-red">20,000원</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 원산지 / 영양성분 아코디언 -->
+        <section class="bg-white rounded-3xl p-4 shadow-soft-card border border-[#F3E6D8]">
+          <button
+            type="button"
+            onclick="toggleNutritionAccordion()"
+            class="w-full flex items-center justify-between text-left py-1">
+            <div>
+              <p class="text-[14px] font-extrabold text-brand-ink">원산지 · 영양성분 · 알레르기 정보</p>
+              <p class="text-[11px] text-brand-warmGray">바질(국산/이탈리아산), 밀떡, 유제품 함유</p>
+            </div>
+            <span id="nutritionArrow" class="text-brand-warmGray font-bold text-sm">▼</span>
+          </button>
+          <div id="nutritionContent" class="hidden mt-3 pt-3 border-t border-[#F4EBE1] text-[12px] text-brand-warmGray space-y-1.5">
+            <p><strong class="text-brand-ink">· 원산지:</strong> 생바질·양파·마늘(국내산), 크림치즈·생크림(국내산/유럽산), 파마산치즈(이탈리아산)</p>
+            <p><strong class="text-brand-ink">· 영양성분(1인분 기준):</strong> 열량 510kcal · 탄수렴 58g · 단백질 14g · 지방 24g · 나트륨 1,290mg</p>
+            <p><strong class="text-brand-ink">· 알레르기 유발물질:</strong> 밀, 우유, 대두, 잣(바질페스토) 함유</p>
+          </div>
+        </section>
+
+        <!-- 고객 리뷰 -->
+        <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[15px] font-extrabold text-brand-ink">최근 고객 리뷰</h3>
+            <span class="text-[12px] font-bold text-brand-orange">★ 4.9점</span>
+          </div>
+          <div class="space-y-2.5 text-[12px]">
+            <div class="bg-brand-cream rounded-2xl p-3 border border-[#EFE3D5]">
+              <div class="flex justify-between font-bold text-brand-ink mb-1">
+                <span>김*연 · 밀떡 변경</span>
+                <span class="text-amber-500">★★★★★</span>
+              </div>
+              <p class="text-brand-warmGray">파스타집 안 부러운 바질 향이에요! 17,000원에 양도 넉넉하고 크림이 느끼하지 않아서 끝까지 맛있게 먹었습니다.</p>
+            </div>
+            <div class="bg-brand-cream rounded-2xl p-3 border border-[#EFE3D5]">
+              <div class="flex justify-between font-bold text-brand-ink mb-1">
+                <span>박*준 · 더블 페스토</span>
+                <span class="text-amber-500">★★★★★</span>
+              </div>
+              <p class="text-brand-warmGray">바질페스토 추가하니까 풍미가 확 살아나요. 떡이 쫀득쫀득해서 식어도 맛있어요.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- =========================================================
+         화면 4: 결제페이지 (체크아웃)
+    ========================================================= -->
+    <main id="screen-checkout" class="app-screen hidden flex-1 overflow-y-auto no-scrollbar px-4 pt-4 pb-28 space-y-4">
+      <!-- 배달 / 포장 전환 카드 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-3.5">
+        <div class="grid grid-cols-2 gap-2 bg-brand-creamDark p-1 rounded-2xl">
+          <button
+            type="button"
+            id="modeDeliveryBtn"
+            onclick="setFulfillmentMode('delivery')"
+            class="py-2 rounded-xl text-[13px] font-extrabold bg-brand-red text-white shadow-2xs transition">
+            🛵 배달 (3,000원)
+          </button>
+          <button
+            type="button"
+            id="modePickupBtn"
+            onclick="setFulfillmentMode('pickup')"
+            class="py-2 rounded-xl text-[13px] font-extrabold text-brand-warmGray hover:text-brand-ink transition">
+            🏪 매장포장 (0원)
+          </button>
+        </div>
+
+        <div id="checkoutDeliveryAddressBox" class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[12px] font-bold text-brand-warmGray">배달 주소</span>
+            <button
+              type="button"
+              onclick="cycleDeliveryAddress()"
+              class="text-[11px] font-bold text-brand-red underline underline-offset-2">
+              주소 변경
+            </button>
+          </div>
+          <p id="checkoutAddressMain" class="text-[14px] font-extrabold text-brand-ink">인천광역시 연수구 송도과학로 32</p>
+          <p id="checkoutAddressDetail" class="text-[12px] text-brand-warmGray">송도 테크노파크 IT센터 104동 1205호</p>
+        </div>
+
+        <div class="space-y-1.5 pt-1">
+          <label for="checkoutRequestInput" class="block text-[12px] font-bold text-brand-warmGray">가게 · 배달 요청사항</label>
+          <input
+            type="text"
+            id="checkoutRequestInput"
+            value="얼큰하게 마라향 살려주세요 · 문 앞 벨 눌러주세요"
+            class="w-full h-10 px-3.5 rounded-2xl bg-brand-cream border border-[#EADFD3] text-[12px] text-brand-ink focus:outline-none focus:border-brand-red"
+          />
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button type="button" onclick="appendRequestPreset('단무지 많이 주세요')" class="text-[11px] px-2.5 py-1 rounded-full bg-brand-creamDark text-brand-warmGray font-semibold hover:bg-[#EADFD3]">+ 단무지 많이</button>
+            <button type="button" onclick="appendRequestPreset('조리 완료 시 벨 눌러주세요')" class="text-[11px] px-2.5 py-1 rounded-full bg-brand-creamDark text-brand-warmGray font-semibold hover:bg-[#EADFD3]">+ 벨 눌러주세요</button>
+            <button type="button" onclick="appendRequestPreset('일회용 수저 X')" class="text-[11px] px-2.5 py-1 rounded-full bg-brand-creamDark text-brand-warmGray font-semibold hover:bg-[#EADFD3]">+ 수저 X</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 주문 내역 및 수량 조절 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-[15px] font-extrabold text-brand-ink">주문 내역</h3>
+          <button
+            type="button"
+            onclick="switchScreen('menu')"
+            class="text-[12px] font-bold text-brand-orange underline underline-offset-2">
+            + 메뉴 추가
+          </button>
+        </div>
+
+        <div id="checkoutCartList" class="divide-y divide-[#F4EBE1]">
+          <!-- JS로 렌더링 -->
+        </div>
+      </section>
+
+      <!-- 쿠폰 & 포인트 할인 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-3">
+        <h3 class="text-[15px] font-extrabold text-brand-ink">할인 혜택</h3>
+
+        <div>
+          <label for="checkoutCouponSelect" class="block text-[12px] font-bold text-brand-warmGray mb-1.5">할인 쿠폰 선택</label>
+          <select
+            id="checkoutCouponSelect"
+            onchange="recalculateCheckout()"
+            class="w-full h-10 px-3 rounded-2xl bg-brand-cream border border-[#EADFD3] text-[13px] font-semibold text-brand-ink focus:outline-none focus:border-brand-red">
+            <option value="2000" selected>마라로제 첫 주문 쿠폰 (-2,000원)</option>
+            <option value="3000">배달팁 지원 쿠폰 (-3,000원)</option>
+            <option value="0">쿠폰 미적용 (0원)</option>
+          </select>
+        </div>
+
+        <label class="flex items-center justify-between bg-brand-cream rounded-2xl p-3 border border-[#EFE3D5] cursor-pointer">
+          <div>
+            <p class="text-[13px] font-bold text-brand-ink">보유 포인트 1,000P 사용</p>
+            <p class="text-[11px] text-brand-warmGray">잔여 포인트 2,450P</p>
+          </div>
+          <input
+            type="checkbox"
+            id="checkoutUsePoint"
+            onchange="recalculateCheckout()"
+            class="w-5 h-5 accent-brand-red rounded cursor-pointer"
+          />
+        </label>
+      </section>
+
+      <!-- 결제 수단 & 약관 동의 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-3.5">
+        <h3 class="text-[15px] font-extrabold text-brand-ink">결제 수단</h3>
+        <div id="paymentMethodGrid" class="grid grid-cols-2 gap-2">
+          <!-- JS 렌더링 -->
+        </div>
+
+        <label class="flex items-center gap-2 pt-2 border-t border-[#F4EBE1] text-[12px] text-brand-warmGray cursor-pointer">
+          <input
+            type="checkbox"
+            id="checkoutAgreeTerms"
+            checked
+            class="w-4 h-4 accent-brand-red rounded"
+          />
+          <span>주문 내역 및 결제 조건(기본가 17,000원, 배달팁 3,000원)에 동의합니다.</span>
+        </label>
+      </section>
+
+      <!-- 실시간 결제 금액 요약 -->
+      <section class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F3E6D8] space-y-2 text-[13px]">
+        <h3 class="text-[15px] font-extrabold text-brand-ink mb-2">결제 금액 요약</h3>
+        <div class="flex justify-between text-brand-warmGray">
+          <span>메뉴 금액 합계</span>
+          <span id="checkoutSubtotalText" class="font-bold text-brand-ink">17,000원</span>
+        </div>
+        <div class="flex justify-between text-brand-warmGray">
+          <span id="checkoutDeliveryLabelText">배달팁</span>
+          <span id="checkoutDeliveryFeeText" class="font-bold text-brand-ink">3,000원</span>
+        </div>
+        <div class="flex justify-between text-brand-orange">
+          <span>쿠폰 + 포인트 할인</span>
+          <span id="checkoutDiscountText" class="font-bold">-2,000원</span>
+        </div>
+        <div class="pt-2.5 border-t border-dashed border-[#E6D8C8] flex justify-between items-center">
+          <span class="text-[15px] font-extrabold text-brand-ink">총 결제 예정 금액</span>
+          <span id="checkoutFinalTotalText" class="text-[20px] font-black text-brand-red">18,000원</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================================================
+         하단 고정 액션 바 (화면별 동적 전환)
+    ========================================================= -->
+    <footer id="dynamicBottomBar" class="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md px-4 py-3.5 border-t border-[#EFE5D8] shadow-bottom-bar">
+      <!-- JS로 현재 화면에 맞는 버튼 렌더링 -->
+    </footer>
+
+    <!-- =========================================================
+         옵션 선택 바텀시트 (메뉴 8종 클릭 시)
+    ========================================================= -->
+    <div
+      id="menuOptionModal"
+      class="hidden fixed sm:absolute inset-0 z-50 bg-black/50 backdrop-blur-[2px] flex items-end justify-center p-0 sm:p-3">
+      <div class="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl border border-[#EFE5D8] animate-slide-up space-y-4">
+        <div class="flex items-start justify-between border-b border-[#F2E8DC] pb-3">
+          <div>
+            <span class="text-[11px] font-bold text-brand-red">기본가 17,000원</span>
+            <h4 id="optionModalTitle" class="text-[17px] font-extrabold text-brand-ink">떡볶이 옵션 선택</h4>
+          </div>
+          <button
+            type="button"
+            onclick="closeMenuOptionModal()"
+            class="w-8 h-8 rounded-full bg-brand-creamDark flex items-center justify-center text-brand-ink font-bold">
+            ✕
+          </button>
+        </div>
+
+        <div>
+          <p class="text-[12px] font-bold text-brand-warmGray mb-2">맵기 단계</p>
+          <div id="optionSpiceChoices" class="grid grid-cols-3 gap-2"></div>
+        </div>
+
+        <div>
+          <p class="text-[12px] font-bold text-brand-warmGray mb-2">추가 토핑</p>
+          <div id="optionToppingChoices" class="space-y-1.5"></div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-[#F4EBE1]">
+          <span class="text-[13px] font-bold text-brand-ink">선택 금액 (배달팁 3,000원 별도)</span>
+          <span id="optionModalPrice" class="text-[17px] font-black text-brand-red">17,000원</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            onclick="confirmMenuOption(false)"
+            class="h-11 rounded-2xl font-bold text-[13px] text-brand-red bg-[#FFF0EC] border border-[#FAD6CC] active:scale-[0.98]">
+            장바구니 담기
+          </button>
+          <button
+            type="button"
+            onclick="confirmMenuOption(true)"
+            class="h-11 rounded-2xl font-bold text-[13px] text-white bg-gradient-to-r from-brand-red to-brand-orange active:scale-[0.98]">
+            바로 결제하기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         전자 영수증 바텀시트 모달 ('주문 상세 보기')
+    ========================================================= -->
+    <div
+      id="orderDetailModal"
+      class="hidden fixed sm:absolute inset-0 z-50 bg-black/50 backdrop-blur-[2px] flex items-end justify-center p-0 sm:p-3">
+      <div class="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl border border-[#EFE5D8] animate-slide-up">
+        <div class="flex items-center justify-between pb-3 border-b border-[#F2E8DC]">
+          <div>
+            <span class="text-[11px] font-bold text-brand-orange">전자 영수증</span>
+            <h4 class="text-[17px] font-extrabold text-brand-ink">주문 상세 내역</h4>
+          </div>
+          <button
+            type="button"
+            onclick="closeOrderDetailModal()"
+            class="w-8 h-8 rounded-full bg-brand-creamDark flex items-center justify-center text-brand-ink hover:bg-[#EBDCCB]">
+            ✕
+          </button>
+        </div>
+
+        <div id="receiptBody" class="py-4 space-y-3 text-[13px] max-h-[60vh] overflow-y-auto no-scrollbar">
+          <!-- JS로 렌더링 -->
+        </div>
+
+        <button
+          type="button"
+          onclick="closeOrderDetailModal()"
+          class="w-full h-11 mt-2 rounded-2xl bg-brand-ink text-white font-bold text-[14px] active:scale-[0.99] transition">
+          확인
+        </button>
+      </div>
+    </div>
+
+    <!-- 토스트 메시지 알림 -->
+    <div
+      id="toastMessage"
+      class="pointer-events-none opacity-0 translate-y-2 fixed sm:absolute bottom-24 left-1/2 -translate-x-1/2 z-50 bg-brand-ink/90 text-white text-[13px] font-semibold px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap transition-all duration-300">
+      알림 메시지
+    </div>
+
+  </div>
+
+  <script>
+    // =========================================================
+    // 가격 상수: 모든 떡볶이 메뉴 기본가 17,000원, 배달팁 3,000원
+    // =========================================================
+    const BASE_TTEOKBOKKI_PRICE = 17000;
+    const DELIVERY_FEE_PRICE = 3000;
+
+    // 떡볶이 8종 데이터 (모두 기본가 17,000원)
+    const TTEOKBOKKI_MENUS = [
+      {
+        id: 'mara-rose',
+        name: '마라로제 떡볶이',
+        category: '매운맛',
+        badge: '오늘 주문 완료',
+        spicyLevel: '마라 얼큰단계 (2단계)',
+        desc: '알싸한 마라 풍미와 부드러운 로제 크림이 어우러진 중독성 갑 떡볶이',
+        color: '#E63926',
+        accent: '#FF9A8B',
+        defaultOption: '기본 마라로제 · 쫄깃 밀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'basil-cream',
+        name: '바질페스토크림떡볶이',
+        category: '크림·로제',
+        badge: '상세페이지 연동',
+        spicyLevel: '순한 크림맛 (0.5단계)',
+        desc: '향긋한 바질 페스토와 고소한 생크림 소스가 스며든 프리미엄 크림 떡볶이',
+        color: '#2E7D4B',
+        accent: '#9ED8B2',
+        defaultOption: '생바질 크림 · 쫄깃 밀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'bul-fire',
+        name: '직화 불맛 떡볶이',
+        category: '시그니처',
+        badge: 'BEST',
+        spicyLevel: '불맛 매운맛 (3단계)',
+        desc: '센 불에 직화로 볶아낸 스모키 향과 진한 고추장 양념의 정석 떡볶이',
+        color: '#D62828',
+        accent: '#F77F00',
+        defaultOption: '직화 기본 · 쫀득 쌀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'snow-cheese',
+        name: '눈꽃 치즈 폭탄 떡볶이',
+        category: '시그니처',
+        badge: '인기',
+        spicyLevel: '매콤달콤 기본 (1단계)',
+        desc: '100% 자연 모짜렐라 치즈가 가득 올라가 쭉 늘어나는 고소함',
+        color: '#F4A261',
+        accent: '#FFE8B3',
+        defaultOption: '치즈듬뿍 · 쫄깃 밀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'bacon-rose',
+        name: '꾸덕 베이컨 로제 떡볶이',
+        category: '크림·로제',
+        badge: '추천',
+        spicyLevel: '부드러운 로제 (1단계)',
+        desc: '두툼한 베이컨과 토마토·크림이 조화된 꾸덕꾸덕 로제 떡볶이',
+        color: '#E76F51',
+        accent: '#F8C8B8',
+        defaultOption: '꾸덕 로제 · 넓적 분모자',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'squid-tempura',
+        name: '통오징어 튀김 떡볶이',
+        category: '토핑·이색',
+        badge: '바삭조합',
+        spicyLevel: '매콤달콤 기본 (1.5단계)',
+        desc: '바삭하게 튀긴 통오징어와 매콤한 국물 떡볶이의 환상 궁합',
+        color: '#FF6B2B',
+        accent: '#FFD2B8',
+        defaultOption: '통오징어 토핑 · 쫄깃 밀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'hell-buldak',
+        name: '핵불닭 지옥 떡볶이',
+        category: '매운맛',
+        badge: '매운맛주의',
+        spicyLevel: '화끈한 매운맛 (4단계)',
+        desc: '스트레스를 한 번에 날려버릴 화끈하고 칼칼한 특제 매운 양념',
+        color: '#9B1C1C',
+        accent: '#FCA5A5',
+        defaultOption: '지옥불맛 · 쫄깃 밀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      },
+      {
+        id: 'school-soup',
+        name: '옛날 학교앞 국물 떡볶이',
+        category: '시그니처',
+        badge: '추억의맛',
+        spicyLevel: '달콤매콤 순한맛 (1단계)',
+        desc: '어묵 국물과 떡을 떠먹는 그 시절 분식집 감성의 국물 떡볶이',
+        color: '#E07A5F',
+        accent: '#FDE2D8',
+        defaultOption: '국물 넉넉 · 쫀득 쌀떡',
+        price: BASE_TTEOKBOKKI_PRICE
+      }
+    ];
+
+    // 바질페스토크림떡볶이 상세 옵션 데이터
+    const BASIL_DOUGHS = [
+      { id: 'wheat', name: '쫄깃 밀떡', extra: 0 },
+      { id: 'rice', name: '쫀득 쌀떡', extra: 0 },
+      { id: 'bunmoja', name: '넓적 분모자', extra: 1500 }
+    ];
+    const BASIL_SAUCES = [
+      { id: 'normal', name: '기본 크림바질', extra: 0 },
+      { id: 'double-basil', name: '바질페스토 2배', extra: 2000 },
+      { id: 'spicy-cream', name: '청양 크림바질', extra: 500 }
+    ];
+    const BASIL_TOPPINGS = [
+      { id: 'mozzarella', name: '눈꽃 모짜렐라 치즈', price: 2500 },
+      { id: 'bacon', name: '훈제 베이컨 추가', price: 2000 },
+      { id: 'shrimp', name: '통새우 4미', price: 3000 }
+    ];
+
+    // 메뉴 8종 모달 옵션 데이터
+    const OPTION_SPICES = ['순한맛', '매콤기본', '매운맛'];
+    const OPTION_TOPPINGS = [
+      { id: 'cheese', name: '모짜렐라 치즈', price: 2500 },
+      { id: 'egg', name: '삶은 계란 2알', price: 1500 },
+      { id: 'kimmari', name: '바삭 김말이 3개', price: 2000 }
+    ];
+
+    const ADDRESS_PRESETS = [
+      { main: '인천광역시 연수구 송도과학로 32', detail: '송도 테크노파크 IT센터 104동 1205호' },
+      { main: '인천광역시 연수구 컨벤시아대로 165', detail: '센트럴파크 푸르지오 202동 803호' },
+      { main: '서울특별시 강남구 테헤란로 152', detail: '강남파이낸스센터 18층 1804호' }
+    ];
+
+    const PAYMENT_METHODS = ['카카오페이 (일시불)', '네이버페이', '토스페이', '신용·체크카드'];
+
+    // =========================================================
+    // 애플리케이션 전역 상태
+    // =========================================================
+    const appState = {
+      currentScreen: 'complete',
+      selectedCategory: '전체',
+      fulfillmentMode: 'delivery', // 'delivery' | 'pickup'
+      addressIdx: 0,
+      paymentMethod: PAYMENT_METHODS[0],
+      basilWish: false,
+      basilDough: 'wheat',
+      basilSauce: 'normal',
+      basilToppings: [],
+      basilQty: 1,
+      modalMenu: null,
+      modalSpice: '매콤기본',
+      modalToppings: [],
+      // 장바구니 초기값: 마라로제 떡볶이 (기본가 17,000원)
+      cart: [
+        {
+          id: 'mara-rose',
+          name: '마라로제 떡볶이',
+          optionText: '마라 얼큰단계 · 쫄깃 밀떡',
+          unitPrice: BASE_TTEOKBOKKI_PRICE,
+          qty: 1
+        }
+      ],
+      // 결제완료 화면에 표시되는 최근 완료 주문 데이터 (초기값: 마라로제 떡볶이 17,000원 + 배달팁 3,000원 - 쿠폰 2,000원 = 18,000원)
+      completedOrder: {
+        orderNo: 'TB-261124',
+        title: '마라로제 떡볶이 결제 완료!',
+        headlineBannerText: '얼큰고소 마라로제 떡볶이가 출발 준비 중!',
+        mode: 'delivery',
+        addressMain: '인천광역시 연수구 송도과학로 32',
+        addressDetail: '송도 테크노파크 IT센터 104동 1205호',
+        requestNote: '얼큰하게 마라향 살려주세요 · 문 앞 벨 눌러주세요',
+        items: [
+          {
+            name: '마라로제 떡볶이',
+            optionText: '마라 얼큰단계 · 쫄깃 밀떡',
+            lineTotal: BASE_TTEOKBOKKI_PRICE,
+            qty: 1
+          }
+        ],
+        subtotal: BASE_TTEOKBOKKI_PRICE,
+        deliveryFee: DELIVERY_FEE_PRICE,
+        discount: 2000,
+        finalTotal: BASE_TTEOKBOKKI_PRICE + DELIVERY_FEE_PRICE - 2000,
+        paymentMethod: '카카오페이 (일시불)',
+        orderedAt: '2026.11.24 (화) 21:20'
+      }
+    };
+
+    function formatWon(num) {
+      return `${Number(num || 0).toLocaleString('ko-KR')}원`;
+    }
+
+    // =========================================================
+    // 화면 전환 및 하단 액션 바 제어
+    // =========================================================
+    function switchScreen(screenName) {
+      appState.currentScreen = screenName;
+
+      document.querySelectorAll('.app-screen').forEach((el) => {
+        el.classList.add('hidden');
+      });
+      const targetScreen = document.getElementById(`screen-${screenName}`);
+      if (targetScreen) {
+        targetScreen.classList.remove('hidden');
+        targetScreen.scrollTop = 0;
+      }
+
+      // 스위처 활성 스타일 업데이트
+      document.querySelectorAll('.screen-tab').forEach((btn) => {
+        const isActive = btn.dataset.screenTab === screenName;
+        btn.className = isActive
+          ? 'screen-tab py-1.5 px-1 rounded-xl text-[11px] font-bold transition truncate bg-brand-red text-white shadow-xs'
+          : 'screen-tab py-1.5 px-1 rounded-xl text-[11px] font-bold transition truncate text-brand-warmGray hover:text-brand-ink';
+      });
+
+      const titleMap = {
+        complete: { title: '마라로제 결제완료', sub: '떡볶이 기본가 17,000원 · 배달팁 3,000원' },
+        menu: { title: '떡볶이 메뉴 (8종)', sub: '전 메뉴 기본가 17,000원 · 배달팁 3,000원' },
+        basil: { title: '바질페스토크림떡볶이', sub: '상세 옵션 · 기본가 17,000원 · 배달팁 3,000원' },
+        checkout: { title: '주문 결제페이지', sub: '메뉴 17,000원 기준 · 배달팁 3,000원' }
+      };
+      const meta = titleMap[screenName] || titleMap.complete;
+      document.getElementById('headerTitle').textContent = meta.title;
+      document.getElementById('headerSubtitle').textContent = meta.sub;
+
+      renderBottomBar();
+      if (screenName === 'complete') renderCompletedScreen();
+      if (screenName === 'menu') renderMenuList();
+      if (screenName === 'basil') renderBasilScreen();
+      if (screenName === 'checkout') renderCheckoutScreen();
+    }
+
+    function handleHeaderBack() {
+      const order = ['menu', 'basil', 'checkout', 'complete'];
+      const idx = order.indexOf(appState.currentScreen);
+      const prev = order[(idx - 1 + order.length) % order.length];
+      switchScreen(prev);
+    }
+
+    function renderBottomBar() {
+      const bar = document.getElementById('dynamicBottomBar');
+      const cartCount = appState.cart.reduce((acc, i) => acc + i.qty, 0);
+      const cartSubtotal = appState.cart.reduce((acc, i) => acc + i.unitPrice * i.qty, 0);
+
+      if (appState.currentScreen === 'complete') {
+        bar.innerHTML = `
+          <div class="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onclick="openOrderDetailModal()"
+              class="h-12 rounded-2xl font-bold text-[14px] text-brand-red bg-[#FFF0EC] hover:bg-[#FFE3DC] active:scale-[0.98] transition border border-[#FAD6CC]">
+              주문 상세 보기
+            </button>
+            <button
+              type="button"
+              onclick="handleGoHome()"
+              class="h-12 rounded-2xl font-bold text-[14px] text-white bg-gradient-to-r from-brand-red to-brand-orange hover:brightness-105 active:scale-[0.98] transition shadow-md shadow-brand-red/20">
+              홈으로 가기
+            </button>
+          </div>
+        `;
+      } else if (appState.currentScreen === 'menu') {
+        bar.innerHTML = `
+          <button
+            type="button"
+            onclick="switchScreen('checkout')"
+            class="w-full h-12 rounded-2xl font-bold text-[14px] text-white bg-gradient-to-r from-brand-red to-brand-orange hover:brightness-105 active:scale-[0.98] transition shadow-md shadow-brand-red/20 flex items-center justify-between px-5">
+            <span>장바구니 결제하기 (${cartCount}개)</span>
+            <span>${formatWon(cartSubtotal)} + 배달팁 ${formatWon(DELIVERY_FEE_PRICE)}</span>
+          </button>
+        `;
+      } else if (appState.currentScreen === 'basil') {
+        const calc = getBasilPriceCalculation();
+        bar.innerHTML = `
+          <div class="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onclick="addBasilToCartAndGo(false)"
+              class="h-12 rounded-2xl font-bold text-[13px] text-brand-basil bg-[#EAF6EE] hover:bg-[#DCF0E3] active:scale-[0.98] transition border border-[#BFE2CA]">
+              장바구니 담기 (${formatWon(calc.menuTotal)})
+            </button>
+            <button
+              type="button"
+              onclick="addBasilToCartAndGo(true)"
+              class="h-12 rounded-2xl font-bold text-[13px] text-white bg-gradient-to-r from-brand-red to-brand-orange hover:brightness-105 active:scale-[0.98] transition shadow-md shadow-brand-red/20">
+              바로 결제하기 (${formatWon(calc.grandTotal)})
+            </button>
+          </div>
+        `;
+      } else if (appState.currentScreen === 'checkout') {
+        const totals = calculateCheckoutTotals();
+        bar.innerHTML = `
+          <button
+            type="button"
+            onclick="submitCheckoutPayment()"
+            class="w-full h-12 rounded-2xl font-extrabold text-[14px] text-white bg-gradient-to-r from-brand-red to-brand-orange hover:brightness-105 active:scale-[0.98] transition shadow-md shadow-brand-red/20 flex items-center justify-center gap-1.5">
+            <span>${formatWon(totals.finalTotal)} 결제하기</span>
+          </button>
+        `;
+      }
+    }
+
+    // =========================================================
+    // 화면 1: 마라로제 결제완료 화면 렌더링 & 인터랙션
+    // =========================================================
+    function handleBannerFallback(imgEl) {
+      imgEl.classList.add('hidden');
+      const fallbackEl = document.getElementById('heroBannerFallback');
+      if (fallbackEl) fallbackEl.classList.remove('hidden');
+    }
+
+    function renderCompletedScreen() {
+      const o = appState.completedOrder;
+      document.getElementById('completeOrderNoBadge').textContent = `주문번호 #${o.orderNo}`;
+      document.getElementById('completeMainTitle').textContent = o.title;
+      document.getElementById('completeMenuCountBadge').textContent = `총 ${o.items.reduce((a, b) => a + b.qty, 0)}개 메뉴`;
+
+      const listEl = document.getElementById('completeMenuList');
+      listEl.innerHTML = o.items.map((item, idx) => `
+        <div class="${idx === 0 ? 'py-2 first:pt-1' : 'py-3'}">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-[14px] font-bold text-brand-ink">${item.name} × ${item.qty}</span>
+              <span class="text-[11px] font-bold text-brand-red bg-[#FFEBE8] px-2 py-0.5 rounded-md">결제완료</span>
+            </div>
+            <span class="text-[14px] font-bold text-brand-ink shrink-0">${formatWon(item.lineTotal)}</span>
+          </div>
+          <p class="mt-1.5 text-[12px] text-brand-warmGray pl-2 border-l-2 border-[#F3DEC9]">
+            · 옵션 : <span class="font-semibold text-brand-ink">${item.optionText}</span> (기본가 ${formatWon(BASE_TTEOKBOKKI_PRICE)})
+          </p>
+        </div>
+      `).join('');
+
+      document.getElementById('completeSubtotal').textContent = formatWon(o.subtotal);
+      document.getElementById('completeDeliveryLabel').textContent = o.mode === 'pickup' ? '배달팁 (매장포장)' : '배달팁';
+      document.getElementById('completeDeliveryFee').textContent = formatWon(o.deliveryFee);
+      document.getElementById('completeDiscount').textContent = `-${formatWon(o.discount)}`;
+      document.getElementById('completeFinalTotal').textContent = formatWon(o.finalTotal);
+      document.getElementById('completePaymentMethod').textContent = o.paymentMethod;
+
+      if (o.mode === 'pickup') {
+        document.getElementById('completeEtaTime').textContent = '오후 9:35';
+        document.getElementById('completeEtaNote').textContent = '(약 15분 후 픽업 가능)';
+        document.getElementById('completeModeIcon').textContent = '🏪';
+        document.getElementById('completeAddressLabel').textContent = '포장 매장';
+        document.getElementById('completeAddressMain').textContent = '떡볶이마켓 송도직영점';
+        document.getElementById('completeAddressDetail').textContent = '인천광역시 연수구 송도과학로 32 1층';
+      } else {
+        document.getElementById('completeEtaTime').textContent = '오후 9:50';
+        document.getElementById('completeEtaNote').textContent = '(약 25~30분 소요)';
+        document.getElementById('completeModeIcon').textContent = '🛵';
+        document.getElementById('completeAddressLabel').textContent = '배달 주소';
+        document.getElementById('completeAddressMain').textContent = o.addressMain;
+        document.getElementById('completeAddressDetail').textContent = o.addressDetail;
+      }
+      document.getElementById('completeRequestNote').textContent = o.requestNote || '요청사항 없음';
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById('toastMessage');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2200);
+    }
+
+    function copyOrderNumber() {
+      const orderNo = appState.completedOrder.orderNo;
+      const tempInput = document.createElement('input');
+      tempInput.value = orderNo;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast(`주문번호 #${orderNo}가 복사되었어요!`);
+      } catch (e) {
+        showToast(`주문번호: #${orderNo}`);
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    let currentStage = 0;
+    const stageInfo = [
+      { headline: '매장에서 마라로제 주문을 확인했어요', progress: '0%', time: '21:20' },
+      { headline: '맛있게 떡볶이를 조리하고 있어요 🔥', progress: '33.3%', time: '21:24' },
+      { headline: '라이더님이 픽업 후 출발했어요 🛵', progress: '66.6%', time: '21:36' },
+      { headline: '배달이 완료되었어요! 맛있게 드세요 🎉', progress: '100%', time: '21:47' }
+    ];
+
+    function advanceOrderStage() {
+      currentStage = (currentStage + 1) % stageInfo.length;
+      const info = stageInfo[currentStage];
+
+      document.getElementById('statusHeadline').textContent = info.headline;
+      document.getElementById('trackerProgressBar').style.width = info.progress;
+
+      const stepItems = document.querySelectorAll('.step-item');
+      stepItems.forEach((item, idx) => {
+        const circle = item.querySelector('div');
+        const label = item.querySelector('.step-label');
+        const timeEl = item.querySelector('.step-time');
+
+        if (idx <= currentStage) {
+          circle.className = 'relative w-7 h-7 rounded-full flex items-center justify-center bg-brand-red text-white shadow-sm z-10 transition-all';
+          circle.innerHTML = (idx === currentStage
+            ? '<span class="step-pulse absolute inset-0 rounded-full bg-brand-red animate-pulse-ring"></span>'
+            : '') +
+            '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>';
+          label.className = 'step-label mt-2 text-[12px] font-bold text-brand-red';
+          timeEl.textContent = stageInfo[idx].time;
+          timeEl.className = 'step-time text-[10px] text-brand-warmGray/80 mt-0.5';
+        } else {
+          circle.className = 'step-circle relative w-7 h-7 rounded-full flex items-center justify-center bg-[#F5ECE2] text-[#A99B90] border-2 border-white z-10 transition-all';
+          circle.innerHTML = `<span class="text-[11px] font-bold">${idx + 1}</span>`;
+          label.className = 'step-label mt-2 text-[12px] font-medium text-[#9A8C82]';
+          timeEl.textContent = '-';
+          timeEl.className = 'step-time text-[10px] text-transparent mt-0.5';
+        }
+      });
+
+      showToast(`주문 상태 변경: ${['결제완료', '조리중', '배달출발', '배달완료'][currentStage]}`);
+    }
+
+    function openOrderDetailModal() {
+      const o = appState.completedOrder;
+      const bodyEl = document.getElementById('receiptBody');
+      bodyEl.innerHTML = `
+        <div class="bg-brand-cream rounded-2xl p-3.5 space-y-1.5 border border-[#EFE3D5]">
+          <div class="flex justify-between">
+            <span class="text-brand-warmGray">주문일시</span>
+            <span class="font-semibold text-brand-ink">${o.orderedAt}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-brand-warmGray">주문번호</span>
+            <span class="font-semibold text-brand-ink">#${o.orderNo}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-brand-warmGray">결제수단</span>
+            <span class="font-semibold text-brand-ink">${o.paymentMethod}</span>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <p class="font-bold text-brand-ink">상세 품목</p>
+          ${o.items.map((item) => `
+            <div class="flex justify-between text-brand-warmGray">
+              <span>${item.name} (${item.optionText}) × ${item.qty}</span>
+              <span class="font-semibold text-brand-ink">${formatWon(item.lineTotal)}</span>
+            </div>
+          `).join('')}
+          <div class="flex justify-between text-brand-warmGray">
+            <span>${o.mode === 'pickup' ? '배달팁 (매장포장)' : '배달팁'}</span>
+            <span class="font-semibold text-brand-ink">${formatWon(o.deliveryFee)}</span>
+          </div>
+          <div class="flex justify-between text-brand-orange">
+            <span>할인 적용</span>
+            <span class="font-semibold">-${formatWon(o.discount)}</span>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-[#F2E8DC] flex justify-between items-center">
+          <span class="font-bold text-brand-ink">최종 승인 금액</span>
+          <span class="text-[18px] font-extrabold text-brand-red">${formatWon(o.finalTotal)}</span>
+        </div>
+      `;
+      document.getElementById('orderDetailModal').classList.remove('hidden');
+    }
+
+    function closeOrderDetailModal() {
+      document.getElementById('orderDetailModal').classList.add('hidden');
+    }
+
+    function handleCloseApp() {
+      showToast('결제완료 창을 닫고 메뉴 리스트로 이동합니다.');
+      switchScreen('menu');
+    }
+
+    function handleGoHome() {
+      showToast('떡볶이 8종 메뉴 홈 화면으로 이동합니다 🏠');
+      switchScreen('menu');
+    }
+
+    // =========================================================
+    // 화면 2: 메뉴 리스트 (8종 · 기본가 17,000원)
+    // =========================================================
+    function renderMenuList() {
+      const categories = ['전체', '시그니처', '크림·로제', '매운맛', '토핑·이색'];
+      const filterBox = document.getElementById('menuCategoryFilters');
+      filterBox.innerHTML = categories.map((cat) => {
+        const active = appState.selectedCategory === cat;
+        return `
+          <button
+            type="button"
+            onclick="selectMenuCategory('${cat}')"
+            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition ${
+              active
+                ? 'bg-brand-ink text-white'
+                : 'bg-brand-creamDark text-brand-warmGray hover:text-brand-ink'
+            }">
+            ${cat}
+          </button>
+        `;
+      }).join('');
+
+      const q = (document.getElementById('menuSearchInput')?.value || '').trim().toLowerCase();
+      const filtered = TTEOKBOKKI_MENUS.filter((m) => {
+        const matchCat = appState.selectedCategory === '전체' || m.category === appState.selectedCategory;
+        const matchQuery = !q || m.name.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q) || m.category.toLowerCase().includes(q);
+        return matchCat && matchQuery;
+      });
+
+      const container = document.getElementById('menuCardsContainer');
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl p-8 text-center text-[13px] text-brand-warmGray border border-[#F3E6D8]">
+            검색 조건에 맞는 떡볶이가 없습니다.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((m) => `
+        <article
+          onclick="handleMenuCardClick('${m.id}')"
+          class="bg-white rounded-3xl p-3.5 shadow-soft-card border border-[#F3E6D8] flex items-center gap-3.5 cursor-pointer hover:border-brand-orange/50 active:scale-[0.99] transition">
+          <div class="w-20 h-20 rounded-2xl bg-brand-cream flex items-center justify-center shrink-0 border border-[#EFE3D5]">
+            <svg class="w-14 h-14" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <ellipse cx="32" cy="52" rx="22" ry="5" fill="#EDE1D3" />
+              <rect x="15" y="14" width="34" height="32" rx="10" fill="${m.color}" />
+              <path d="M15 22C21 26 26 19 32 23C38 27 43 20 49 23V28C42 25 37 31 32 27C27 24 21 30 15 27V22Z" fill="${m.accent}" />
+              <circle cx="26" cy="36" r="2" fill="#FFF" />
+              <circle cx="38" cy="36" r="2" fill="#FFF" />
+              <path d="M28 41C30 43 34 43 36 41" stroke="#FFF" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#FFF0EA] text-brand-red">${m.badge}</span>
+              <span class="text-[10px] font-semibold text-brand-warmGray">${m.spicyLevel}</span>
+            </div>
+            <h3 class="text-[15px] font-extrabold text-brand-ink truncate mt-1">${m.name}</h3>
+            <p class="text-[11px] text-brand-warmGray line-clamp-1 mt-0.5">${m.desc}</p>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-[15px] font-black text-brand-ink">${formatWon(m.price)}</span>
+              <span class="text-[11px] font-bold text-brand-orange">
+                ${m.id === 'basil-cream' ? '상세페이지 보기 →' : '옵션 선택 +'}
+              </span>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function selectMenuCategory(cat) {
+      appState.selectedCategory = cat;
+      renderMenuList();
+    }
+
+    function handleMenuCardClick(menuId) {
+      if (menuId === 'basil-cream') {
+        switchScreen('basil');
+        return;
+      }
+      const menu = TTEOKBOKKI_MENUS.find((item) => item.id === menuId);
+      if (!menu) return;
+      appState.modalMenu = menu;
+      appState.modalSpice = '매콤기본';
+      appState.modalToppings = [];
+      openMenuOptionModal();
+    }
+
+    function openMenuOptionModal() {
+      const m = appState.modalMenu;
+      if (!m) return;
+      document.getElementById('optionModalTitle').textContent = `${m.name} 옵션 선택`;
+
+      document.getElementById('optionSpiceChoices').innerHTML = OPTION_SPICES.map((sp) => `
+        <button
+          type="button"
+          onclick="setModalSpice('${sp}')"
+          class="py-2 px-2 rounded-xl text-[12px] font-bold border transition ${
+            appState.modalSpice === sp
+              ? 'bg-brand-red text-white border-brand-red'
+              : 'bg-brand-cream text-brand-warmGray border-[#EADFD3]'
+          }">
+          ${sp}
+        </button>
+      `).join('');
+
+      document.getElementById('optionToppingChoices').innerHTML = OPTION_TOPPINGS.map((tp) => {
+        const checked = appState.modalToppings.includes(tp.id);
+        return `
+          <label class="flex items-center justify-between p-2.5 rounded-2xl bg-brand-cream border border-[#EFE3D5] text-[12px] cursor-pointer">
+            <span class="flex items-center gap-2 font-bold text-brand-ink">
+              <input
+                type="checkbox"
+                ${checked ? 'checked' : ''}
+                onchange="toggleModalTopping('${tp.id}')"
+                class="w-4 h-4 accent-brand-red rounded"
+              />
+              ${tp.name}
+            </span>
+            <span class="font-bold text-brand-orange">+${formatWon(tp.price)}</span>
+          </label>
+        `;
+      }).join('');
+
+      updateOptionModalPrice();
+      document.getElementById('menuOptionModal').classList.remove('hidden');
+    }
+
+    function closeMenuOptionModal() {
+      document.getElementById('menuOptionModal').classList.add('hidden');
+    }
+
+    function setModalSpice(sp) {
+      appState.modalSpice = sp;
+      openMenuOptionModal();
+    }
+
+    function toggleModalTopping(id) {
+      if (appState.modalToppings.includes(id)) {
+        appState.modalToppings = appState.modalToppings.filter((x) => x !== id);
+      } else {
+        appState.modalToppings.push(id);
+      }
+      updateOptionModalPrice();
+    }
+
+    function calculateModalUnitPrice() {
+      if (!appState.modalMenu) return BASE_TTEOKBOKKI_PRICE;
+      const toppingSum = appState.modalToppings.reduce((sum, tid) => {
+        const found = OPTION_TOPPINGS.find((t) => t.id === tid);
+        return sum + (found ? found.price : 0);
+      }, 0);
+      return BASE_TTEOKBOKKI_PRICE + toppingSum;
+    }
+
+    function updateOptionModalPrice() {
+      document.getElementById('optionModalPrice').textContent = formatWon(calculateModalUnitPrice());
+    }
+
+    function confirmMenuOption(goDirectCheckout) {
+      if (!appState.modalMenu) return;
+      const unitPrice = calculateModalUnitPrice();
+      const toppingNames = appState.modalToppings
+        .map((tid) => OPTION_TOPPINGS.find((t) => t.id === tid)?.name)
+        .filter(Boolean);
+      const optionText = `${appState.modalSpice}${toppingNames.length ? ' · ' + toppingNames.join(', ') : ''}`;
+
+      appState.cart = [
+        {
+          id: appState.modalMenu.id,
+          name: appState.modalMenu.name,
+          optionText,
+          unitPrice,
+          qty: 1
+        }
+      ];
+
+      closeMenuOptionModal();
+      renderBottomBar();
+      if (goDirectCheckout) {
+        switchScreen('checkout');
+      } else {
+        showToast(`${appState.modalMenu.name}을(를) 장바구니에 담았어요!`);
+      }
+    }
+
+    // =========================================================
+    // 화면 3: 바질페스토크림떡볶이 상세페이지 로직
+    // =========================================================
+    function getBasilPriceCalculation() {
+      const doughObj = BASIL_DOUGHS.find((d) => d.id === appState.basilDough) || BASIL_DOUGHS[0];
+      const sauceObj = BASIL_SAUCES.find((s) => s.id === appState.basilSauce) || BASIL_SAUCES[0];
+      const toppingExtra = appState.basilToppings.reduce((sum, id) => {
+        const t = BASIL_TOPPINGS.find((item) => item.id === id);
+        return sum + (t ? t.price : 0);
+      }, 0);
+
+      const unitPrice = BASE_TTEOKBOKKI_PRICE + doughObj.extra + sauceObj.extra + toppingExtra;
+      const menuTotal = unitPrice * appState.basilQty;
+      const grandTotal = menuTotal + DELIVERY_FEE_PRICE;
+      const optionSummary = `${doughObj.name} · ${sauceObj.name}${
+        appState.basilToppings.length
+          ? ' · ' + appState.basilToppings.map((id) => BASIL_TOPPINGS.find((t) => t.id === id)?.name).filter(Boolean).join(', ')
+          : ''
+      }`;
+
+      return { unitPrice, menuTotal, grandTotal, optionSummary };
+    }
+
+    function renderBasilScreen() {
+      document.getElementById('basilDoughOptions').innerHTML = BASIL_DOUGHS.map((d) => {
+        const active = appState.basilDough === d.id;
+        return `
+          <button
+            type="button"
+            onclick="selectBasilDough('${d.id}')"
+            class="p-2 rounded-2xl border text-center transition ${
+              active
+                ? 'bg-[#EAF6EE] border-brand-basil text-brand-ink font-extrabold'
+                : 'bg-brand-cream border-[#EADFD3] text-brand-warmGray font-semibold'
+            }">
+            <div class="text-[12px]">${d.name}</div>
+            <div class="text-[10px] ${d.extra ? 'text-brand-basil font-bold' : 'text-brand-warmGray'}">
+              ${d.extra ? `+${formatWon(d.extra)}` : '기본 포함'}
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('basilSauceOptions').innerHTML = BASIL_SAUCES.map((s) => {
+        const active = appState.basilSauce === s.id;
+        return `
+          <button
+            type="button"
+            onclick="selectBasilSauce('${s.id}')"
+            class="p-2 rounded-2xl border text-center transition ${
+              active
+                ? 'bg-[#EAF6EE] border-brand-basil text-brand-ink font-extrabold'
+                : 'bg-brand-cream border-[#EADFD3] text-brand-warmGray font-semibold'
+            }">
+            <div class="text-[12px]">${s.name}</div>
+            <div class="text-[10px] ${s.extra ? 'text-brand-basil font-bold' : 'text-brand-warmGray'}">
+              ${s.extra ? `+${formatWon(s.extra)}` : '기본 포함'}
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('basilToppingOptions').innerHTML = BASIL_TOPPINGS.map((t) => {
+        const checked = appState.basilToppings.includes(t.id);
+        return `
+          <label class="flex items-center justify-between p-2.5 rounded-2xl bg-brand-cream border border-[#EFE3D5] text-[12px] cursor-pointer">
+            <span class="flex items-center gap-2 font-bold text-brand-ink">
+              <input
+                type="checkbox"
+                ${checked ? 'checked' : ''}
+                onchange="toggleBasilTopping('${t.id}')"
+                class="w-4 h-4 accent-brand-basil rounded"
+              />
+              ${t.name}
+            </span>
+            <span class="font-bold text-brand-basil">+${formatWon(t.price)}</span>
+          </label>
+        `;
+      }).join('');
+
+      document.getElementById('basilQtyDisplay').textContent = appState.basilQty;
+      const calc = getBasilPriceCalculation();
+      document.getElementById('basilMenuTotalDisplay').textContent = formatWon(calc.menuTotal);
+      document.getElementById('basilGrandTotalDisplay').textContent = formatWon(calc.grandTotal);
+      renderBottomBar();
+    }
+
+    function selectBasilDough(id) {
+      appState.basilDough = id;
+      renderBasilScreen();
+    }
+
+    function selectBasilSauce(id) {
+      appState.basilSauce = id;
+      renderBasilScreen();
+    }
+
+    function toggleBasilTopping(id) {
+      if (appState.basilToppings.includes(id)) {
+        appState.basilToppings = appState.basilToppings.filter((x) => x !== id);
+      } else {
+        appState.basilToppings.push(id);
+      }
+      renderBasilScreen();
+    }
+
+    function changeBasilQty(delta) {
+      appState.basilQty = Math.max(1, appState.basilQty + delta);
+      renderBasilScreen();
+    }
+
+    function toggleBasilWish() {
+      appState.basilWish = !appState.basilWish;
+      const btn = document.getElementById('basilWishBtn');
+      btn.textContent = appState.basilWish ? '♥ 찜완료' : '♡ 찜';
+      btn.className = appState.basilWish
+        ? 'bg-[#FFEBE8] px-2.5 py-1 rounded-full font-bold text-brand-red border border-[#F7C9C0] transition'
+        : 'bg-white px-2.5 py-1 rounded-full font-bold text-brand-warmGray border border-[#EAE0D5] transition';
+      showToast(appState.basilWish ? '바질페스토크림떡볶이를 찜했어요!' : '찜 목록에서 해제되었어요.');
+    }
+
+    function shareBasilMenu() {
+      showToast('바질페스토크림떡볶이(17,000원) 링크가 복사되었어요!');
+    }
+
+    function toggleNutritionAccordion() {
+      const content = document.getElementById('nutritionContent');
+      const arrow = document.getElementById('nutritionArrow');
+      const isHidden = content.classList.contains('hidden');
+      content.classList.toggle('hidden');
+      arrow.textContent = isHidden ? '▲' : '▼';
+    }
+
+    function addBasilToCartAndGo(goCheckout) {
+      const calc = getBasilPriceCalculation();
+      appState.cart = [
+        {
+          id: 'basil-cream',
+          name: '바질페스토크림떡볶이',
+          optionText: calc.optionSummary,
+          unitPrice: calc.unitPrice,
+          qty: appState.basilQty
+        }
+      ];
+      renderBottomBar();
+      if (goCheckout) {
+        switchScreen('checkout');
+      } else {
+        showToast(`바질페스토크림떡볶이 ${appState.basilQty}개를 장바구니에 담았어요!`);
+      }
+    }
+
+    // =========================================================
+    // 화면 4: 결제페이지 로직
+    // =========================================================
+    function setFulfillmentMode(mode) {
+      appState.fulfillmentMode = mode;
+      const dBtn = document.getElementById('modeDeliveryBtn');
+      const pBtn = document.getElementById('modePickupBtn');
+      const addrBox = document.getElementById('checkoutDeliveryAddressBox');
+
+      if (mode === 'delivery') {
+        dBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold bg-brand-red text-white shadow-2xs transition';
+        pBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold text-brand-warmGray hover:text-brand-ink transition';
+        addrBox.classList.remove('hidden');
+      } else {
+        pBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold bg-brand-red text-white shadow-2xs transition';
+        dBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold text-brand-warmGray hover:text-brand-ink transition';
+        addrBox.classList.add('hidden');
+      }
+      recalculateCheckout();
+    }
+
+    function cycleDeliveryAddress() {
+      appState.addressIdx = (appState.addressIdx + 1) % ADDRESS_PRESETS.length;
+      const addr = ADDRESS_PRESETS[appState.addressIdx];
+      document.getElementById('checkoutAddressMain').textContent = addr.main;
+      document.getElementById('checkoutAddressDetail').textContent = addr.detail;
+      showToast(`배달 주소 변경: ${addr.main}`);
+    }
+
+    function appendRequestPreset(text) {
+      const input = document.getElementById('checkoutRequestInput');
+      input.value = input.value ? `${input.value} · ${text}` : text;
+    }
+
+    function updateCartQty(index, delta) {
+      const item = appState.cart[index];
+      if (!item) return;
+      const nextQty = item.qty + delta;
+      if (nextQty <= 0) {
+        appState.cart.splice(index, 1);
+      } else {
+        item.qty = nextQty;
+      }
+      renderCheckoutScreen();
+    }
+
+    function ensureDefaultCartItem() {
+      if (appState.cart.length === 0) {
+        appState.cart.push({
+          id: 'mara-rose',
+          name: '마라로제 떡볶이',
+          optionText: '마라 얼큰단계 · 쫄깃 밀떡',
+          unitPrice: BASE_TTEOKBOKKI_PRICE,
+          qty: 1
+        });
+        renderCheckoutScreen();
+        showToast('기본 마라로제 떡볶이(17,000원)를 담았어요.');
+      }
+    }
+
+    function calculateCheckoutTotals() {
+      const subtotal = appState.cart.reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
+      const deliveryFee = appState.fulfillmentMode === 'delivery' ? DELIVERY_FEE_PRICE : 0;
+      const couponVal = Number(document.getElementById('checkoutCouponSelect')?.value || 0);
+      const pointVal = document.getElementById('checkoutUsePoint')?.checked ? 1000 : 0;
+      const discount = couponVal + pointVal;
+      const finalTotal = Math.max(0, subtotal + deliveryFee - discount);
+      return { subtotal, deliveryFee, discount, finalTotal };
+    }
+
+    function recalculateCheckout() {
+      const totals = calculateCheckoutTotals();
+      document.getElementById('checkoutSubtotalText').textContent = formatWon(totals.subtotal);
+      document.getElementById('checkoutDeliveryLabelText').textContent =
+        appState.fulfillmentMode === 'delivery' ? '배달팁' : '배달팁 (포장 무료)';
+      document.getElementById('checkoutDeliveryFeeText').textContent = formatWon(totals.deliveryFee);
+      document.getElementById('checkoutDiscountText').textContent = `-${formatWon(totals.discount)}`;
+      document.getElementById('checkoutFinalTotalText').textContent = formatWon(totals.finalTotal);
+      renderBottomBar();
+    }
+
+    function renderCheckoutScreen() {
+      const addr = ADDRESS_PRESETS[appState.addressIdx];
+      document.getElementById('checkoutAddressMain').textContent = addr.main;
+      document.getElementById('checkoutAddressDetail').textContent = addr.detail;
+
+      const cartEl = document.getElementById('checkoutCartList');
+      if (appState.cart.length === 0) {
+        cartEl.innerHTML = `
+          <div class="py-4 text-center space-y-2">
+            <p class="text-[13px] text-brand-warmGray">장바구니가 비어 있습니다.</p>
+            <button
+              type="button"
+              onclick="ensureDefaultCartItem()"
+              class="px-3.5 py-1.5 rounded-xl bg-[#FFF0EC] text-brand-red text-[12px] font-bold border border-[#FAD6CC]">
+              마라로제 떡볶이 (17,000원) 담기
+            </button>
+          </div>
+        `;
+      } else {
+        cartEl.innerHTML = appState.cart.map((item, idx) => `
+          <div class="py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <p class="text-[14px] font-bold text-brand-ink truncate">${item.name}</p>
+              <p class="text-[11px] text-brand-warmGray truncate">${item.optionText} · 단가 ${formatWon(item.unitPrice)}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="flex items-center gap-1.5 bg-brand-cream px-2 py-1 rounded-xl border border-[#EADFD3]">
+                <button type="button" onclick="updateCartQty(${idx}, -1)" class="w-6 h-6 rounded-lg bg-white font-bold text-xs">-</button>
+                <span class="text-[13px] font-extrabold w-4 text-center">${item.qty}</span>
+                <button type="button" onclick="updateCartQty(${idx}, 1)" class="w-6 h-6 rounded-lg bg-brand-red text-white font-bold text-xs">+</button>
+              </div>
+              <span class="text-[13px] font-extrabold text-brand-ink w-18 text-right">${formatWon(item.unitPrice * item.qty)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('paymentMethodGrid').innerHTML = PAYMENT_METHODS.map((pm) => {
+        const active = appState.paymentMethod === pm;
+        return `
+          <button
+            type="button"
+            onclick="selectPaymentMethod('${pm}')"
+            class="py-2.5 px-3 rounded-2xl text-[12px] font-bold border text-center transition ${
+              active
+                ? 'bg-[#FFF0EC] border-brand-red text-brand-red'
+                : 'bg-brand-cream border-[#EADFD3] text-brand-warmGray'
+            }">
+            ${pm}
+          </button>
+        `;
+      }).join('');
+
+      recalculateCheckout();
+    }
+
+    function selectPaymentMethod(pm) {
+      appState.paymentMethod = pm;
+      renderCheckoutScreen();
+    }
+
+    function submitCheckoutPayment() {
+      if (appState.cart.length === 0) {
+        showToast('결제할 떡볶이 메뉴를 먼저 담아주세요!');
+        return;
+      }
+      const agreed = document.getElementById('checkoutAgreeTerms')?.checked;
+      if (!agreed) {
+        showToast('결제 조건 동의를 체크해 주세요.');
+        return;
+      }
+
+      const totals = calculateCheckoutTotals();
+      const addr = ADDRESS_PRESETS[appState.addressIdx];
+      const reqNote = document.getElementById('checkoutRequestInput')?.value || '';
+      const firstMenuName = appState.cart[0]?.name || '마라로제 떡볶이';
+
+      appState.completedOrder = {
+        orderNo: 'TB-261124',
+        title: `${firstMenuName} 결제 완료!`,
+        headlineBannerText: `${firstMenuName}가 맛있게 조리 준비 중입니다!`,
+        mode: appState.fulfillmentMode,
+        addressMain: addr.main,
+        addressDetail: addr.detail,
+        requestNote: reqNote,
+        items: appState.cart.map((c) => ({
+          name: c.name,
+          optionText: c.optionText,
+          lineTotal: c.unitPrice * c.qty,
+          qty: c.qty
+        })),
+        subtotal: totals.subtotal,
+        deliveryFee: totals.deliveryFee,
+        discount: totals.discount,
+        finalTotal: totals.finalTotal,
+        paymentMethod: appState.paymentMethod,
+        orderedAt: '2026.11.24 (화) 21:20'
+      };
+
+      currentStage = 0;
+      showToast(`${formatWon(totals.finalTotal)} 결제가 완료되었어요!`);
+      switchScreen('complete');
+    }
+
+    // 초기 화면 렌더링
+    window.addEventListener('DOMContentLoaded', () => {
+      switchScreen('complete');
+    });
+  </script>
 </body>
 </html>
