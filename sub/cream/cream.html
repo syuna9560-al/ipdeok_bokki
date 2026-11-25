@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>까르보나라 크림 떡볶이 | 신메뉴 상세페이지</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard & Black Han Sans -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+            display: ['"Black Han Sans"', 'Pretendard', 'sans-serif'],
+          },
+          colors: {
+            creamIvory: '#FAF7F0',
+            parmesanGold: '#E09F1F',
+            parmesanDeep: '#D48817',
+            parmesanSoft: '#FDF5E2',
+            pepperEspresso: '#2B241D',
+            baconCoral: '#D95338',
+          },
+          boxShadow: {
+            'soft': '0 8px 24px -4px rgba(43, 36, 29, 0.08)',
+            'plate': '0 18px 36px -8px rgba(43, 36, 29, 0.28)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background-color: #ECE7DD;
+      color: #2B241D;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-gentle-float {
+      animation: gentleFloat 3.4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-parmesanGold selection:text-white">
+
+  <!-- 모바일 퍼스트 중앙 정렬 컨테이너 (최대 너비 500px) -->
+  <div class="max-w-[500px] mx-auto min-h-screen bg-creamIvory shadow-2xl relative pb-28 overflow-x-hidden">
+
+    <!-- 1. 상단 고정 앱 헤더 -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <button type="button" onclick="showToast('전체 메뉴 목록으로 이동합니다.')" class="w-9 h-9 rounded-full hover:bg-stone-100 flex items-center justify-center text-pepperEspresso transition active:scale-95 shrink-0" aria-label="뒤로가기">
+          <i class="fa-solid fa-arrow-left text-base"></i>
+        </button>
+        <h1 class="font-extrabold text-base text-pepperEspresso truncate tracking-tight">까르보나라 크림 떡볶이</h1>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" onclick="copyPageLink()" class="w-9 h-9 rounded-full hover:bg-stone-100 flex items-center justify-center text-pepperEspresso transition active:scale-95" aria-label="공유하기">
+          <i class="fa-solid fa-share-nodes text-sm"></i>
+        </button>
+        <button type="button" onclick="openOrderModal('cart')" class="relative w-9 h-9 rounded-full hover:bg-parmesanSoft flex items-center justify-center text-pepperEspresso transition active:scale-95" aria-label="장바구니">
+          <i class="fa-solid fa-bag-shopping text-base"></i>
+          <span id="header-cart-badge" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-baconCoral text-white text-[10px] font-black flex items-center justify-center shadow-sm">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. 히어로 비주얼 섹션 (매트 블랙 세라믹 볼 까르보나라 크림 떡볶이 SVG 아트워크) -->
+    <section class="relative bg-gradient-to-b from-[#F7EEDB] via-[#FBF5E8] to-creamIvory pt-5 pb-6 px-4 overflow-hidden">
+      <!-- 은은한 크림 골드 배경 글로우 -->
+      <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-parmesanGold/15 blur-2xl pointer-events-none"></div>
+      <div class="absolute top-28 -left-10 w-36 h-36 rounded-full bg-baconCoral/10 blur-2xl pointer-events-none"></div>
+
+      <!-- 상단 플로팅 뱃지 그룹 -->
+      <div class="flex items-center justify-between mb-3 relative z-10">
+        <div class="flex items-center gap-1.5">
+          <span class="inline-flex items-center gap-1 bg-pepperEspresso text-[#FFE2A6] text-xs font-extrabold px-3 py-1 rounded-full shadow-sm">
+            <i class="fa-solid fa-sparkles text-parmesanGold"></i> NEW 신메뉴
+          </span>
+          <span class="inline-flex items-center gap-1 bg-baconCoral text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-sm">
+            15% OFF
+          </span>
+        </div>
+        <span class="inline-flex items-center gap-1 bg-white/95 text-baconCoral border border-baconCoral/25 text-xs font-extrabold px-3 py-1 rounded-full shadow-sm animate-gentle-float">
+          🎁 쥬시쿨 공짜
+        </span>
+      </div>
+
+      <!-- 고품질 에디토리얼 플레이팅 카드 -->
+      <div class="relative rounded-3xl bg-white border border-amber-900/10 p-4 shadow-plate overflow-hidden">
+        <div class="relative rounded-2xl bg-gradient-to-br from-[#FBF8F1] via-[#F4ECE0] to-[#E8DEC9] pt-4 pb-3 px-3 flex flex-col items-center justify-center">
+          
+          <!-- 우측 상단 파르미지아노 & 생크림 스탬프 -->
+          <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-xs border border-parmesanGold/30 rounded-xl px-2.5 py-1.5 text-right shadow-2xs">
+            <p class="text-[10px] font-bold text-parmesanDeep">100% 동물성 생크림</p>
+            <p class="text-[11px] font-extrabold text-pepperEspresso">&amp; 파마산 레지아노</p>
+          </div>
+
+          <!-- 매트 다크 세라믹 볼에 담긴 까르보나라 크림 떡볶이 SVG 일러스트 -->
+          <svg viewBox="0 0 360 250" class="w-full max-w-[330px] h-auto drop-shadow-md" role="img" aria-label="매트 블랙 세라믹 볼에 담긴 꾸덕한 까르보나라 크림 떡볶이 플레이팅 일러스트">
+            <defs>
+              <!-- 매트 다크 세라믹 볼 그라데이션 -->
+              <radialGradient id="matteDarkBowl" cx="48%" cy="42%" r="58%">
+                <stop offset="0%" stop-color="#3E352D" />
+                <stop offset="78%" stop-color="#2B241D" />
+                <stop offset="100%" stop-color="#191410" />
+              </radialGradient>
+              <!-- 벨벳티 까르보나라 크림 소스 그라데이션 -->
+              <radialGradient id="carbonaraCream" cx="45%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#FFFDF7" />
+                <stop offset="55%" stop-color="#F7E8C6" />
+                <stop offset="100%" stop-color="#E4CA92" />
+              </radialGradient>
+              <!-- 크림이 코팅된 떡볶이 떡 그라데이션 -->
+              <linearGradient id="creamTteokGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFFFFF" />
+                <stop offset="60%" stop-color="#F6ECD5" />
+                <stop offset="100%" stop-color="#DFCFA9" />
+              </linearGradient>
+              <!-- 황금 노른자 그라데이션 -->
+              <radialGradient id="goldenYolk" cx="38%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#FFE169" />
+                <stop offset="65%" stop-color="#E09F1F" />
+                <stop offset="100%" stop-color="#B8700B" />
+              </radialGradient>
+              <!-- 훈연 베이컨 그라데이션 -->
+              <linearGradient id="smokedBacon" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#E86A50" />
+                <stop offset="55%" stop-color="#C9452C" />
+                <stop offset="100%" stop-color="#8F2815" />
+              </linearGradient>
+            </defs>
+
+            <!-- 테이블 위 린넨 냅킨 & 골드 포크 장식 -->
+            <rect x="26" y="168" width="92" height="56" rx="8" transform="rotate(-11 26 168)" fill="#E9DEC8" opacity="0.9" />
+            <g transform="translate(298, 22) rotate(26)" opacity="0.88">
+              <rect x="4" y="24" width="4" height="62" rx="2" fill="#C99635" />
+              <path d="M0,0 L0,18 Q0,24 6,24 Q12,24 12,18 L12,0 L9.5,0 L9.5,14 L7.2,14 L7.2,0 L4.8,0 L4.8,14 L2.5,14 L2.5,0 Z" fill="#D9A743" />
+            </g>
+
+            <!-- 매트 다크 세라믹 볼 그림자 및 본체 -->
+            <ellipse cx="180" cy="137" rx="146" ry="96" fill="rgba(43,36,29,0.22)" />
+            <ellipse cx="180" cy="130" rx="144" ry="92" fill="url(#matteDarkBowl)" stroke="#4A4036" stroke-width="2" />
+            <ellipse cx="180" cy="130" rx="124" ry="75" fill="#1F1914" />
+
+            <!-- 꾸덕하고 윤기 흐르는 까르보나라 크림 소스 베이스 -->
+            <ellipse cx="180" cy="131" rx="118" ry="70" fill="url(#carbonaraCream)" />
+            <!-- 치즈 크림 스월(소용돌이) 하이라이트 -->
+            <path d="M96,124 Q142,86 216,98 T265,135 Q226,172 150,166 T96,124 Z" fill="#FFFDF8" opacity="0.65" />
+            <path d="M114,138 Q162,112 222,124 T242,152 Q184,170 128,152 Z" fill="#E9CE96" opacity="0.4" />
+
+            <!-- 쫄깃한 떡볶이 떡 레이어 -->
+            <g stroke="#D4C29A" stroke-width="1.2">
+              <rect x="108" y="108" width="54" height="17" rx="8.5" transform="rotate(-17 108 108)" fill="url(#creamTteokGrad)" />
+              <rect x="158" y="96" width="56" height="17" rx="8.5" transform="rotate(11 158 96)" fill="url(#creamTteokGrad)" />
+              <rect x="206" y="112" width="52" height="17" rx="8.5" transform="rotate(26 206 112)" fill="url(#creamTteokGrad)" />
+              <rect x="96" y="134" width="56" height="17" rx="8.5" transform="rotate(8 96 134)" fill="url(#creamTteokGrad)" />
+              <rect x="136" y="122" width="58" height="18" rx="9" transform="rotate(-8 136 122)" fill="url(#creamTteokGrad)" />
+              <rect x="195" y="139" width="55" height="17" rx="8.5" transform="rotate(-20 195 139)" fill="url(#creamTteokGrad)" />
+              <rect x="122" y="152" width="56" height="17" rx="8.5" transform="rotate(14 122 152)" fill="url(#creamTteokGrad)" />
+              <rect x="172" y="154" width="54" height="17" rx="8.5" transform="rotate(-5 172 154)" fill="url(#creamTteokGrad)" />
+            </g>
+
+            <!-- 크림 소스 글레이즈 라인 -->
+            <path d="M115,114 Q148,105 175,115" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85" />
+            <path d="M148,148 Q182,158 214,146" stroke="#F0D8A3" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.7" />
+
+            <!-- 참나무 훈연 베이컨 스트립 (바삭한 마블링 디테일) -->
+            <g>
+              <g transform="translate(124, 102) rotate(-22)">
+                <rect x="0" y="0" width="24" height="10" rx="2.5" fill="url(#smokedBacon)" />
+                <line x1="2" y1="3.5" x2="22" y2="3.5" stroke="#FAD4C8" stroke-width="1.3" opacity="0.8" />
+              </g>
+              <g transform="translate(216, 128) rotate(18)">
+                <rect x="0" y="0" width="25" height="10" rx="2.5" fill="url(#smokedBacon)" />
+                <line x1="2" y1="6.5" x2="23" y2="6.5" stroke="#FAD4C8" stroke-width="1.3" opacity="0.8" />
+              </g>
+              <g transform="translate(132, 146) rotate(12)">
+                <rect x="0" y="0" width="23" height="9.5" rx="2.5" fill="url(#smokedBacon)" />
+                <line x1="2" y1="4" x2="21" y2="4" stroke="#FAD4C8" stroke-width="1.3" opacity="0.8" />
+              </g>
+              <g transform="translate(194, 152) rotate(-14)">
+                <rect x="0" y="0" width="22" height="9.5" rx="2.5" fill="url(#smokedBacon)" />
+                <line x1="2" y1="5" x2="20" y2="5" stroke="#FAD4C8" stroke-width="1.3" opacity="0.8" />
+              </g>
+            </g>
+
+            <!-- 중앙 하이라이트: 영롱한 황금 계란 노른자 -->
+            <g transform="translate(180, 127)">
+              <circle cx="0" cy="2" r="19" fill="rgba(212,136,23,0.28)" />
+              <circle cx="0" cy="0" r="16.5" fill="url(#goldenYolk)" stroke="#FFF6D6" stroke-width="1.2" />
+              <!-- 노른자 촉촉 광택 하이라이트 -->
+              <ellipse cx="-5" cy="-5" rx="4.5" ry="2.6" transform="rotate(-32 -5 -5)" fill="#FFFDF5" opacity="0.9" />
+              <circle cx="-8" cy="0" r="1.4" fill="#FFFDF5" opacity="0.75" />
+            </g>
+
+            <!-- 쉐이빙 파르미지아노 치즈 플레이크 -->
+            <g fill="#FFFDF4" stroke="#E8D7B0" stroke-width="0.6">
+              <polygon points="148,113 158,110 155,118" />
+              <polygon points="198,106 208,109 201,115" />
+              <polygon points="154,138 164,136 160,144" />
+              <polygon points="205,136 214,140 207,145" />
+              <polygon points="118,128 127,125 124,132" />
+            </g>
+
+            <!-- 알싸하게 갓 갈아낸 통후추 입자 -->
+            <g fill="#2B241D">
+              <circle cx="173" cy="121" r="1.4" />
+              <circle cx="185" cy="124" r="1.6" />
+              <circle cx="178" cy="133" r="1.3" />
+              <circle cx="162" cy="118" r="1.4" />
+              <circle cx="196" cy="119" r="1.5" />
+              <circle cx="145" cy="130" r="1.4" />
+              <circle cx="204" cy="132" r="1.3" />
+              <circle cx="168" cy="148" r="1.5" />
+              <circle cx="188" cy="146" r="1.4" />
+              <circle cx="134" cy="120" r="1.2" />
+            </g>
+
+            <!-- 싱그러운 그린 파슬리 잎 가니쉬 -->
+            <g fill="#3E8248">
+              <circle cx="171" cy="112" r="2.8" />
+              <circle cx="174" cy="110" r="2.2" />
+              <circle cx="192" cy="138" r="2.6" />
+              <circle cx="195" cy="136" r="2" />
+              <circle cx="152" cy="125" r="2.4" />
+            </g>
+          </svg>
+
+          <!-- 플레이트 하단 캡션 -->
+          <div class="w-full flex items-center justify-between px-2 pt-1 text-[11px] font-bold text-pepperEspresso/80">
+            <span>🧀 진한 파마산 치즈와 훈연 베이컨의 황금 비율</span>
+            <span class="bg-white/85 px-2 py-0.5 rounded-md text-stone-600">조리예 이미지</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 메뉴 기본 정보 & 평점 · 이벤트 프로모션 영역 -->
+    <section class="bg-white px-5 pt-5 pb-6 border-b-8 border-stone-100">
+      <!-- 카테고리 태그 & 메뉴명 -->
+      <div>
+        <div class="flex items-center gap-1.5 mb-1">
+          <span class="text-[11px] font-extrabold text-parmesanDeep bg-parmesanSoft border border-parmesanGold/30 px-2 py-0.5 rounded-md">시그니처 크림 라인 · 꾸덕 고소함의 정석</span>
+          <span class="text-[11px] font-semibold text-stone-500">1~2인분 · 590g</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-pepperEspresso tracking-tight leading-snug">까르보나라 크림 떡볶이</h2>
+      </div>
+
+      <p class="text-xs text-stone-500 mt-1.5 leading-relaxed">
+        진한 동물성 생크림과 파르미지아노 레지아노 치즈, 훈연 베이컨의 깊은 풍미에 알싸한 통후추를 더해 느끼함 없이 끝까지 꾸덕하게 즐기는 프리미엄 크림 떡볶이
+      </p>
+
+      <!-- 가격 블록 (정가 13,500원 -> 15% 할인가 11,400원) -->
+      <div class="mt-4 flex items-baseline gap-2">
+        <span class="text-xl font-black text-baconCoral">15%</span>
+        <span id="base-price-display" class="text-2xl font-black text-pepperEspresso">11,400원</span>
+        <span class="text-sm text-stone-400 line-through font-medium">13,500원</span>
+      </div>
+
+      <!-- 평점 요약 & 맵기 안내 -->
+      <div class="mt-4 pt-3.5 border-t border-stone-100 flex items-center justify-between text-xs">
+        <a href="#sec-review" class="flex items-center gap-1.5 font-bold text-pepperEspresso hover:text-parmesanDeep transition">
+          <i class="fa-solid fa-star text-parmesanGold text-sm"></i>
+          <span class="text-sm font-extrabold">4.9</span>
+          <span class="text-stone-400 font-medium underline underline-offset-2">리뷰 1,412개</span>
+        </a>
+
+        <div class="flex items-center gap-1.5 bg-parmesanSoft px-2.5 py-1 rounded-full border border-parmesanGold/25">
+          <span class="font-bold text-pepperEspresso">알싸 통후추 크림</span>
+          <span class="text-[11px] text-stone-600">· 느끼함 ZERO ✨</span>
+        </div>
+      </div>
+
+      <!-- 공통 신메뉴 프로모션 배너: 신메뉴 주문 시 쥬시쿨(450ml) 공짜! -->
+      <div class="mt-5 rounded-2xl bg-gradient-to-r from-[#FFF5E4] via-[#FFF9EE] to-[#FDECE8] border-2 border-parmesanGold/45 p-3.5 shadow-2xs">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-1.5">
+            <span class="bg-baconCoral text-white text-[10px] font-black px-2 py-0.5 rounded-md">신메뉴 EVENT</span>
+            <span class="font-extrabold text-xs text-pepperEspresso">🎁 신메뉴 주문 시 쥬시쿨(450ml) 공짜!</span>
+          </div>
+          <span class="text-xs font-black text-baconCoral">0원 증정</span>
+        </div>
+
+        <p class="text-[11px] text-stone-600 mb-2.5">
+          꾸덕하고 고소한 까르보나라 크림 떡볶이와 상큼한 쥬시쿨의 환상 조합!
+        </p>
+
+        <!-- 무료 쥬시쿨 450ml 맛 선택 알약 버튼 (기본 선택: 복숭아맛) -->
+        <div class="grid grid-cols-3 gap-1.5" id="juicy-flavor-group">
+          <button type="button" onclick="selectJuicyFlavor('복숭아맛')" data-flavor="복숭아맛" class="juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold border-2 border-baconCoral bg-white text-baconCoral shadow-2xs transition flex items-center justify-center gap-1">
+            🍑 복숭아맛 <span class="text-[9px] bg-red-50 px-1 rounded">추천</span>
+          </button>
+          <button type="button" onclick="selectJuicyFlavor('자두맛')" data-flavor="자두맛" class="juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-parmesanGold transition flex items-center justify-center gap-1">
+            🟣 자두맛
+          </button>
+          <button type="button" onclick="selectJuicyFlavor('파인애플맛')" data-flavor="파인애플맛" class="juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-parmesanGold transition flex items-center justify-center gap-1">
+            🍍 파인애플맛
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 인터랙티브 메뉴 옵션 커스터마이저 -->
+    <section class="bg-white px-5 py-6 border-b-8 border-stone-100 space-y-6">
+      <!-- 옵션 1: 떡 선택 (필수) -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-base text-pepperEspresso">떡 선택</h3>
+          <span class="text-[11px] font-extrabold text-baconCoral bg-red-50 px-2.5 py-0.5 rounded-full">필수</span>
+        </div>
+        <div class="space-y-2.5" id="tteok-options">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-parmesanGold bg-parmesanSoft/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="tteokType" value="쫀득 밀떡" data-price="0" checked onchange="handleOptionChange()" class="w-4 h-4 accent-pepperEspresso" />
+              <div>
+                <p class="font-bold text-sm text-pepperEspresso">쫀득 밀떡 <span class="text-[11px] font-extrabold text-parmesanDeep ml-1">추천</span></p>
+                <p class="text-[11px] text-stone-500">꾸덕한 까르보나라 크림 소스가 겉과 속에 쏙 배어드는 식감</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-stone-600">+0원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-parmesanGold/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="tteokType" value="쫄깃 쌀떡" data-price="0" onchange="handleOptionChange()" class="w-4 h-4 accent-pepperEspresso" />
+              <div>
+                <p class="font-bold text-sm text-pepperEspresso">쫄깃 쌀떡</p>
+                <p class="text-[11px] text-stone-500">방앗간에서 갓 뽑아낸 묵직하고 찰진 떡 식감</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-stone-600">+0원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-parmesanGold/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="tteokType" value="넓적 분모자 변경" data-price="2000" onchange="handleOptionChange()" class="w-4 h-4 accent-pepperEspresso" />
+              <div>
+                <p class="font-bold text-sm text-pepperEspresso">넓적 분모자 변경</p>
+                <p class="text-[11px] text-stone-500">파스타 면처럼 크림 소스를 듬뿍 머금는 탱글쫄깃 분모자</p>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold text-pepperEspresso">+2,000원</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 옵션 2: 맵기 선택 (필수) -->
+      <div class="pt-5 border-t border-stone-100">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-base text-pepperEspresso">맵기 선택</h3>
+          <span class="text-[11px] font-extrabold text-baconCoral bg-red-50 px-2.5 py-0.5 rounded-full">필수</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2" id="spicy-options">
+          <label class="cursor-pointer">
+            <input type="radio" name="spicyLevel" value="고소 순한맛" onchange="handleOptionChange()" class="peer sr-only" />
+            <div class="p-3 rounded-2xl border border-stone-200 peer-checked:border-2 peer-checked:border-parmesanGold peer-checked:bg-parmesanSoft/70 text-center transition h-full flex flex-col justify-center">
+              <span class="text-base mb-1">🥛</span>
+              <p class="font-extrabold text-xs text-pepperEspresso">고소 순한맛</p>
+              <p class="text-[10px] text-parmesanDeep font-bold mt-0.5">아이들도 OK</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="spicyLevel" value="알싸 통후추 기본맛" checked onchange="handleOptionChange()" class="peer sr-only" />
+            <div class="p-3 rounded-2xl border border-stone-200 peer-checked:border-2 peer-checked:border-parmesanGold peer-checked:bg-parmesanSoft/70 text-center transition h-full flex flex-col justify-center">
+              <span class="text-base mb-1">🧂</span>
+              <p class="font-extrabold text-xs text-pepperEspresso">알싸 통후추 기본맛</p>
+              <p class="text-[10px] text-baconCoral font-bold mt-0.5">추천 · 황금밸런스</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="spicyLevel" value="매콤 까르보맛" onchange="handleOptionChange()" class="peer sr-only" />
+            <div class="p-3 rounded-2xl border border-stone-200 peer-checked:border-2 peer-checked:border-baconCoral peer-checked:bg-red-50/60 text-center transition h-full flex flex-col justify-center">
+              <span class="text-base mb-1">🌶️</span>
+              <p class="font-extrabold text-xs text-pepperEspresso">매콤 까르보맛</p>
+              <p class="text-[10px] text-baconCoral font-bold mt-0.5">청양고추 킥</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- 옵션 3: 추가 토핑 (선택, 다중 선택 가능) -->
+      <div class="pt-5 border-t border-stone-100">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-base text-pepperEspresso">추가 토핑</h3>
+          <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full">선택 · 다중 선택 가능</span>
+        </div>
+        <div class="space-y-2" id="topping-options">
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-stone-50/70 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="훈연 베이컨 추가" data-price="2000" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-pepperEspresso" />
+              <span class="text-sm font-bold text-pepperEspresso">🥓 훈연 베이컨 추가</span>
+            </div>
+            <span class="text-xs font-extrabold text-pepperEspresso">+2,000원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-stone-50/70 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="눈꽃 모짜렐라 치즈" data-price="2500" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-pepperEspresso" />
+              <span class="text-sm font-bold text-pepperEspresso">🧀 눈꽃 모짜렐라 치즈</span>
+            </div>
+            <span class="text-xs font-extrabold text-pepperEspresso">+2,500원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-stone-50/70 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="비엔나 소시지 6개" data-price="1500" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-pepperEspresso" />
+              <span class="text-sm font-bold text-pepperEspresso">🌭 비엔나 소시지 6개</span>
+            </div>
+            <span class="text-xs font-extrabold text-pepperEspresso">+1,500원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-stone-50/70 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="수란/반숙 계란 추가" data-price="1000" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-pepperEspresso" />
+              <span class="text-sm font-bold text-pepperEspresso">🍳 수란/반숙 계란 추가</span>
+            </div>
+            <span class="text-xs font-extrabold text-pepperEspresso">+1,000원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-stone-50/70 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="바삭 갈릭 브레드 2조각" data-price="2000" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-pepperEspresso" />
+              <span class="text-sm font-bold text-pepperEspresso">🥖 바삭 갈릭 브레드 2조각</span>
+            </div>
+            <span class="text-xs font-extrabold text-pepperEspresso">+2,000원</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 수량 조절 (- / 1 / +) -->
+      <div class="pt-5 border-t border-stone-100 flex items-center justify-between">
+        <div>
+          <p class="font-extrabold text-sm text-pepperEspresso">수량 선택</p>
+          <p class="text-[11px] text-stone-500">수량 변경 시 하단 총 금액이 실시간 반영됩니다</p>
+        </div>
+        <div class="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200">
+          <button type="button" onclick="changeQuantity(-1)" class="w-9 h-9 rounded-xl bg-white text-pepperEspresso font-black text-base shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 감소">-</button>
+          <span id="inline-qty-display" class="w-10 text-center font-extrabold text-base text-pepperEspresso">1</span>
+          <button type="button" onclick="changeQuantity(1)" class="w-9 h-9 rounded-xl bg-white text-pepperEspresso font-black text-base shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 증가">+</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 스티키 탭 네비게이션 ('상품상세', '영양·원산지', '리뷰 (1,412)') -->
+    <nav class="sticky top-[60px] z-30 bg-white border-b border-stone-200 grid grid-cols-3 text-center">
+      <a href="#sec-detail" data-target="sec-detail" onclick="setActiveTab(this)" class="tab-link py-3.5 text-sm font-extrabold text-pepperEspresso border-b-2 border-parmesanGold transition">
+        상품상세
+      </a>
+      <a href="#sec-nutrition" data-target="sec-nutrition" onclick="setActiveTab(this)" class="tab-link py-3.5 text-sm font-bold text-stone-400 border-b-2 border-transparent hover:text-pepperEspresso transition">
+        영양·원산지
+      </a>
+      <a href="#sec-review" data-target="sec-review" onclick="setActiveTab(this)" class="tab-link py-3.5 text-sm font-bold text-stone-400 border-b-2 border-transparent hover:text-pepperEspresso transition">
+        리뷰 <span class="text-xs">(1,412)</span>
+      </a>
+    </nav>
+
+    <!-- [탭 1] 상품상세 섹션 -->
+    <section id="sec-detail" class="scroll-mt-28 bg-white px-5 py-7 border-b-8 border-stone-100 space-y-8">
+      <!-- 에디토리얼 헤드라인 -->
+      <div class="text-center space-y-2">
+        <span class="inline-block text-[11px] font-extrabold tracking-widest text-parmesanDeep bg-parmesanSoft px-3 py-1 rounded-full">SIGNATURE CARBONARA CREAM</span>
+        <h2 class="font-display text-2xl sm:text-3xl text-pepperEspresso leading-tight">
+          느끼함은 덜어내고<br/>
+          <span class="text-parmesanDeep">꾸덕한 치즈 크림</span>만 채웠습니다
+        </h2>
+        <p class="text-xs text-stone-500 leading-relaxed max-w-[360px] mx-auto pt-1">
+          정통 이탈리아 까르보나라의 깊은 풍미를 한국인의 입맛에 맞게 재해석한 황금 레시피로, 마지막 한 숟가락까지 고소하고 알싸하게 즐길 수 있습니다.
+        </p>
+      </div>
+
+      <!-- 3 Key Appeal Points -->
+      <div class="space-y-3.5">
+        <!-- Point 01 -->
+        <div class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-parmesanGold text-white flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <i class="fa-solid fa-cheese"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold text-parmesanDeep">POINT 01</span>
+            <h3 class="font-extrabold text-sm text-pepperEspresso mt-0.5">100% 동물성 생크림 &amp; 파마산 치즈 블렌딩</h3>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+              식물성 크림을 섞지 않은 100% 순수 동물성 생크림에 숙성 파르미지아노 레지아노 치즈를 듬뿍 녹여내어 깊고 묵직한 벨벳 질감을 완성했습니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Point 02 -->
+        <div class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-baconCoral text-white flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <i class="fa-solid fa-bacon"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold text-baconCoral">POINT 02</span>
+            <h3 class="font-extrabold text-sm text-pepperEspresso mt-0.5">참나무 훈연 베이컨 &amp; 알싸한 통후추 밸런스</h3>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+              노릇하게 구워낸 참나무 훈연 베이컨의 스모키한 감칠맛과 갓 갈아 넣은 블랙 페퍼의 알싸함이 크림의 느끼함을 완벽하게 잡아줍니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Point 03 -->
+        <div class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-pepperEspresso text-[#FFE2A6] flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold text-pepperEspresso">POINT 03</span>
+            <h3 class="font-extrabold text-sm text-pepperEspresso mt-0.5">소스가 쏙 배어드는 황금비율 떡</h3>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+              매일 아침 입고되는 쫀득한 떡에 크림 소스가 겉돌지 않고 촘촘하게 스며들어 씹을수록 고소한 치즈 풍미가 입안 가득 퍼집니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chef's Pairing Tip -->
+      <div class="rounded-3xl bg-pepperEspresso text-white p-5 relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-parmesanGold/15 pointer-events-none"></div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-parmesanGold text-pepperEspresso text-[10px] font-black px-2.5 py-0.5 rounded-full">CHEF'S PAIRING TIP</span>
+          <h3 class="font-extrabold text-base">까르보나라 크림 떡볶이 200% 즐기기</h3>
+        </div>
+        <div class="space-y-2.5 text-xs">
+          <div class="bg-white/10 rounded-xl p-3 flex items-start gap-2.5">
+            <span class="text-base">🥖</span>
+            <div>
+              <p class="font-extrabold text-[#FFE2A6]">바삭한 '갈릭 브레드'에 꾸덕한 크림 소스 듬뿍 찍먹</p>
+              <p class="text-stone-200 mt-0.5 leading-relaxed">오븐에 구운 바삭한 마늘빵에 파마산 크림 소스와 베이컨을 올려 한입 베어 물면 이탈리안 레스토랑 부럽지 않아요!</p>
+            </div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-3 flex items-start gap-2.5">
+            <span class="text-base">🍚</span>
+            <div>
+              <p class="font-extrabold text-[#FFE2A6]">남은 소스에 따뜻한 밥 비벼 '치즈 크림 리조또'</p>
+              <p class="text-stone-200 mt-0.5 leading-relaxed">떡을 다 드신 뒤 남은 진한 크림 소스에 따뜻한 공깃밥과 후추를 톡톡 뿌려 비벼 드시면 끝까지 완벽한 한 끼가 됩니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 조리 및 보관 안내 -->
+      <div class="rounded-2xl bg-stone-50 border border-stone-200 p-4 space-y-2">
+        <h4 class="font-extrabold text-xs text-pepperEspresso flex items-center gap-1.5">
+          <i class="fa-solid fa-fire-burner text-parmesanDeep"></i> 조리 및 보관 안내
+        </h4>
+        <ul class="text-[11px] text-stone-600 space-y-1 leading-relaxed">
+          <li>• <strong>주문 즉시 크림 에멀전 조리:</strong> 주문 접수와 동시에 생크림과 치즈를 약불에서 유화시켜 가장 꾸덕하고 부드러운 농도로 포장해 드립니다.</li>
+          <li>• <strong>재가열 가이드:</strong> 크림 소스 특성상 식으면 꾸덕해지므로, 전자레인지 조리 시 우유 2~3스푼을 넣고 1분 30초 데우시면 갓 만든 크림 농도가 복원됩니다.</li>
+          <li>• <strong>보관 방법:</strong> 유제품이 함유된 메뉴이므로 수령 후 즉시 섭취를 권장하며, 남은 음식은 반드시 냉장 보관 후 당일 내 섭취해 주세요.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- [탭 2] 영양·원산지 섹션 -->
+    <section id="sec-nutrition" class="scroll-mt-28 bg-white px-5 py-7 border-b-8 border-stone-100 space-y-6">
+      <div>
+        <h3 class="font-extrabold text-base text-pepperEspresso mb-3 flex items-center gap-2">
+          <span class="w-1.5 h-4 rounded-full bg-parmesanGold"></span> 영양성분 정보 (1인분 기준)
+        </h3>
+        <div class="rounded-2xl border border-stone-200 overflow-hidden text-xs">
+          <div class="grid grid-cols-2 bg-stone-50 px-4 py-2.5 border-b border-stone-200">
+            <span class="font-bold text-stone-500">칼로리</span>
+            <span class="font-extrabold text-pepperEspresso text-right">845 kcal</span>
+          </div>
+          <div class="grid grid-cols-2 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">탄수화물</span>
+            <span class="font-bold text-pepperEspresso text-right">108g (33%)</span>
+          </div>
+          <div class="grid grid-cols-2 bg-stone-50/50 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">단백질</span>
+            <span class="font-bold text-pepperEspresso text-right">25g (45%)</span>
+          </div>
+          <div class="grid grid-cols-2 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">지방 / 포화지방</span>
+            <span class="font-bold text-pepperEspresso text-right">34g / 18g</span>
+          </div>
+          <div class="grid grid-cols-2 bg-stone-50/50 px-4 py-2.5">
+            <span class="font-bold text-stone-500">나트륨</span>
+            <span class="font-bold text-pepperEspresso text-right">1,390mg (70%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 원산지 및 알레르기 안내 -->
+      <div class="space-y-3 text-xs">
+        <h3 class="font-extrabold text-base text-pepperEspresso flex items-center gap-2">
+          <span class="w-1.5 h-4 rounded-full bg-parmesanGold"></span> 원산지 및 알레르기 유발물질
+        </h3>
+        <div class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 space-y-2.5 leading-relaxed">
+          <p><strong class="text-pepperEspresso">• 주요 원산지:</strong> 밀떡(밀: 미국산, 호주산), 쌀떡(쌀: 국내산), 동물성 생크림(유크림: 국내산), 훈연 베이컨(돼지고기: 외국산), 파르미지아노 레지아노 치즈(이탈리아산), 계란(국내산), 통후추(베트남산)</p>
+          <p class="pt-2 border-t border-stone-200/70 text-baconCoral font-semibold">
+            <strong>• 알레르기 주의:</strong> 우유, 대두, 밀, 돼지고기, 계란, 쇠고기 함유 (새우, 토마토, 잣을 사용한 제품과 같은 조리시설에서 제조됩니다.)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- [탭 3] 고객 리뷰 섹션 -->
+    <section id="sec-review" class="scroll-mt-28 bg-white px-5 py-7 space-y-5">
+      <!-- 평점 요약 바 -->
+      <div class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 flex items-center justify-between gap-4">
+        <div class="text-center shrink-0 pr-3 border-r border-stone-200">
+          <div class="flex items-center justify-center gap-1 text-parmesanGold text-sm mb-0.5">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="text-2xl font-black text-pepperEspresso leading-none">4.9</p>
+          <p class="text-[11px] font-bold text-stone-400 mt-1">리뷰 1,412개</p>
+        </div>
+
+        <!-- 세부 점수 프로그레스 바 -->
+        <div class="flex-1 space-y-1.5 text-[11px]">
+          <div class="flex items-center gap-2">
+            <span class="w-12 font-bold text-stone-600 shrink-0">5점 최고</span>
+            <div class="flex-1 h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div class="h-full bg-parmesanGold rounded-full" style="width: 94%"></div>
+            </div>
+            <span class="w-8 text-right font-extrabold text-pepperEspresso">94%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-12 font-bold text-stone-600 shrink-0">4점 만족</span>
+            <div class="flex-1 h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div class="h-full bg-parmesanGold/70 rounded-full" style="width: 5%"></div>
+            </div>
+            <span class="w-8 text-right font-bold text-stone-500">5%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-12 font-bold text-stone-600 shrink-0">3점 보통</span>
+            <div class="flex-1 h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div class="h-full bg-stone-400 rounded-full" style="width: 1%"></div>
+            </div>
+            <span class="w-8 text-right font-bold text-stone-400">1%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 인터랙티브 해시태그 필터 알약 버튼 -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="review-filter-bar">
+        <button type="button" onclick="filterReviews('all')" data-tag="all" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-extrabold bg-pepperEspresso text-white transition">
+          전체 (1,412)
+        </button>
+        <button type="button" onclick="filterReviews('꾸덕크림')" data-tag="꾸덕크림" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-parmesanSoft text-pepperEspresso hover:bg-parmesanGold/20 transition">
+          #꾸덕크림 724
+        </button>
+        <button type="button" onclick="filterReviews('베이컨가득')" data-tag="베이컨가득" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-parmesanSoft text-pepperEspresso hover:bg-parmesanGold/20 transition">
+          #베이컨가득 518
+        </button>
+        <button type="button" onclick="filterReviews('안느끼해요')" data-tag="안느끼해요" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-parmesanSoft text-pepperEspresso hover:bg-parmesanGold/20 transition">
+          #안느끼해요 489
+        </button>
+        <button type="button" onclick="filterReviews('쥬시쿨공짜')" data-tag="쥬시쿨공짜" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-red-50 text-baconCoral hover:bg-red-100 transition">
+          #쥬시쿨공짜 612
+        </button>
+      </div>
+
+      <!-- 리뷰 카드 리스트 (JS 렌더링) -->
+      <div id="review-list" class="space-y-3"></div>
+    </section>
+
+    <!-- 6. 하단 고정 CTA 바 ('[N]개 담기 · [총 금액]원' + '쥬시쿨 무료 증정 포함') -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 px-4 py-3 shadow-[0_-8px_24px_rgba(43,36,29,0.08)]">
+      <div class="flex items-center gap-2.5">
+        <!-- 수량 스테퍼 -->
+        <div class="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200 shrink-0">
+          <button type="button" onclick="changeQuantity(-1)" class="w-8 h-10 rounded-xl bg-white text-pepperEspresso font-black text-sm shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 감소">-</button>
+          <span id="bottom-qty-display" class="w-8 text-center font-extrabold text-sm text-pepperEspresso">1</span>
+          <button type="button" onclick="changeQuantity(1)" class="w-8 h-10 rounded-xl bg-white text-pepperEspresso font-black text-sm shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 증가">+</button>
+        </div>
+
+        <!-- 메인 CTA 버튼 -->
+        <button type="button" onclick="openOrderModal('direct')" class="flex-1 py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pepperEspresso via-[#3B3127] to-[#4A3D30] hover:brightness-110 text-white shadow-md transition active:scale-[0.98] flex flex-col items-center justify-center border border-pepperEspresso">
+          <span id="bottom-cta-main" class="font-extrabold text-sm sm:text-base leading-tight">1개 담기 · 11,400원</span>
+          <span class="text-[10px] font-bold text-[#FFE2A6] mt-0.5">🎁 쥬시쿨 무료 증정 포함</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 주문 및 옵션 최종 확인 바텀시트 / 모달 -->
+  <div id="order-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-xs">
+    <div id="order-modal-box" class="bg-white w-full max-w-[460px] rounded-t-3xl sm:rounded-3xl border-t sm:border border-stone-200 overflow-hidden shadow-2xl transform transition-all translate-y-6 sm:translate-y-0 sm:scale-95 opacity-0">
+      <div class="bg-pepperEspresso text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold text-[#FFE2A6] tracking-wider">ORDER SUMMARY</span>
+          <h3 id="modal-title" class="font-extrabold text-base">선택 옵션 및 혜택 최종 확인</h3>
+        </div>
+        <button type="button" onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <!-- 선택 메뉴 및 옵션 요약 -->
+        <div class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 space-y-2 text-xs">
+          <div class="flex items-center justify-between font-extrabold text-sm text-pepperEspresso pb-2 border-b border-stone-200">
+            <span>까르보나라 크림 떡볶이</span>
+            <span id="modal-qty-badge" class="text-parmesanDeep">1개</span>
+          </div>
+          <div class="space-y-1 text-stone-600 pt-1" id="modal-options-detail">
+            <!-- JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <!-- 무료 증정 쥬시쿨 확인 카드 -->
+        <div class="rounded-2xl bg-gradient-to-r from-[#FFF5E4] to-[#FDECE8] border border-parmesanGold/45 p-3.5 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xl">🎁</span>
+            <div>
+              <p class="text-[11px] font-extrabold text-baconCoral">신메뉴 출시 무료 혜택</p>
+              <p class="text-xs font-extrabold text-pepperEspresso">쥬시쿨 450ml (<span id="modal-juicy-flavor">복숭아맛</span>)</p>
+            </div>
+          </div>
+          <span class="bg-baconCoral text-white text-[11px] font-black px-2.5 py-1 rounded-lg">0원 공짜</span>
+        </div>
+
+        <!-- 할인 절약 금액 및 최종 결제 금액 -->
+        <div class="space-y-1.5 pt-2 border-t border-stone-100">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-baconCoral">총 할인 및 무료 혜택 절약 금액</span>
+            <span id="modal-saved-price" class="font-extrabold text-baconCoral">-3,600원 절약!</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-stone-500">총 주문 예정 금액</span>
+            <span id="modal-final-price" class="text-xl font-black text-pepperEspresso">11,400원</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="confirmAddToCart()" class="flex-1 py-3.5 rounded-xl bg-parmesanSoft hover:bg-amber-100 text-pepperEspresso font-extrabold text-xs border border-parmesanGold/40 transition">
+            장바구니 담기
+          </button>
+          <button type="button" onclick="submitDirectOrder()" class="flex-[1.5] py-3.5 rounded-xl bg-pepperEspresso hover:bg-[#3D3329] text-white font-extrabold text-xs shadow transition">
+            바로 주문 완료하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 배너 -->
+  <div id="toast-banner" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-300">
+    <div class="bg-pepperEspresso text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg border border-white/10 flex items-center gap-2 whitespace-nowrap">
+      <i class="fa-solid fa-circle-check text-[#FFE2A6]"></i>
+      <span id="toast-message">알림</span>
+    </div>
+  </div>
+
+  <script>
+    // 1. 기본 가격 및 상수 정의
+    const ORIGINAL_PRICE = 13500;
+    const BASE_PRICE = 11400;
+    const JUICY_FREE_VALUE = 1500;
+
+    let quantity = 1;
+    let selectedJuicyFlavor = '복숭아맛';
+    let cartBadgeCount = 0;
+
+    // 2. 고객 리뷰 샘플 데이터
+    const reviewsData = [
+      {
+        id: 'rev1',
+        user: '크림파스타덕후**',
+        date: '오늘',
+        option: '쫀득 밀떡 / 알싸 통후추 기본맛 / 바삭 갈릭 브레드 2조각 (+쥬시쿨 복숭아맛)',
+        tags: ['꾸덕크림', '안느끼해요', '쥬시쿨공짜'],
+        content: '진짜 파스타 전문점 까르보나라 소스보다 훨씬 꾸덕하고 진해요! 알싸한 통후추가 톡톡 씹혀서 마지막까지 전혀 느끼하지 않고, 갈릭 브레드 추가해서 크림 소스 푹 찍어 먹으니까 완벽합니다. 공짜로 주신 복숭아 쥬시쿨까지 최고!',
+        likes: 58,
+        liked: false
+      },
+      {
+        id: 'rev2',
+        user: '베이컨러버**',
+        date: '어제',
+        option: '넓적 분모자 변경 / 매콤 까르보맛 / 훈연 베이컨 추가 (+쥬시쿨 자두맛)',
+        tags: ['꾸덕크림', '베이컨가득', '쥬시쿨공짜'],
+        content: '넓적 분모자에 매콤 까르보맛 조합 무조건 드셔보세요! 청양고추의 칼칼함이 파마산 크림이랑 만나니까 중독성이 미쳤어요. 훈연 베이컨도 아낌없이 들어있어서 씹는 맛이 정말 좋습니다.',
+        likes: 41,
+        liked: false
+      },
+      {
+        id: 'rev3',
+        user: '해피패밀리**',
+        date: '3일 전',
+        option: '쫄깃 쌀떡 / 고소 순한맛 / 눈꽃 모짜렐라 치즈, 비엔나 소시지 6개 (+쥬시쿨 파인애플맛)',
+        tags: ['꾸덕크림', '안느끼해요'],
+        content: '아이가 매운 걸 못 먹어서 고소 순한맛 쌀떡으로 주문했는데 너무 맛있다고 한 그릇 다 비웠어요! 식물성 크림 특유의 텁텁함이 없고 생크림 고소함이 진해서 재주문 의사 100%입니다.',
+        likes: 33,
+        liked: false
+      }
+    ];
+
+    // 초기 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCalculatedPrice();
+      renderReviews('all');
+      setupScrollTabSpy();
+    });
+
+    // 무료 증정 쥬시쿨 맛 선택
+    function selectJuicyFlavor(flavor) {
+      selectedJuicyFlavor = flavor;
+      document.querySelectorAll('.juicy-pill').forEach(btn => {
+        if (btn.dataset.flavor === flavor) {
+          btn.className = 'juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold border-2 border-baconCoral bg-white text-baconCoral shadow-2xs transition flex items-center justify-center gap-1';
+        } else {
+          btn.className = 'juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-parmesanGold transition flex items-center justify-center gap-1';
+        }
+      });
+      showToast(`공짜 쥬시쿨이 [${flavor}]으로 선택되었습니다.`);
+    }
+
+    // 옵션 변경 시 카드 하이라이트 및 실시간 가격 재계산
+    function handleOptionChange() {
+      document.querySelectorAll('#tteok-options label').forEach(label => {
+        const input = label.querySelector('input');
+        if (input.checked) {
+          label.className = 'flex items-center justify-between p-3.5 rounded-2xl border-2 border-parmesanGold bg-parmesanSoft/60 cursor-pointer transition';
+        } else {
+          label.className = 'flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-parmesanGold/60 cursor-pointer transition';
+        }
+      });
+      updateCalculatedPrice();
+    }
+
+    // 수량 증감 (- / +)
+    function changeQuantity(delta) {
+      quantity = Math.max(1, quantity + delta);
+      document.getElementById('inline-qty-display').textContent = quantity;
+      document.getElementById('bottom-qty-display').textContent = quantity;
+      updateCalculatedPrice();
+    }
+
+    // 현재 선택된 옵션 및 총 금액 계산
+    function getSelectedState() {
+      const tteokEl = document.querySelector('input[name="tteokType"]:checked');
+      const spicyEl = document.querySelector('input[name="spicyLevel"]:checked');
+      const toppingEls = Array.from(document.querySelectorAll('input[name="topping"]:checked'));
+
+      const tteokName = tteokEl ? tteokEl.value : '쫀득 밀떡';
+      const tteokPrice = tteokEl ? Number(tteokEl.dataset.price) : 0;
+      const spicyName = spicyEl ? spicyEl.value : '알싸 통후추 기본맛';
+
+      const toppings = toppingEls.map(el => ({
+        name: el.value,
+        price: Number(el.dataset.price)
+      }));
+      const toppingsPrice = toppings.reduce((sum, item) => sum + item.price, 0);
+
+      const unitPrice = BASE_PRICE + tteokPrice + toppingsPrice;
+      const totalPrice = unitPrice * quantity;
+      const totalSaved = ((ORIGINAL_PRICE - BASE_PRICE) * quantity) + JUICY_FREE_VALUE;
+
+      return {
+        tteokName,
+        tteokPrice,
+        spicyName,
+        toppings,
+        unitPrice,
+        totalPrice,
+        totalSaved
+      };
+    }
+
+    function updateCalculatedPrice() {
+      const state = getSelectedState();
+      document.getElementById('bottom-cta-main').textContent = `${quantity}개 담기 · ${state.totalPrice.toLocaleString()}원`;
+    }
+
+    // 스티키 탭 활성화 전환 및 스크롤 위치 감지
+    function setActiveTab(clickedEl) {
+      document.querySelectorAll('.tab-link').forEach(el => {
+        el.className = 'tab-link py-3.5 text-sm font-bold text-stone-400 border-b-2 border-transparent hover:text-pepperEspresso transition';
+      });
+      clickedEl.className = 'tab-link py-3.5 text-sm font-extrabold text-pepperEspresso border-b-2 border-parmesanGold transition';
+    }
+
+    function setupScrollTabSpy() {
+      const sections = ['sec-detail', 'sec-nutrition', 'sec-review'];
+      window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY + 150;
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const sec = document.getElementById(sections[i]);
+          if (sec && sec.offsetTop <= scrollPos) {
+            const activeLink = document.querySelector(`.tab-link[data-target="${sections[i]}"]`);
+            if (activeLink) setActiveTab(activeLink);
+            break;
+          }
+        }
+      }, { passive: true });
+    }
+
+    // 리뷰 필터링 및 렌더링
+    function filterReviews(tag) {
+      document.querySelectorAll('.rev-tag').forEach(btn => {
+        if (btn.dataset.tag === tag) {
+          btn.className = 'rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-extrabold bg-pepperEspresso text-white transition';
+        } else if (btn.dataset.tag === '쥬시쿨공짜') {
+          btn.className = 'rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-red-50 text-baconCoral hover:bg-red-100 transition';
+        } else {
+          btn.className = 'rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-parmesanSoft text-pepperEspresso hover:bg-parmesanGold/20 transition';
+        }
+      });
+      renderReviews(tag);
+    }
+
+    function renderReviews(filterTag) {
+      const filtered = filterTag === 'all'
+        ? reviewsData
+        : reviewsData.filter(r => r.tags.includes(filterTag));
+
+      const container = document.getElementById('review-list');
+      container.innerHTML = filtered.map(rev => `
+        <article class="rounded-2xl bg-creamIvory border border-amber-900/10 p-4 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-pepperEspresso text-[#FFE2A6] font-extrabold text-xs flex items-center justify-center">
+                ${rev.user.slice(0, 1)}
+              </div>
+              <div>
+                <p class="font-extrabold text-xs text-pepperEspresso">${rev.user}</p>
+                <div class="flex items-center gap-1 text-[10px] text-parmesanGold">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  <span class="text-stone-400 ml-1">${rev.date}</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="toggleReviewLike('${rev.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${rev.liked ? 'border-parmesanGold bg-parmesanSoft text-pepperEspresso' : 'border-stone-200 bg-white text-stone-500'} transition flex items-center gap-1">
+              👍 도움돼요 ${rev.likes}
+            </button>
+          </div>
+
+          <p class="text-[11px] font-semibold text-stone-500 bg-white px-2.5 py-1 rounded-lg border border-stone-100 truncate">
+            선택: ${rev.option}
+          </p>
+
+          <p class="text-xs text-pepperEspresso leading-relaxed">${rev.content}</p>
+
+          <div class="flex flex-wrap gap-1.5 pt-0.5">
+            ${rev.tags.map(t => `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white text-pepperEspresso border border-amber-900/15">#${t}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function toggleReviewLike(revId) {
+      const target = reviewsData.find(r => r.id === revId);
+      if (!target) return;
+      target.liked = !target.liked;
+      target.likes += target.liked ? 1 : -1;
+      const activeTagBtn = document.querySelector('.rev-tag.bg-pepperEspresso');
+      renderReviews(activeTagBtn ? activeTagBtn.dataset.tag : 'all');
+    }
+
+    // 주문 확인 바텀시트 / 모달 열기
+    function openOrderModal(mode) {
+      const state = getSelectedState();
+      document.getElementById('modal-title').textContent = mode === 'cart' ? '장바구니 내역 및 혜택 확인' : '선택 옵션 및 혜택 최종 확인';
+      document.getElementById('modal-qty-badge').textContent = `${quantity}개`;
+      document.getElementById('modal-juicy-flavor').textContent = selectedJuicyFlavor;
+      document.getElementById('modal-saved-price').textContent = `-${state.totalSaved.toLocaleString()}원 절약!`;
+      document.getElementById('modal-final-price').textContent = `${state.totalPrice.toLocaleString()}원`;
+
+      const toppingText = state.toppings.length > 0
+        ? state.toppings.map(t => `${t.name} (+${t.price.toLocaleString()}원)`).join(', ')
+        : '추가 토핑 없음';
+
+      document.getElementById('modal-options-detail').innerHTML = `
+        <p>• 떡 선택: <strong class="text-pepperEspresso">${state.tteokName}</strong> ${state.tteokPrice > 0 ? `(+${state.tteokPrice.toLocaleString()}원)` : ''}</p>
+        <p>• 맵기 선택: <strong class="text-pepperEspresso">${state.spicyName}</strong></p>
+        <p>• 추가 토핑: <strong class="text-pepperEspresso">${toppingText}</strong></p>
+      `;
+
+      const modal = document.getElementById('order-modal');
+      const box = document.getElementById('order-modal-box');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        box.classList.remove('translate-y-6', 'sm:scale-95', 'opacity-0');
+        box.classList.add('translate-y-0', 'sm:scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById('order-modal');
+      const box = document.getElementById('order-modal-box');
+      box.classList.remove('translate-y-0', 'sm:scale-100', 'opacity-100');
+      box.classList.add('translate-y-6', 'sm:scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 200);
+    }
+
+    // 장바구니 담기 완료 처리
+    function confirmAddToCart() {
+      cartBadgeCount += quantity;
+      document.getElementById('header-cart-badge').textContent = cartBadgeCount;
+      closeOrderModal();
+      showToast(`🛒 장바구니 담기 완료! (공짜 쥬시쿨 ${selectedJuicyFlavor} 포함)`);
+    }
+
+    // 바로 주문 완료 처리
+    function submitDirectOrder() {
+      closeOrderModal();
+      showToast(`🎉 까르보나라 크림 떡볶이 ${quantity}개 + 공짜 쥬시쿨(${selectedJuicyFlavor}) 주문이 접수되었습니다!`);
+    }
+
+    // 페이지 링크 복사 (iFrame 호환 execCommand)
+    function copyPageLink() {
+      const temp = document.createElement('textarea');
+      temp.value = window.location.href;
+      temp.style.position = 'fixed';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showToast('까르보나라 크림 떡볶이 상세페이지 링크가 복사되었습니다!');
+      } catch (e) {
+        showToast('링크 복사에 실패했습니다.');
+      }
+      document.body.removeChild(temp);
+    }
+
+    // 토스트 알림 배너 표시
+    let toastTimeout;
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      document.getElementById('toast-message').textContent = msg;
+      banner.classList.remove('opacity-0', 'translate-y-2');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', 'translate-y-2');
+      }, 2600);
+    }
+  </script>
+</body>
+</html>

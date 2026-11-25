@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>화자오 얼얼꾸덕 마라로제 떡볶이 | 신메뉴 상세페이지</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard & Black Han Sans -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+            display: ['"Black Han Sans"', 'Pretendard', 'sans-serif'],
+          },
+          colors: {
+            malaRed: '#C92A1D',
+            roseCoral: '#E85D4A',
+            warmIvory: '#FDF6F3',
+            sichuanCharcoal: '#261614',
+            blushRose: '#FCEAE4',
+          },
+          boxShadow: {
+            'soft': '0 8px 24px -4px rgba(38, 22, 20, 0.08)',
+            'plate': '0 18px 36px -8px rgba(201, 42, 29, 0.24)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background-color: #EFE6E2;
+      color: #261614;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-gentle-float {
+      animation: gentleFloat 3.3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-malaRed selection:text-white">
+
+  <!-- 모바일 퍼스트 중앙 정렬 컨테이너 (최대 너비 500px) -->
+  <div class="max-w-[500px] mx-auto min-h-screen bg-warmIvory shadow-2xl relative pb-28 overflow-x-hidden">
+
+    <!-- 1. 상단 고정 앱 헤더 (스크롤 시 중앙 메뉴명 페이드인) -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-rose-100 px-4 py-3 flex items-center justify-between">
+      <button type="button" onclick="showToast('전체 메뉴 목록으로 이동합니다.')" class="w-9 h-9 rounded-full hover:bg-blushRose/60 flex items-center justify-center text-sichuanCharcoal transition active:scale-95 shrink-0" aria-label="뒤로가기">
+        <i class="fa-solid fa-arrow-left text-base"></i>
+      </button>
+
+      <h1 id="header-scroll-title" class="font-extrabold text-base text-sichuanCharcoal truncate tracking-tight opacity-0 translate-y-1 transition-all duration-200 pointer-events-none">
+        마라로제 떡볶이
+      </h1>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" onclick="copyPageLink()" class="w-9 h-9 rounded-full hover:bg-blushRose/60 flex items-center justify-center text-sichuanCharcoal transition active:scale-95" aria-label="공유하기">
+          <i class="fa-solid fa-share-nodes text-sm"></i>
+        </button>
+        <button type="button" onclick="openOrderModal('cart')" class="relative w-9 h-9 rounded-full hover:bg-blushRose flex items-center justify-center text-malaRed transition active:scale-95" aria-label="장바구니">
+          <i class="fa-solid fa-bag-shopping text-base"></i>
+          <span id="header-cart-badge" class="tabular-nums absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-malaRed text-white text-[10px] font-black flex items-center justify-center shadow-sm">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. 히어로 비주얼 섹션 (마라로제 떡볶이 커스텀 SVG 플레이팅 아트워크) -->
+    <section id="hero-section" class="relative bg-gradient-to-b from-[#FCEAE4] via-[#FDF2EE] to-warmIvory pt-5 pb-6 px-4 overflow-hidden">
+      <!-- 은은한 로제 코랄 및 마라 레드 배경 글로우 -->
+      <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-roseCoral/15 blur-2xl pointer-events-none"></div>
+      <div class="absolute top-28 -left-10 w-36 h-36 rounded-full bg-malaRed/10 blur-2xl pointer-events-none"></div>
+
+      <!-- 플로팅 상단 뱃지 그룹 -->
+      <div class="flex items-center justify-between mb-3 relative z-10">
+        <div class="flex items-center gap-1.5">
+          <span class="inline-flex items-center gap-1 bg-sichuanCharcoal text-[#FFD3C9] text-xs font-extrabold px-3 py-1 rounded-full shadow-sm">
+            <i class="fa-solid fa-fire text-roseCoral"></i> BEST 신메뉴
+          </span>
+          <span class="inline-flex items-center gap-1 bg-malaRed text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-sm">
+            15% 출시할인
+          </span>
+        </div>
+        <span class="inline-flex items-center gap-1 bg-white/95 text-malaRed border border-malaRed/20 text-xs font-extrabold px-3 py-1 rounded-full shadow-sm animate-gentle-float">
+          🎁 쥬시쿨 공짜
+        </span>
+      </div>
+
+      <!-- 고품질 에디토리얼 플레이팅 카드 -->
+      <div class="relative rounded-3xl bg-white border border-rose-900/10 p-4 shadow-plate overflow-hidden">
+        <div class="relative rounded-2xl bg-gradient-to-br from-[#FDF8F6] via-[#F9ECE7] to-[#F0DDD6] pt-4 pb-3 px-3 flex flex-col items-center justify-center">
+          
+          <!-- 우측 상단 화자오 & 크림 블렌딩 스탬프 -->
+          <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-xs border border-roseCoral/25 rounded-xl px-2.5 py-1.5 text-right shadow-2xs">
+            <p class="text-[10px] font-bold text-malaRed">사천 화자오 마라장</p>
+            <p class="text-[11px] font-extrabold text-sichuanCharcoal">&amp; 100% 동물성 생크림</p>
+          </div>
+
+          <!-- 매트 다크 세라믹 볼에 담긴 꾸덕한 마라로제 떡볶이 SVG 일러스트 -->
+          <svg viewBox="0 0 360 250" class="w-full max-w-[330px] h-auto drop-shadow-md" role="img" aria-label="매트 세라믹 볼에 담긴 꾸덕한 마라로제 떡볶이와 중국당면, 푸주, 비엔나 소시지, 메추리알 플레이팅">
+            <defs>
+              <!-- 매트 세라믹 볼 그라데이션 -->
+              <radialGradient id="malaCeramicBowl" cx="48%" cy="42%" r="58%">
+                <stop offset="0%" stop-color="#3C2926" />
+                <stop offset="78%" stop-color="#261614" />
+                <stop offset="100%" stop-color="#170C0B" />
+              </radialGradient>
+              <!-- 윤기 흐르는 코랄 레드 마라로제 소스 그라데이션 -->
+              <radialGradient id="malaRoseSauce" cx="45%" cy="38%" r="60%">
+                <stop offset="0%" stop-color="#F57A67" />
+                <stop offset="52%" stop-color="#E85D4A" />
+                <stop offset="100%" stop-color="#B8291D" />
+              </radialGradient>
+              <!-- 로제 소스가 배어든 떡볶이 떡 그라데이션 -->
+              <linearGradient id="roseTteokGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFF5F1" />
+                <stop offset="58%" stop-color="#F7C2B6" />
+                <stop offset="100%" stop-color="#E38978" />
+              </linearGradient>
+              <!-- 훈연 비엔나 소시지 그라데이션 -->
+              <linearGradient id="sausageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#D94B38" />
+                <stop offset="65%" stop-color="#A8291B" />
+                <stop offset="100%" stop-color="#73180E" />
+              </linearGradient>
+              <!-- 푸주(건두부) 그라데이션 -->
+              <linearGradient id="fuzhuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FCE7C8" />
+                <stop offset="65%" stop-color="#E6BF8A" />
+                <stop offset="100%" stop-color="#C4955A" />
+              </linearGradient>
+            </defs>
+
+            <!-- 테이블 위 린넨 냅킨 & 중식 스푼 디테일 -->
+            <rect x="24" y="168" width="92" height="56" rx="8" transform="rotate(-11 24 168)" fill="#F3D9D0" opacity="0.9" />
+            <g transform="translate(292, 24) rotate(28)" opacity="0.88">
+              <rect x="7" y="22" width="5" height="60" rx="2.5" fill="#B54638" />
+              <ellipse cx="9.5" cy="14" rx="10" ry="15" fill="#C95647" />
+              <ellipse cx="9.5" cy="14" rx="6.5" ry="10.5" fill="#E37B6D" opacity="0.5" />
+            </g>
+
+            <!-- 매트 세라믹 볼 그림자 및 외곽 -->
+            <ellipse cx="180" cy="137" rx="146" ry="96" fill="rgba(38,22,20,0.22)" />
+            <ellipse cx="180" cy="130" rx="144" ry="92" fill="url(#malaCeramicBowl)" stroke="#4A322E" stroke-width="2" />
+            <ellipse cx="180" cy="130" rx="124" ry="75" fill="#1C0F0E" />
+
+            <!-- 꾸덕하고 윤기 나는 마라로제 소스 베이스 -->
+            <ellipse cx="180" cy="131" rx="118" ry="70" fill="url(#malaRoseSauce)" />
+            <!-- 생크림 마블링 스월 & 고추기름(라유) 윤기 -->
+            <path d="M96,124 Q142,86 216,98 T265,135 Q226,172 150,166 T96,124 Z" fill="#F99888" opacity="0.48" />
+            <path d="M114,138 Q162,110 222,124 T242,152 Q184,170 128,152 Z" fill="#FFF3EE" opacity="0.35" />
+            <path d="M122,108 Q168,94 212,107" stroke="#C92A1D" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.6" />
+
+            <!-- 넓적 중국당면 리본 스트립 -->
+            <g opacity="0.92">
+              <path d="M104,138 C126,126 144,148 168,136 C188,126 206,144 228,134" stroke="#F7DFD6" stroke-width="9.5" stroke-linecap="round" fill="none" />
+              <path d="M104,138 C126,126 144,148 168,136 C188,126 206,144 228,134" stroke="#E88979" stroke-width="5.5" stroke-linecap="round" fill="none" opacity="0.65" />
+              <path d="M132,155 C154,145 174,162 202,152" stroke="#F7DFD6" stroke-width="8.5" stroke-linecap="round" fill="none" />
+            </g>
+
+            <!-- 꼬들꼬들 주름진 푸주(건두부) 조각 -->
+            <g stroke="#9E6F38" stroke-width="1">
+              <rect x="108" y="114" width="32" height="14" rx="4" transform="rotate(-24 108 114)" fill="url(#fuzhuGrad)" />
+              <line x1="112" y1="117" x2="134" y2="108" stroke="#B58347" stroke-width="1" />
+              <rect x="212" y="136" width="34" height="14" rx="4" transform="rotate(18 212 136)" fill="url(#fuzhuGrad)" />
+              <line x1="216" y1="141" x2="240" y2="148" stroke="#B58347" stroke-width="1" />
+            </g>
+
+            <!-- 쫄깃한 떡볶이 떡 레이어 -->
+            <g stroke="#C96A5B" stroke-width="1.2">
+              <rect x="116" y="103" width="54" height="17" rx="8.5" transform="rotate(-15 116 103)" fill="url(#roseTteokGrad)" />
+              <rect x="164" y="96" width="56" height="17" rx="8.5" transform="rotate(11 164 96)" fill="url(#roseTteokGrad)" />
+              <rect x="142" y="120" width="58" height="18" rx="9" transform="rotate(-8 142 120)" fill="url(#roseTteokGrad)" />
+              <rect x="188" y="116" width="52" height="17" rx="8.5" transform="rotate(24 188 116)" fill="url(#roseTteokGrad)" />
+              <rect x="120" y="148" width="56" height="17" rx="8.5" transform="rotate(13 120 148)" fill="url(#roseTteokGrad)" />
+              <rect x="172" y="152" width="54" height="17" rx="8.5" transform="rotate(-6 172 152)" fill="url(#roseTteokGrad)" />
+            </g>
+
+            <!-- 칼집 낸 훈연 비엔나 소시지 -->
+            <g>
+              <g transform="translate(212, 102) rotate(22)">
+                <rect x="0" y="0" width="24" height="12" rx="6" fill="url(#sausageGrad)" />
+                <line x1="8" y1="1" x2="8" y2="11" stroke="#F7A899" stroke-width="1.3" />
+                <line x1="15" y1="1" x2="15" y2="11" stroke="#F7A899" stroke-width="1.3" />
+              </g>
+              <g transform="translate(104, 146) rotate(-18)">
+                <rect x="0" y="0" width="23" height="11.5" rx="5.8" fill="url(#sausageGrad)" />
+                <line x1="8" y1="1" x2="8" y2="10.5" stroke="#F7A899" stroke-width="1.3" />
+                <line x1="15" y1="1" x2="15" y2="10.5" stroke="#F7A899" stroke-width="1.3" />
+              </g>
+            </g>
+
+            <!-- 탱글탱글 메추리알 토핑 -->
+            <g>
+              <ellipse cx="146" cy="110" rx="10" ry="8" transform="rotate(-12 146 110)" fill="#FFFDF9" stroke="#E6B8AE" stroke-width="1.2" />
+              <circle cx="143" cy="108" r="2.2" fill="#FFFFFF" />
+              <ellipse cx="204" cy="148" rx="10" ry="8" transform="rotate(15 204 148)" fill="#FFFDF9" stroke="#E6B8AE" stroke-width="1.2" />
+              <circle cx="201" cy="146" r="2.2" fill="#FFFFFF" />
+            </g>
+
+            <!-- 건홍고추 슬라이스 & 사천 화자오(산초 열매) -->
+            <g>
+              <!-- 건홍고추 조각 -->
+              <path d="M168,113 Q178,107 186,115 Q177,119 168,113 Z" fill="#9E1B11" />
+              <path d="M156,143 Q166,138 173,146 Q164,149 156,143 Z" fill="#9E1B11" />
+              <!-- 화자오 알갱이 -->
+              <circle cx="176" cy="126" r="2.6" fill="#4A1A14" />
+              <circle cx="175" cy="125" r="0.9" fill="#B55B4D" />
+              <circle cx="136" cy="129" r="2.5" fill="#4A1A14" />
+              <circle cx="192" cy="134" r="2.6" fill="#4A1A14" />
+              <circle cx="162" cy="133" r="2.3" fill="#4A1A14" />
+              <circle cx="182" cy="144" r="2.5" fill="#4A1A14" />
+            </g>
+
+            <!-- 싱그러운 고수/파슬리 그린 가니쉬 -->
+            <g fill="#2E7D32">
+              <path d="M174,119 C168,112 160,115 164,121 C167,124 172,122 174,119 Z" />
+              <path d="M176,119 C182,111 190,115 186,121 C183,124 178,122 176,119 Z" />
+              <circle cx="150" cy="132" r="2.5" />
+              <circle cx="198" cy="126" r="2.4" />
+            </g>
+          </svg>
+
+          <!-- 플레이트 하단 캡션 -->
+          <div class="w-full flex items-center justify-between px-2 pt-1 text-[11px] font-bold text-sichuanCharcoal/80">
+            <span>🌶️ 얼얼한 사천 화자오와 부드러운 생크림의 중독성</span>
+            <span class="bg-white/85 px-2 py-0.5 rounded-md text-stone-600">조리예 이미지</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 메뉴 기본 정보 & 평점 · 이벤트 프로모션 영역 -->
+    <section class="bg-white px-5 pt-5 pb-6 border-b-8 border-stone-100">
+      <!-- 카테고리 태그 & 메뉴명 -->
+      <div>
+        <div class="flex items-center gap-1.5 mb-1">
+          <span class="text-[11px] font-extrabold text-malaRed bg-blushRose border border-roseCoral/30 px-2 py-0.5 rounded-md">얼얼꾸덕 마라로제 · 신메뉴</span>
+          <span class="text-[11px] font-semibold text-stone-500">1~2인분 · 620g</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-sichuanCharcoal tracking-tight leading-snug">화자오 얼얼꾸덕 마라로제 떡볶이</h2>
+      </div>
+
+      <p class="text-xs text-stone-500 mt-1.5 leading-relaxed">
+        알싸한 사천 화자오 마라 소스에 진한 생크림을 황금비율로 블렌딩한 중독성 강한 꾸덕 마라로제
+      </p>
+
+      <!-- 가격 정보 (정가 14,500원 -> 할인가 12,300원 / 15% OFF) -->
+      <div class="mt-4 flex items-baseline gap-2 tabular-nums">
+        <span class="text-xl font-black text-malaRed">15%</span>
+        <span id="base-price-display" class="text-2xl font-black text-sichuanCharcoal">12,300원</span>
+        <span class="text-sm text-stone-400 line-through font-medium">14,500원</span>
+      </div>
+
+      <!-- 평점 & 맵기 안내 -->
+      <div class="mt-4 pt-3.5 border-t border-stone-100 flex items-center justify-between text-xs">
+        <a href="#sec-review" class="flex items-center gap-1.5 font-bold text-sichuanCharcoal hover:text-malaRed transition">
+          <i class="fa-solid fa-star text-amber-400 text-sm"></i>
+          <span class="text-sm font-extrabold tabular-nums">4.9</span>
+          <span class="text-stone-400 font-medium underline underline-offset-2 tabular-nums">리뷰 1,842개</span>
+        </a>
+
+        <div class="flex items-center gap-1.5 bg-blushRose px-2.5 py-1 rounded-full border border-roseCoral/25">
+          <span class="font-bold text-malaRed">얼얼꾸덕 마라</span>
+          <span class="text-[11px] text-stone-600">· 맵기 3단계 선택 🌶️</span>
+        </div>
+      </div>
+
+      <!-- 신메뉴 이벤트 프로모션 박스: 신메뉴 주문 시 쥬시쿨(450ml) 공짜! -->
+      <div class="mt-5 rounded-2xl bg-gradient-to-r from-[#FFF1EC] via-[#FFF8F5] to-[#FCEAE4] border-2 border-roseCoral/40 p-3.5 shadow-2xs">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-1.5">
+            <span class="bg-malaRed text-white text-[10px] font-black px-2 py-0.5 rounded-md">신메뉴 EVENT</span>
+            <span class="font-extrabold text-xs text-sichuanCharcoal">신메뉴 주문 시 쥬시쿨(450ml) 공짜!</span>
+          </div>
+          <span class="text-xs font-black text-malaRed tabular-nums">0원 증정</span>
+        </div>
+
+        <p class="text-[11px] text-stone-600 mb-2.5">
+          얼얼한 마라로제의 알싸함을 달콤하게 씻어줄 쥬시쿨 450ml 맛을 골라주세요!
+        </p>
+
+        <!-- 쥬시쿨 맛 선택 알약 버튼 -->
+        <div class="grid grid-cols-3 gap-1.5" id="juicy-flavor-group">
+          <button type="button" onclick="selectJuicyFlavor('복숭아')" data-flavor="복숭아" class="juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold border-2 border-malaRed bg-white text-malaRed shadow-2xs transition flex items-center justify-center gap-1">
+            🍑 복숭아 <span class="text-[9px] bg-red-50 px-1 rounded">인기</span>
+          </button>
+          <button type="button" onclick="selectJuicyFlavor('자두')" data-flavor="자두" class="juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-roseCoral transition flex items-center justify-center gap-1">
+            🟣 자두
+          </button>
+          <button type="button" onclick="selectJuicyFlavor('파인애플')" data-flavor="파인애플" class="juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-roseCoral transition flex items-center justify-center gap-1">
+            🍍 파인애플
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 실시간 옵션 커스터마이저 -->
+    <section class="bg-white px-5 py-6 border-b-8 border-stone-100 space-y-6">
+      <!-- 옵션 1: 떡/면 베이스 선택 (필수) -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-base text-sichuanCharcoal">떡/면 베이스 선택</h3>
+          <span class="text-[11px] font-extrabold text-malaRed bg-blushRose px-2.5 py-0.5 rounded-full">필수</span>
+        </div>
+        <div class="space-y-2.5" id="tteok-options">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-roseCoral bg-blushRose/55 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="tteokType" value="쫀득 밀떡" data-price="0" checked onchange="handleOptionChange()" class="w-4 h-4 accent-malaRed" />
+              <div>
+                <p class="font-bold text-sm text-sichuanCharcoal">쫀득 밀떡 <span class="text-[11px] font-extrabold text-malaRed ml-1">추천</span></p>
+                <p class="text-[11px] text-stone-500">꾸덕한 마라로제 소스가 겉과 속에 착 감기는 쫀득 식감</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-stone-600 tabular-nums">+0원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-roseCoral/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="tteokType" value="찰진 쌀떡" data-price="0" onchange="handleOptionChange()" class="w-4 h-4 accent-malaRed" />
+              <div>
+                <p class="font-bold text-sm text-sichuanCharcoal">찰진 쌀떡</p>
+                <p class="text-[11px] text-stone-500">방앗간에서 갓 뽑아낸 묵직하고 찰진 식감</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-stone-600 tabular-nums">+0원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-roseCoral/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="tteokType" value="넙적 분모자 변경" data-price="2000" onchange="handleOptionChange()" class="w-4 h-4 accent-malaRed" />
+              <div>
+                <p class="font-bold text-sm text-sichuanCharcoal">넙적 분모자 변경</p>
+                <p class="text-[11px] text-stone-500">마라 소스를 듬뿍 머금는 탱글탱글한 넓적 분모자</p>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold text-malaRed tabular-nums">+2,000원</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 옵션 2: 마라 맵기 단계 (필수) -->
+      <div class="pt-5 border-t border-stone-100">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-base text-sichuanCharcoal">마라 맵기 단계</h3>
+          <span class="text-[11px] font-extrabold text-malaRed bg-blushRose px-2.5 py-0.5 rounded-full">필수</span>
+        </div>
+        <div class="space-y-2" id="spicy-options">
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-roseCoral/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="spicyLevel" value="1단계 마라 입문 순한맛" data-price="0" onchange="handleOptionChange()" class="w-4 h-4 accent-malaRed" />
+              <div>
+                <p class="font-bold text-sm text-sichuanCharcoal">🥛 1단계 마라 입문 순한맛</p>
+                <p class="text-[11px] text-stone-500">크림 비중을 높여 마라 초보자도 부드럽게 즐기는 맛</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-stone-600 tabular-nums">+0원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-roseCoral bg-blushRose/55 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="spicyLevel" value="2단계 얼얼 중독 기본맛" data-price="0" checked onchange="handleOptionChange()" class="w-4 h-4 accent-malaRed" />
+              <div>
+                <p class="font-bold text-sm text-sichuanCharcoal">🌶️ 2단계 얼얼 중독 기본맛 <span class="text-[11px] font-extrabold text-malaRed ml-1">베스트</span></p>
+                <p class="text-[11px] text-stone-500">알싸한 화자오와 꾸덕 생크림의 황금 밸런스</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-stone-600 tabular-nums">+0원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-roseCoral/60 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="spicyLevel" value="3단계 화끈 마라 매운맛" data-price="500" onchange="handleOptionChange()" class="w-4 h-4 accent-malaRed" />
+              <div>
+                <p class="font-bold text-sm text-sichuanCharcoal">🔥 3단계 화끈 마라 매운맛</p>
+                <p class="text-[11px] text-stone-500">사천 고추와 화자오 특제 오일을 더해 얼얼함이 폭발하는 맛</p>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold text-malaRed tabular-nums">+500원</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 옵션 3: 마라 필수 추가 토핑 (다중 선택 가능) -->
+      <div class="pt-5 border-t border-stone-100">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-base text-sichuanCharcoal">마라 필수 추가 토핑</h3>
+          <span class="text-[11px] font-bold text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full">다중 선택 가능</span>
+        </div>
+        <div class="space-y-2" id="topping-options">
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-blushRose/30 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="중국당면 추가" data-price="2000" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-malaRed" />
+              <span class="text-sm font-bold text-sichuanCharcoal">🍜 중국당면 추가</span>
+            </div>
+            <span class="text-xs font-extrabold text-sichuanCharcoal tabular-nums">+2,000원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-blushRose/30 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="꼬들 푸주 추가" data-price="2000" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-malaRed" />
+              <span class="text-sm font-bold text-sichuanCharcoal">🥢 꼬들 푸주 추가</span>
+            </div>
+            <span class="text-xs font-extrabold text-sichuanCharcoal tabular-nums">+2,000원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-blushRose/30 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="비엔나 소시지 6개" data-price="1500" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-malaRed" />
+              <span class="text-sm font-bold text-sichuanCharcoal">🌭 비엔나 소시지 6개</span>
+            </div>
+            <span class="text-xs font-extrabold text-sichuanCharcoal tabular-nums">+1,500원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-blushRose/30 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="눈꽃 모짜렐라 치즈" data-price="2500" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-malaRed" />
+              <span class="text-sm font-bold text-sichuanCharcoal">🧀 눈꽃 모짜렐라 치즈</span>
+            </div>
+            <span class="text-xs font-extrabold text-sichuanCharcoal tabular-nums">+2,500원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-blushRose/30 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="메추리알 6알" data-price="1000" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-malaRed" />
+              <span class="text-sm font-bold text-sichuanCharcoal">🥚 메추리알 6알</span>
+            </div>
+            <span class="text-xs font-extrabold text-sichuanCharcoal tabular-nums">+1,000원</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl border border-stone-200 hover:bg-blushRose/30 cursor-pointer transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" name="topping" value="바삭 꿔바로우 미니" data-price="3500" onchange="handleOptionChange()" class="w-4 h-4 rounded accent-malaRed" />
+              <span class="text-sm font-bold text-sichuanCharcoal">🥩 바삭 꿔바로우 미니</span>
+            </div>
+            <span class="text-xs font-extrabold text-malaRed tabular-nums">+3,500원</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 수량 조절 스테퍼 (- / 1 / +) -->
+      <div class="pt-5 border-t border-stone-100 flex items-center justify-between">
+        <div>
+          <p class="font-extrabold text-sm text-sichuanCharcoal">수량 선택</p>
+          <p class="text-[11px] text-stone-500">옵션과 수량에 맞춰 총 결제 금액이 자동 계산됩니다</p>
+        </div>
+        <div class="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200">
+          <button type="button" onclick="changeQuantity(-1)" class="w-9 h-9 rounded-xl bg-white text-sichuanCharcoal font-black text-base shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 감소">-</button>
+          <span id="inline-qty-display" class="w-10 text-center font-extrabold text-base text-sichuanCharcoal tabular-nums">1</span>
+          <button type="button" onclick="changeQuantity(1)" class="w-9 h-9 rounded-xl bg-white text-sichuanCharcoal font-black text-base shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 증가">+</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 스티키 탭 네비게이션 ('상품상세', '영양·원산지', '리뷰 (1,842)') -->
+    <nav class="sticky top-[60px] z-30 bg-white border-b border-stone-200 grid grid-cols-3 text-center">
+      <a href="#sec-detail" data-target="sec-detail" onclick="setActiveTab(this)" class="tab-link py-3.5 text-sm font-extrabold text-malaRed border-b-2 border-malaRed transition">
+        상품상세
+      </a>
+      <a href="#sec-nutrition" data-target="sec-nutrition" onclick="setActiveTab(this)" class="tab-link py-3.5 text-sm font-bold text-stone-400 border-b-2 border-transparent hover:text-sichuanCharcoal transition">
+        영양·원산지
+      </a>
+      <a href="#sec-review" data-target="sec-review" onclick="setActiveTab(this)" class="tab-link py-3.5 text-sm font-bold text-stone-400 border-b-2 border-transparent hover:text-sichuanCharcoal transition tabular-nums">
+        리뷰 <span class="text-xs">(1,842)</span>
+      </a>
+    </nav>
+
+    <!-- [탭 1] 상품상세 섹션 -->
+    <section id="sec-detail" class="scroll-mt-28 bg-white px-5 py-7 border-b-8 border-stone-100 space-y-8">
+      <!-- 에디토리얼 헤드라인 -->
+      <div class="text-center space-y-2">
+        <span class="inline-block text-[11px] font-extrabold tracking-widest text-malaRed bg-blushRose px-3 py-1 rounded-full">SICHUAN MALA &amp; CREAMY ROSÉ</span>
+        <h2 class="font-display text-2xl sm:text-3xl text-sichuanCharcoal leading-tight">
+          알싸한 사천 화자오와<br/>
+          <span class="text-malaRed">꾸덕한 생크림</span>의 황금 블렌딩
+        </h2>
+        <p class="text-xs text-stone-500 leading-relaxed max-w-[360px] mx-auto pt-1">
+          자극적이기만 한 마라가 아닙니다. 12가지 향신료를 볶아낸 깊은 마라장과 100% 동물성 생크림이 만나 입안 가득 얼얼하고 고소한 감칠맛을 선사합니다.
+        </p>
+      </div>
+
+      <!-- 3 Core Highlights -->
+      <div class="space-y-3.5">
+        <!-- Highlight 01 -->
+        <div class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-malaRed text-white flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <i class="fa-solid fa-pepper-hot"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold text-malaRed">POINT 01</span>
+            <h3 class="font-extrabold text-sm text-sichuanCharcoal mt-0.5">사천 화자오 &amp; 12가지 향신료 비법 마라장</h3>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+              사천 산지 직송 화자오와 팔각, 정향, 건홍고추 등 12가지 향신료를 저온에서 정성껏 우려낸 비법 마라장으로 깊고 깔끔한 얼얼함을 구현했습니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Highlight 02 -->
+        <div class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-roseCoral text-white flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <i class="fa-solid fa-whiskey-glass"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold text-roseCoral">POINT 02</span>
+            <h3 class="font-extrabold text-sm text-sichuanCharcoal mt-0.5">100% 동물성 생크림으로 완성한 꾸덕 로제 비율</h3>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+              물 타지 않은 순수 동물성 생크림을 황금비율로 블렌딩해 떡과 당면에 소스가 꾸덕하게 휘감기며 부드럽고 진한 여운을 남깁니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Highlight 03 -->
+        <div class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-sichuanCharcoal text-[#FFD3C9] flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <i class="fa-solid fa-bowl-rice"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-extrabold text-sichuanCharcoal">POINT 03</span>
+            <h3 class="font-extrabold text-sm text-sichuanCharcoal mt-0.5">떡볶이와 완벽 조화 이루는 푸주·중국당면 토핑</h3>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+              마라로제 소스를 스펀지처럼 듬뿍 머금은 꼬들꼬들한 푸주와 탱글한 넓적 중국당면, 훈연 비엔나 소시지가 기본으로 어우러져 다채로운 식감을 완성합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chef's 꿀조합 & 맛있게 먹는 팁 카드 -->
+      <div class="rounded-3xl bg-sichuanCharcoal text-white p-5 relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-roseCoral/20 pointer-events-none"></div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-roseCoral text-white text-[10px] font-black px-2.5 py-0.5 rounded-full">CHEF'S 꿀조합 TIP</span>
+          <h3 class="font-extrabold text-base">마라로제 떡볶이 200% 맛있게 먹는 법</h3>
+        </div>
+        <div class="space-y-2.5 text-xs">
+          <div class="bg-white/10 rounded-xl p-3 flex items-start gap-2.5">
+            <span class="text-base">🥩</span>
+            <div>
+              <p class="font-extrabold text-[#FFD3C9]">바삭한 '미니 꿔바로우'를 마라로제 소스에 푹 찍먹</p>
+              <p class="text-stone-200 mt-0.5 leading-relaxed">새콤달콤 바삭한 찹쌀 꿔바로우에 얼얼꾸덕한 마라로제 소스를 듬뿍 묻혀 드시면 마라탕 전문점 부럽지 않은 완벽한 페어링이 됩니다!</p>
+            </div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-3 flex items-start gap-2.5">
+            <span class="text-base">🥤</span>
+            <div>
+              <p class="font-extrabold text-[#FFD3C9]">얼얼함이 올라올 때 공짜 '쥬시쿨 450ml' 한 모금</p>
+              <p class="text-stone-200 mt-0.5 leading-relaxed">화자오의 알싸함이 입안에 퍼질 때 시원달콤한 복숭아·자두 쥬시쿨을 곁들이면 입안이 깔끔하게 리셋되어 끝없이 들어갑니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 조리 및 보관 안내 -->
+      <div class="rounded-2xl bg-stone-50 border border-stone-200 p-4 space-y-2">
+        <h4 class="font-extrabold text-xs text-sichuanCharcoal flex items-center gap-1.5">
+          <i class="fa-solid fa-fire-burner text-malaRed"></i> 조리 및 보관 안내
+        </h4>
+        <ul class="text-[11px] text-stone-600 space-y-1 leading-relaxed">
+          <li>• <strong>주문 즉시 강불 유화 조리:</strong> 주문 접수 즉시 비법 마라장과 생크림을 강불에서 빠르게 끓여내어 가장 꾸덕하고 향긋한 상태로 실링 포장해 드립니다.</li>
+          <li>• <strong>재가열 가이드:</strong> 당면과 크림이 소스를 흡수해 되직해졌을 경우, 전자레인지 전용 용기에 옮겨 우유 또는 물 2~3스푼을 넣고 1분 30초 데워주세요.</li>
+          <li>• <strong>보관 방법:</strong> 유제품과 당면이 포함된 메뉴이므로 수령 후 즉시 섭취를 권장하며, 남은 음식은 냉장 보관 후 당일 내 섭취해 주세요.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- [탭 2] 영양·원산지 섹션 -->
+    <section id="sec-nutrition" class="scroll-mt-28 bg-white px-5 py-7 border-b-8 border-stone-100 space-y-6">
+      <div>
+        <h3 class="font-extrabold text-base text-sichuanCharcoal mb-3 flex items-center gap-2">
+          <span class="w-1.5 h-4 rounded-full bg-malaRed"></span> 영양성분 정보 (총 중량 620g 기준)
+        </h3>
+        <div class="rounded-2xl border border-stone-200 overflow-hidden text-xs tabular-nums">
+          <div class="grid grid-cols-2 bg-stone-50 px-4 py-2.5 border-b border-stone-200">
+            <span class="font-bold text-stone-500">총 내용량</span>
+            <span class="font-extrabold text-sichuanCharcoal text-right">620g</span>
+          </div>
+          <div class="grid grid-cols-2 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">칼로리</span>
+            <span class="font-extrabold text-malaRed text-right">890 kcal</span>
+          </div>
+          <div class="grid grid-cols-2 bg-stone-50/50 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">나트륨</span>
+            <span class="font-bold text-sichuanCharcoal text-right">1,680mg (84%)</span>
+          </div>
+          <div class="grid grid-cols-2 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">탄수화물</span>
+            <span class="font-bold text-sichuanCharcoal text-right">118g (36%)</span>
+          </div>
+          <div class="grid grid-cols-2 bg-stone-50/50 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">당류</span>
+            <span class="font-bold text-sichuanCharcoal text-right">19g (19%)</span>
+          </div>
+          <div class="grid grid-cols-2 px-4 py-2.5 border-b border-stone-100">
+            <span class="font-bold text-stone-500">지방 / 포화지방</span>
+            <span class="font-bold text-sichuanCharcoal text-right">36g / 17g</span>
+          </div>
+          <div class="grid grid-cols-2 bg-stone-50/50 px-4 py-2.5">
+            <span class="font-bold text-stone-500">단백질</span>
+            <span class="font-bold text-sichuanCharcoal text-right">26g (47%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 원산지 및 알레르기 안내 -->
+      <div class="space-y-3 text-xs">
+        <h3 class="font-extrabold text-base text-sichuanCharcoal flex items-center gap-2">
+          <span class="w-1.5 h-4 rounded-full bg-malaRed"></span> 원산지 표기 및 알레르기 유발물질
+        </h3>
+        <div class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 space-y-2.5 leading-relaxed">
+          <p><strong class="text-sichuanCharcoal">• 원산지 표기:</strong> 쌀떡(쌀: 국내산), 밀떡(밀가루: 미국산, 호주산), 쇠고기·닭고기 육수(쇠고기: 호주산, 닭고기: 국내산), 동물성 생크림(유크림: 국내산), 비법 마라소스 향신료(화자오·고추·두반장: 중국산), 푸주·중국당면(중국산), 비엔나 소시지(돼지고기: 국내산, 외국산), 메추리알(국내산)</p>
+          <p class="pt-2 border-t border-stone-200/70 text-malaRed font-semibold">
+            <strong>• 알레르기 주의:</strong> 우유, 대두, 밀, 쇠고기, 닭고기, 돼지고기, 계란, 땅콩, 조개류(굴) 함유 (새우, 토마토, 잣을 사용한 제품과 같은 조리시설에서 제조됩니다.)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- [탭 3] 고객 리뷰 섹션 -->
+    <section id="sec-review" class="scroll-mt-28 bg-white px-5 py-7 space-y-5">
+      <!-- 전체 4.9 평점 & 분포 바 차트 -->
+      <div class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 flex items-center justify-between gap-4">
+        <div class="text-center shrink-0 pr-3 border-r border-stone-200">
+          <div class="flex items-center justify-center gap-1 text-amber-400 text-sm mb-0.5">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="text-2xl font-black text-sichuanCharcoal leading-none tabular-nums">4.9</p>
+          <p class="text-[11px] font-bold text-stone-400 mt-1 tabular-nums">리뷰 1,842개</p>
+        </div>
+
+        <div class="flex-1 space-y-1.5 text-[11px] tabular-nums">
+          <div class="flex items-center gap-2">
+            <span class="w-12 font-bold text-stone-600 shrink-0">5점 최고</span>
+            <div class="flex-1 h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div class="h-full bg-malaRed rounded-full" style="width: 95%"></div>
+            </div>
+            <span class="w-8 text-right font-extrabold text-sichuanCharcoal">95%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-12 font-bold text-stone-600 shrink-0">4점 만족</span>
+            <div class="flex-1 h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div class="h-full bg-roseCoral rounded-full" style="width: 4%"></div>
+            </div>
+            <span class="w-8 text-right font-bold text-stone-500">4%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-12 font-bold text-stone-600 shrink-0">3점 보통</span>
+            <div class="flex-1 h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div class="h-full bg-stone-400 rounded-full" style="width: 1%"></div>
+            </div>
+            <span class="w-8 text-right font-bold text-stone-400">1%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 인터랙티브 해시태그 필터 알약 버튼 -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="review-filter-bar">
+        <button type="button" onclick="filterReviews('all')" data-tag="all" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-extrabold bg-sichuanCharcoal text-white transition">
+          #전체 (1,842)
+        </button>
+        <button type="button" onclick="filterReviews('얼얼꾸덕')" data-tag="얼얼꾸덕" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-blushRose text-sichuanCharcoal hover:bg-roseCoral/20 transition">
+          #얼얼꾸덕 912
+        </button>
+        <button type="button" onclick="filterReviews('중국당면필수')" data-tag="중국당면필수" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-blushRose text-sichuanCharcoal hover:bg-roseCoral/20 transition">
+          #중국당면필수 684
+        </button>
+        <button type="button" onclick="filterReviews('마라입문추천')" data-tag="마라입문추천" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-blushRose text-sichuanCharcoal hover:bg-roseCoral/20 transition">
+          #마라입문추천 529
+        </button>
+        <button type="button" onclick="filterReviews('쥬시쿨공짜')" data-tag="쥬시쿨공짜" class="rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-red-50 text-malaRed hover:bg-red-100 transition">
+          #쥬시쿨공짜 795
+        </button>
+      </div>
+
+      <!-- 리뷰 카드 리스트 (JS 렌더링) -->
+      <div id="review-list" class="space-y-3"></div>
+    </section>
+
+    <!-- 6. 하단 고정 CTA 바 ('담기 · [총 금액]원') -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] z-40 bg-white/95 backdrop-blur-md border-t border-rose-100 px-4 py-3 shadow-[0_-8px_24px_rgba(38,22,20,0.08)]">
+      <!-- 선택 옵션 미니 요약 줄 -->
+      <div class="flex items-center justify-between text-[11px] text-stone-500 mb-2 px-0.5">
+        <span id="bottom-option-summary" class="truncate pr-2 font-semibold text-sichuanCharcoal/80">쫀득 밀떡 · 2단계 얼얼 중독 기본맛</span>
+        <span id="bottom-juicy-badge" class="shrink-0 font-extrabold text-malaRed">🎁 공짜 쥬시쿨(복숭아) 포함</span>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <!-- 수량 스테퍼 -->
+        <div class="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200 shrink-0">
+          <button type="button" onclick="changeQuantity(-1)" class="w-8 h-9 rounded-xl bg-white text-sichuanCharcoal font-black text-sm shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 감소">-</button>
+          <span id="bottom-qty-display" class="w-8 text-center font-extrabold text-sm text-sichuanCharcoal tabular-nums">1</span>
+          <button type="button" onclick="changeQuantity(1)" class="w-8 h-9 rounded-xl bg-white text-sichuanCharcoal font-black text-sm shadow-2xs hover:bg-stone-50 active:scale-95 transition" aria-label="수량 증가">+</button>
+        </div>
+
+        <!-- 메인 CTA 버튼 -->
+        <button type="button" onclick="openOrderModal('direct')" class="flex-1 py-3.5 px-5 rounded-2xl bg-gradient-to-r from-malaRed via-[#D63626] to-roseCoral hover:brightness-105 text-white font-extrabold text-sm sm:text-base shadow-md transition active:scale-[0.98] flex items-center justify-center gap-2 tabular-nums">
+          <span id="bottom-cta-text">담기 · 12,300원</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 주문 및 옵션 최종 확인 바텀시트 / 모달 -->
+  <div id="order-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-xs">
+    <div id="order-modal-box" class="bg-white w-full max-w-[460px] rounded-t-3xl sm:rounded-3xl border-t sm:border border-stone-200 overflow-hidden shadow-2xl transform transition-all translate-y-6 sm:translate-y-0 sm:scale-95 opacity-0">
+      <div class="bg-sichuanCharcoal text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold text-[#FFD3C9] tracking-wider">MALA ROSÉ ORDER SUMMARY</span>
+          <h3 id="modal-title" class="font-extrabold text-base">선택 옵션 및 혜택 최종 확인</h3>
+        </div>
+        <button type="button" onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <!-- 선택 메뉴 및 옵션 요약 -->
+        <div class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 space-y-2 text-xs">
+          <div class="flex items-center justify-between font-extrabold text-sm text-sichuanCharcoal pb-2 border-b border-stone-200">
+            <span>화자오 얼얼꾸덕 마라로제 떡볶이</span>
+            <span id="modal-qty-badge" class="text-malaRed tabular-nums">1개</span>
+          </div>
+          <div class="space-y-1 text-stone-600 pt-1" id="modal-options-detail">
+            <!-- JS에서 채워짐 -->
+          </div>
+        </div>
+
+        <!-- 무료 증정 쥬시쿨 450ml 확인 카드 -->
+        <div class="rounded-2xl bg-gradient-to-r from-[#FFF1EC] to-[#FCEAE4] border border-roseCoral/40 p-3.5 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xl">🎁</span>
+            <div>
+              <p class="text-[11px] font-extrabold text-malaRed">신메뉴 주문 감사 무료 증정</p>
+              <p class="text-xs font-extrabold text-sichuanCharcoal">쥬시쿨 (종이팩 450ml · <span id="modal-juicy-flavor">복숭아</span>)</p>
+            </div>
+          </div>
+          <span class="bg-malaRed text-white text-[11px] font-black px-2.5 py-1 rounded-lg tabular-nums">0원 공짜</span>
+        </div>
+
+        <!-- 할인 절약 금액 및 최종 결제 금액 -->
+        <div class="space-y-1.5 pt-2 border-t border-stone-100 tabular-nums">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-malaRed">출시할인 + 공짜 쥬시쿨 총 혜택</span>
+            <span id="modal-saved-price" class="font-extrabold text-malaRed">-3,700원 절약!</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-stone-500">총 주문 예정 금액</span>
+            <span id="modal-final-price" class="text-xl font-black text-sichuanCharcoal">12,300원</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="confirmAddToCart()" class="flex-1 py-3.5 rounded-xl bg-blushRose hover:bg-rose-100 text-malaRed font-extrabold text-xs border border-roseCoral/40 transition">
+            장바구니 담기
+          </button>
+          <button type="button" onclick="submitDirectOrder()" class="flex-[1.5] py-3.5 rounded-xl bg-malaRed hover:bg-red-800 text-white font-extrabold text-xs shadow transition">
+            바로 주문 완료하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 배너 -->
+  <div id="toast-banner" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-300">
+    <div class="bg-sichuanCharcoal text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg border border-white/10 flex items-center gap-2 whitespace-nowrap">
+      <i class="fa-solid fa-circle-check text-[#FFD3C9]"></i>
+      <span id="toast-message">알림</span>
+    </div>
+  </div>
+
+  <script>
+    // 1. 기본 가격 및 상수 정의
+    const ORIGINAL_PRICE = 14500;
+    const BASE_PRICE = 12300;
+    const JUICY_FREE_VALUE = 1500;
+
+    let quantity = 1;
+    let selectedJuicyFlavor = '복숭아';
+    let cartBadgeCount = 0;
+
+    // 2. 고객 리뷰 샘플 데이터
+    const reviewsData = [
+      {
+        id: 'rev1',
+        user: '마라수혈시급**',
+        date: '오늘',
+        option: '쫀득 밀떡 / 2단계 얼얼 중독 기본맛 / 중국당면 추가, 꼬들 푸주 추가 (+쥬시쿨 복숭아)',
+        tags: ['얼얼꾸덕', '중국당면필수', '쥬시쿨공짜'],
+        content: '마라탕집 마라로제보다 소스가 훨씬 꾸덕하고 화자오 알싸함이 제대로 살아있어요! 중국당면이랑 꼬들 푸주 추가는 선택이 아니라 필수입니다. 소스를 쫙 빨아들여서 미쳤고, 공짜 복숭아 쥬시쿨이랑 궁합이 예술이에요.',
+        likes: 64,
+        liked: false
+      },
+      {
+        id: 'rev2',
+        user: '로제입문자**',
+        date: '어제',
+        option: '넙적 분모자 변경 / 1단계 마라 입문 순한맛 / 눈꽃 모짜렐라 치즈 (+쥬시쿨 자두)',
+        tags: ['얼얼꾸덕', '마라입문추천', '쥬시쿨공짜'],
+        content: '향신료 센 마라는 잘 못 먹는 편인데 1단계 순한맛에 치즈 추가하니까 생크림 고소함이 먼저 올라오고 끝에 살짝 얼얼해서 너무 맛있게 완뚝했어요! 분모자 변경도 쫄깃해서 완전 강추합니다.',
+        likes: 49,
+        liked: false
+      },
+      {
+        id: 'rev3',
+        user: '분식미식가**',
+        date: '3일 전',
+        option: '찰진 쌀떡 / 3단계 화끈 마라 매운맛 / 바삭 꿔바로우 미니, 메추리알 6알 (+쥬시쿨 파인애플)',
+        tags: ['얼얼꾸덕', '중국당면필수'],
+        content: '3단계 화끈 매운맛으로 시켰는데 스트레스 확 풀리는 얼얼함이에요! 같이 시킨 바삭 꿔바로우 미니를 꾸덕한 마라로제 소스에 찍어 먹으니까 진짜 중식 레스토랑 코스 요리 부럽지 않네요.',
+        likes: 38,
+        liked: false
+      }
+    ];
+
+    // 초기 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCalculatedPrice();
+      renderReviews('all');
+      setupHeaderAndTabScroll();
+    });
+
+    // 무료 증정 쥬시쿨 맛 선택
+    function selectJuicyFlavor(flavor) {
+      selectedJuicyFlavor = flavor;
+      document.querySelectorAll('.juicy-pill').forEach(btn => {
+        if (btn.dataset.flavor === flavor) {
+          btn.className = 'juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold border-2 border-malaRed bg-white text-malaRed shadow-2xs transition flex items-center justify-center gap-1';
+        } else {
+          btn.className = 'juicy-pill py-2 px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-roseCoral transition flex items-center justify-center gap-1';
+        }
+      });
+      document.getElementById('bottom-juicy-badge').textContent = `🎁 공짜 쥬시쿨(${flavor}) 포함`;
+      showToast(`공짜 쥬시쿨이 [${flavor}] 맛으로 선택되었습니다.`);
+    }
+
+    // 옵션 변경 시 라디오 카드 스타일 업데이트 및 실시간 금액 재계산
+    function handleOptionChange() {
+      // 떡/면 베이스 카드 테두리 갱신
+      document.querySelectorAll('#tteok-options label').forEach(label => {
+        const input = label.querySelector('input');
+        if (input.checked) {
+          label.className = 'flex items-center justify-between p-3.5 rounded-2xl border-2 border-roseCoral bg-blushRose/55 cursor-pointer transition';
+        } else {
+          label.className = 'flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-roseCoral/60 cursor-pointer transition';
+        }
+      });
+
+      // 마라 맵기 단계 카드 테두리 갱신
+      document.querySelectorAll('#spicy-options label').forEach(label => {
+        const input = label.querySelector('input');
+        if (input.checked) {
+          label.className = 'flex items-center justify-between p-3.5 rounded-2xl border-2 border-roseCoral bg-blushRose/55 cursor-pointer transition';
+        } else {
+          label.className = 'flex items-center justify-between p-3.5 rounded-2xl border border-stone-200 hover:border-roseCoral/60 cursor-pointer transition';
+        }
+      });
+
+      updateCalculatedPrice();
+    }
+
+    // 수량 증감 (- / +)
+    function changeQuantity(delta) {
+      quantity = Math.max(1, quantity + delta);
+      document.getElementById('inline-qty-display').textContent = quantity;
+      document.getElementById('bottom-qty-display').textContent = quantity;
+      updateCalculatedPrice();
+    }
+
+    // 현재 선택된 옵션 및 총 금액 계산
+    function getSelectedState() {
+      const tteokEl = document.querySelector('input[name="tteokType"]:checked');
+      const spicyEl = document.querySelector('input[name="spicyLevel"]:checked');
+      const toppingEls = Array.from(document.querySelectorAll('input[name="topping"]:checked'));
+
+      const tteokName = tteokEl ? tteokEl.value : '쫀득 밀떡';
+      const tteokPrice = tteokEl ? Number(tteokEl.dataset.price) : 0;
+
+      const spicyName = spicyEl ? spicyEl.value : '2단계 얼얼 중독 기본맛';
+      const spicyPrice = spicyEl ? Number(spicyEl.dataset.price) : 0;
+
+      const toppings = toppingEls.map(el => ({
+        name: el.value,
+        price: Number(el.dataset.price)
+      }));
+      const toppingsPrice = toppings.reduce((sum, item) => sum + item.price, 0);
+
+      const unitPrice = BASE_PRICE + tteokPrice + spicyPrice + toppingsPrice;
+      const totalPrice = unitPrice * quantity;
+      const totalSaved = ((ORIGINAL_PRICE - BASE_PRICE) * quantity) + JUICY_FREE_VALUE;
+
+      return {
+        tteokName,
+        tteokPrice,
+        spicyName,
+        spicyPrice,
+        toppings,
+        unitPrice,
+        totalPrice,
+        totalSaved
+      };
+    }
+
+    function updateCalculatedPrice() {
+      const state = getSelectedState();
+      document.getElementById('bottom-cta-text').textContent = `담기 · ${state.totalPrice.toLocaleString()}원`;
+
+      const extraCount = state.toppings.length;
+      const summaryText = extraCount > 0
+        ? `${state.tteokName} · ${state.spicyName} 외 ${extraCount}건`
+        : `${state.tteokName} · ${state.spicyName}`;
+      document.getElementById('bottom-option-summary').textContent = summaryText;
+    }
+
+    // 스티키 헤더 제목 페이드인 및 탭 스크롤 스파이
+    function setActiveTab(clickedEl) {
+      document.querySelectorAll('.tab-link').forEach(el => {
+        el.className = 'tab-link py-3.5 text-sm font-bold text-stone-400 border-b-2 border-transparent hover:text-sichuanCharcoal transition tabular-nums';
+      });
+      clickedEl.className = 'tab-link py-3.5 text-sm font-extrabold text-malaRed border-b-2 border-malaRed transition tabular-nums';
+    }
+
+    function setupHeaderAndTabScroll() {
+      const headerTitle = document.getElementById('header-scroll-title');
+      const sections = ['sec-detail', 'sec-nutrition', 'sec-review'];
+
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+
+        // 히어로 영역 지나면 상단 헤더 메뉴명 페이드인
+        if (y > 240) {
+          headerTitle.classList.remove('opacity-0', 'translate-y-1');
+          headerTitle.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          headerTitle.classList.add('opacity-0', 'translate-y-1');
+          headerTitle.classList.remove('opacity-100', 'translate-y-0');
+        }
+
+        // 탭 스크롤 스파이
+        const scrollPos = y + 150;
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const sec = document.getElementById(sections[i]);
+          if (sec && sec.offsetTop <= scrollPos) {
+            const activeLink = document.querySelector(`.tab-link[data-target="${sections[i]}"]`);
+            if (activeLink) setActiveTab(activeLink);
+            break;
+          }
+        }
+      }, { passive: true });
+    }
+
+    // 리뷰 필터링 및 렌더링
+    function filterReviews(tag) {
+      document.querySelectorAll('.rev-tag').forEach(btn => {
+        if (btn.dataset.tag === tag) {
+          btn.className = 'rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-extrabold bg-sichuanCharcoal text-white transition';
+        } else if (btn.dataset.tag === '쥬시쿨공짜') {
+          btn.className = 'rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-red-50 text-malaRed hover:bg-red-100 transition';
+        } else {
+          btn.className = 'rev-tag shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-blushRose text-sichuanCharcoal hover:bg-roseCoral/20 transition';
+        }
+      });
+      renderReviews(tag);
+    }
+
+    function renderReviews(filterTag) {
+      const filtered = filterTag === 'all'
+        ? reviewsData
+        : reviewsData.filter(r => r.tags.includes(filterTag));
+
+      const container = document.getElementById('review-list');
+      container.innerHTML = filtered.map(rev => `
+        <article class="rounded-2xl bg-warmIvory border border-rose-900/10 p-4 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-malaRed text-white font-extrabold text-xs flex items-center justify-center">
+                ${rev.user.slice(0, 1)}
+              </div>
+              <div>
+                <p class="font-extrabold text-xs text-sichuanCharcoal">${rev.user}</p>
+                <div class="flex items-center gap-1 text-[10px] text-amber-400">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  <span class="text-stone-400 ml-1">${rev.date}</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="toggleReviewLike('${rev.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${rev.liked ? 'border-roseCoral bg-blushRose text-malaRed' : 'border-stone-200 bg-white text-stone-500'} transition flex items-center gap-1 tabular-nums">
+              도움돼요 👍 ${rev.likes}
+            </button>
+          </div>
+
+          <p class="text-[11px] font-semibold text-stone-500 bg-white px-2.5 py-1 rounded-lg border border-stone-100 truncate">
+            선택: ${rev.option}
+          </p>
+
+          <p class="text-xs text-sichuanCharcoal leading-relaxed">${rev.content}</p>
+
+          <div class="flex flex-wrap gap-1.5 pt-0.5">
+            ${rev.tags.map(t => `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white text-malaRed border border-rose-900/15">#${t}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function toggleReviewLike(revId) {
+      const target = reviewsData.find(r => r.id === revId);
+      if (!target) return;
+      target.liked = !target.liked;
+      target.likes += target.liked ? 1 : -1;
+      const activeTagBtn = document.querySelector('.rev-tag.bg-sichuanCharcoal');
+      renderReviews(activeTagBtn ? activeTagBtn.dataset.tag : 'all');
+    }
+
+    // 주문 확인 바텀시트 / 모달 열기
+    function openOrderModal(mode) {
+      const state = getSelectedState();
+      document.getElementById('modal-title').textContent = mode === 'cart' ? '장바구니 내역 및 혜택 확인' : '선택 옵션 및 혜택 최종 확인';
+      document.getElementById('modal-qty-badge').textContent = `${quantity}개`;
+      document.getElementById('modal-juicy-flavor').textContent = selectedJuicyFlavor;
+      document.getElementById('modal-saved-price').textContent = `-${state.totalSaved.toLocaleString()}원 절약!`;
+      document.getElementById('modal-final-price').textContent = `${state.totalPrice.toLocaleString()}원`;
+
+      const toppingText = state.toppings.length > 0
+        ? state.toppings.map(t => `${t.name} (+${t.price.toLocaleString()}원)`).join(', ')
+        : '추가 토핑 없음';
+
+      document.getElementById('modal-options-detail').innerHTML = `
+        <p>• 떡/면 베이스: <strong class="text-sichuanCharcoal">${state.tteokName}</strong> ${state.tteokPrice > 0 ? `(+${state.tteokPrice.toLocaleString()}원)` : ''}</p>
+        <p>• 마라 맵기: <strong class="text-sichuanCharcoal">${state.spicyName}</strong> ${state.spicyPrice > 0 ? `(+${state.spicyPrice.toLocaleString()}원)` : ''}</p>
+        <p>• 추가 토핑: <strong class="text-sichuanCharcoal">${toppingText}</strong></p>
+      `;
+
+      const modal = document.getElementById('order-modal');
+      const box = document.getElementById('order-modal-box');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        box.classList.remove('translate-y-6', 'sm:scale-95', 'opacity-0');
+        box.classList.add('translate-y-0', 'sm:scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById('order-modal');
+      const box = document.getElementById('order-modal-box');
+      box.classList.remove('translate-y-0', 'sm:scale-100', 'opacity-100');
+      box.classList.add('translate-y-6', 'sm:scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 200);
+    }
+
+    // 장바구니 담기 완료 처리
+    function confirmAddToCart() {
+      cartBadgeCount += quantity;
+      document.getElementById('header-cart-badge').textContent = cartBadgeCount;
+      closeOrderModal();
+      showToast(`🛒 장바구니 담기 완료! (공짜 쥬시쿨 ${selectedJuicyFlavor} 포함)`);
+    }
+
+    // 바로 주문 완료 처리
+    function submitDirectOrder() {
+      closeOrderModal();
+      showToast(`🎉 화자오 얼얼꾸덕 마라로제 떡볶이 ${quantity}개 + 공짜 쥬시쿨(${selectedJuicyFlavor}) 주문이 접수되었습니다!`);
+    }
+
+    // 페이지 링크 복사 (iFrame 호환 execCommand)
+    function copyPageLink() {
+      const temp = document.createElement('textarea');
+      temp.value = window.location.href;
+      temp.style.position = 'fixed';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showToast('마라로제 떡볶이 상세페이지 링크가 복사되었습니다!');
+      } catch (e) {
+        showToast('링크 복사에 실패했습니다.');
+      }
+      document.body.removeChild(temp);
+    }
+
+    // 토스트 알림 배너 표시
+    let toastTimeout;
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      document.getElementById('toast-message').textContent = msg;
+      banner.classList.remove('opacity-0', 'translate-y-2');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', 'translate-y-2');
+      }, 2600);
+    }
+  </script>
+</body>
+</html>
