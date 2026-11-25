@@ -3,792 +3,1493 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>떡볶이마켓 - 마라로제 떡볶이 · 결제하기</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Pretendard 폰트 (Google Fonts + CDN 폴백) -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" />
+  <title>입덕볶이 - 입덕 커뮤니티</title>
+  <!-- Pretendard 웹폰트 로드 -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              red: '#E63926',
-              redDark: '#C52817',
-              orange: '#FF6B2B',
-              cream: '#FFF9F2',
-              creamDark: '#F6EDE2',
-              warmGray: '#5C4F47',
-              ink: '#241B17',
-              roseTint: '#FFF0EC',
-            }
-          },
-          boxShadow: {
-            'app-frame': '0 22px 54px -14px rgba(36, 27, 23, 0.2)',
-            'soft-card': '0 6px 20px -4px rgba(230, 57, 38, 0.07)',
-            'bottom-cta': '0 -8px 24px rgba(36, 27, 23, 0.08)',
-          }
-        }
-      }
-    };
-  </script>
   <style>
-    body {
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #EFE8DE;
-      color: #241B17;
+    /* =========================================
+       1. 디자인 토큰 및 기본 리셋
+       ========================================= */
+    :root {
+      --primary-red: #FF3B30;
+      --primary-orange: #FF6B2B;
+      --primary-light: #FFF2F0;
+      --bg-outer: #F2F3F5;
+      --bg-app: #F8F9FA;
+      --surface-white: #FFFFFF;
+      --text-main: #191F28;
+      --text-sub: #4E5968;
+      --text-muted: #8B95A1;
+      --border-light: #F2F4F6;
+      --border-medium: #E5E8EB;
+      --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.035);
+      --shadow-float: 0 6px 20px rgba(255, 59, 48, 0.34);
+      --shadow-nav: 0 -2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: var(--bg-outer);
+      color: var(--text-main);
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
+
+    /* =========================================
+       2. 모바일 앱 컨테이너 (최대 너비 500px)
+       ========================================= */
+    .app-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background-color: var(--bg-app);
+      box-shadow: 0 0 24px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 110px; /* 하단 탭바 + 플로팅 버튼 여백 */
+    }
+
+    /* =========================================
+       3. 상단 고정 헤더 (Sticky Header)
+       ========================================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      height: 56px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      background-color: var(--border-light);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.94);
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .noti-dot {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--primary-red);
+    }
+
+    /* 검색 인풋 확장 바 */
+    .search-bar-wrap {
+      display: none;
+      background-color: var(--surface-white);
+      padding: 8px 16px 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .search-bar-wrap.open {
+      display: block;
+    }
+
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      background-color: var(--bg-app);
+      border: 1px solid var(--border-medium);
+      border-radius: 12px;
+      padding: 0 12px;
+      height: 38px;
+      gap: 8px;
+    }
+
+    .search-input-box input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    /* =========================================
+       4. 카테고리 필터 탭 (가로 스크롤, Sticky)
+       ========================================= */
+    .category-nav {
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+      background-color: var(--surface-white);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
       scrollbar-width: none;
     }
-    @keyframes popIn {
-      from { transform: translateY(14px) scale(0.98); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+
+    .category-nav::-webkit-scrollbar {
+      display: none;
     }
-    .animate-pop-in {
-      animation: popIn 0.22s ease-out;
+
+    .category-tab {
+      flex: 0 0 auto;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      border: 1px solid var(--border-medium);
+      background-color: var(--surface-white);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-tab:hover {
+      border-color: #D1D6DB;
+      color: var(--text-main);
+    }
+
+    .category-tab.active {
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      border-color: transparent;
+      box-shadow: 0 3px 10px rgba(255, 59, 48, 0.24);
+    }
+
+    /* =========================================
+       5. 상단 고정 공지 배너
+       ========================================= */
+    .notice-banner-wrap {
+      padding: 12px 16px 4px;
+    }
+
+    .notice-banner {
+      width: 100%;
+      background-color: var(--primary-light);
+      border: 1px solid rgba(255, 59, 48, 0.16);
+      border-radius: 14px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .notice-banner:hover {
+      background-color: #FFE7E3;
+    }
+
+    .notice-banner:active {
+      transform: scale(0.99);
+    }
+
+    .notice-text {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .notice-tag {
+      color: var(--primary-red);
+      font-weight: 800;
+      margin-right: 4px;
+    }
+
+    .notice-arrow {
+      color: var(--primary-red);
+      flex-shrink: 0;
+    }
+
+    /* =========================================
+       6. 피드형 게시글 리스트 (카드 UI)
+       ========================================= */
+    .feed-section {
+      padding: 10px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .post-card {
+      background-color: var(--surface-white);
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.18s ease;
+    }
+
+    /* 작성자 프로필 영역 */
+    .post-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .av-coral { background: linear-gradient(135deg, #FFE4E1, #FFC7BF); }
+    .av-mint { background: linear-gradient(135deg, #E3F9ED, #C2F0D7); }
+    .av-yellow { background: linear-gradient(135deg, #FFF5D6, #FFE39E); }
+    .av-purple { background: linear-gradient(135deg, #EFE9FC, #DACDF8); }
+    .av-blue { background: linear-gradient(135deg, #E5F4FF, #C2E4FF); }
+
+    .author-meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .author-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .author-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .rank-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background-color: var(--primary-light);
+      color: var(--primary-red);
+    }
+
+    .rank-badge.gold {
+      background-color: #FFF6DB;
+      color: #D97706;
+    }
+
+    .rank-badge.mint {
+      background-color: #E8F8F0;
+      color: #0D9459;
+    }
+
+    .post-time {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .post-cat-tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-sub);
+      background-color: var(--bg-app);
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* 게시글 제목 & 본문 */
+    .post-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .post-body {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.55;
+      word-break: keep-all;
+      margin-bottom: 14px;
+      white-space: pre-line;
+    }
+
+    /* CSS 파스텔 비주얼 카드 & 주문 메뉴 태그 칩 */
+    .visual-card {
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .vc-basil { background: linear-gradient(135deg, #EEFBF3 0%, #D4F3E1 100%); }
+    .vc-mala { background: linear-gradient(135deg, #FFF0EB 0%, #FFD4C6 100%); }
+    .vc-night { background: linear-gradient(135deg, #F3EFFE 0%, #E0D5FC 100%); }
+    .vc-toowoomba { background: linear-gradient(135deg, #FFF8E6 0%, #FFE8B3 100%); }
+    .vc-classic { background: linear-gradient(135deg, #FFEBEB 0%, #FFCECE 100%); }
+
+    .visual-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 1;
+    }
+
+    .visual-caption {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .menu-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background-color: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--primary-red);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      width: fit-content;
+    }
+
+    .visual-emoji-group {
+      font-size: 38px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+      flex-shrink: 0;
+      letter-spacing: -4px;
+    }
+
+    /* 하단 인터랙션 바 */
+    .post-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .interact-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .interact-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 5px 8px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background-color: var(--bg-app);
+    }
+
+    .action-btn.liked {
+      color: var(--primary-red);
+      background-color: var(--primary-light);
+    }
+
+    .action-btn.liked svg {
+      fill: var(--primary-red);
+      stroke: var(--primary-red);
+      animation: popHeart 0.28s ease;
+    }
+
+    .action-btn.bookmarked {
+      color: var(--primary-orange);
+    }
+
+    .action-btn.bookmarked svg {
+      fill: var(--primary-orange);
+      stroke: var(--primary-orange);
+    }
+
+    @keyframes popHeart {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.28); }
+      100% { transform: scale(1); }
+    }
+
+    /* =========================================
+       7. 인라인 댓글 펼침 영역 (Comment Drawer)
+       ========================================= */
+    .comment-drawer {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-medium);
+    }
+
+    .comment-drawer.open {
+      display: block;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .comment-item {
+      background-color: var(--bg-app);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+    }
+
+    .comment-item-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .comment-author {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .comment-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .comment-text {
+      color: var(--text-sub);
+      word-break: keep-all;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 6px;
+    }
+
+    .comment-input {
+      flex: 1;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border-medium);
+      background-color: var(--surface-white);
+      padding: 0 12px;
+      font-family: inherit;
+      font-size: 12.5px;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .comment-input:focus {
+      border-color: var(--primary-red);
+    }
+
+    .comment-submit {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: none;
+      background-color: var(--primary-red);
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* 빈 검색 결과 안내 */
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* =========================================
+       8. 우측 하단 플로팅 글쓰기 버튼 (FAB)
+       ========================================= */
+    .fab-wrap {
+      position: fixed;
+      bottom: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      pointer-events: none;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 16px;
+      z-index: 95;
+    }
+
+    .fab-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-float);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .fab-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .fab-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* =========================================
+       9. 하단 고정 네비게이션 바 (Bottom Tab Bar)
+       ========================================= */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      height: 62px;
+      background-color: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border-light);
+      box-shadow: var(--shadow-nav);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      text-decoration: none;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .nav-item:hover {
+      color: var(--text-sub);
+    }
+
+    .nav-item.active {
+      color: var(--primary-red);
+      font-weight: 700;
+    }
+
+    /* =========================================
+       10. 모달 (새 글 쓰기 & 공지 상세)
+       ========================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(25, 31, 40, 0.52);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 300;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 500px;
+      background-color: var(--surface-white);
+      border-radius: 24px 24px 0 0;
+      padding: 22px 20px 28px;
+      box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.14);
+      animation: slideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .form-select,
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border-medium);
+      background-color: var(--bg-app);
+      padding: 11px 13px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-select:focus,
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--primary-red);
+      background-color: var(--surface-white);
+    }
+
+    .form-textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .submit-post-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      box-shadow: 0 6px 16px rgba(255, 59, 48, 0.25);
+    }
+
+    /* 공지 상세 카드 스타일 */
+    .notice-detail-box {
+      background-color: var(--primary-light);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 13.5px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .notice-detail-box strong {
+      color: var(--primary-red);
+    }
+
+    /* 토스트 알림 */
+    .toast {
+      position: fixed;
+      bottom: 132px;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background-color: rgba(25, 31, 40, 0.92);
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.24s ease;
+      z-index: 400;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
   </style>
 </head>
-<body class="min-h-screen flex justify-center items-start sm:py-5 px-0 sm:px-4">
+<body>
 
-  <!-- 모바일 앱 프레임 (390px~430px 중심 반응형) -->
-  <div class="relative w-full max-w-[420px] min-h-screen sm:min-h-[860px] bg-brand-cream sm:rounded-[34px] shadow-app-frame overflow-hidden flex flex-col border border-[#E7DDD0]">
-
-    <!-- 1. 상단 헤더: '마라로제 떡볶이 · 결제하기' 타이틀, '선택 완료' 배지, 뒤로가기/닫기 버튼 -->
-    <header class="sticky top-0 z-30 bg-brand-cream/95 backdrop-blur-md border-b border-[#EDE2D4] px-3.5 py-2.5 flex items-center justify-between gap-2">
-      <button
-        type="button"
-        onclick="resetToDefaultMaraRose()"
-        aria-label="뒤로가기 및 기본값 초기화"
-        class="w-9 h-9 rounded-full flex items-center justify-center text-brand-ink hover:bg-brand-creamDark active:scale-95 transition shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+  <div class="app-container">
+    <!-- 1. 상단 고정 헤더 -->
+    <header class="app-header">
+      <button type="button" class="icon-btn" aria-label="뒤로가기" onclick="handleBack()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
 
-      <div class="text-center min-w-0 flex-1">
-        <div class="inline-flex items-center gap-1.5 flex-wrap justify-center">
-          <h1 class="text-[14px] font-black text-brand-ink tracking-tight truncate">마라로제 떡볶이 · 결제하기</h1>
-          <span class="px-2 py-0.5 rounded-full bg-brand-red text-white text-[10px] font-extrabold tracking-tight shrink-0">
-            선택 완료
-          </span>
-        </div>
-        <p class="text-[11px] font-semibold text-brand-warmGray mt-0.5 truncate">떡볶이마켓 부평삼산점 · 기본가 17,000원</p>
+      <h1 class="header-title">입덕 커뮤니티</h1>
+
+      <div class="header-actions">
+        <button type="button" class="icon-btn" aria-label="게시글 검색" onclick="toggleSearchBar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button type="button" class="icon-btn" aria-label="알림" onclick="showToast('새 댓글 알림 2건이 도착했어요!')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="noti-dot"></span>
+        </button>
       </div>
-
-      <button
-        type="button"
-        onclick="handleHeaderClose()"
-        aria-label="닫기"
-        class="w-9 h-9 rounded-full flex items-center justify-center text-brand-ink hover:bg-brand-creamDark active:scale-95 transition shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
     </header>
 
-    <!-- 메인 스크롤 체크아웃 폼 -->
-    <main class="flex-1 overflow-y-auto no-scrollbar px-4 pt-4 pb-32 space-y-4">
+    <!-- 검색 입력창 (돋보기 클릭 시 토글) -->
+    <div class="search-bar-wrap" id="searchBarWrap">
+      <div class="search-input-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="꿀조합, 메뉴명, 닉네임 검색..." oninput="renderFeed()" />
+      </div>
+    </div>
 
-      <!-- 2. 선택 메뉴 확인 카드 -->
-      <section aria-label="선택된 마라로제 떡볶이 확인" class="bg-white rounded-3xl p-4 shadow-soft-card border-2 border-brand-red/25 space-y-3.5">
-        <div class="flex items-center justify-between gap-2">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-red text-white text-[11px] font-extrabold tracking-tight">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            선택됨
-          </span>
-          <span class="text-[11px] font-bold text-brand-orange bg-[#FFF2EA] px-2.5 py-1 rounded-full">
-            떡볶이 메뉴 금액 17,000원
-          </span>
-        </div>
+    <!-- 2. 카테고리 필터 탭 -->
+    <nav class="category-nav" aria-label="커뮤니티 카테고리">
+      <button type="button" class="category-tab active" data-category="all">전체</button>
+      <button type="button" class="category-tab" data-category="popular">🔥 실시간 인기</button>
+      <button type="button" class="category-tab" data-category="recipe">🥄 꿀조합 레시피</button>
+      <button type="button" class="category-tab" data-category="photo">📸 먹방 인증</button>
+      <button type="button" class="category-tab" data-category="chat">💬 자유수다</button>
+    </nav>
 
-        <!-- 커스텀 떡볶이 일러스트 썸네일 + 선택 요약 + 수량(-/+) -->
-        <div class="flex items-start gap-3 bg-brand-cream rounded-2xl p-3 border border-[#EFE3D5]">
-          <div class="w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-[#FFE7DF] to-[#FFD4C4] flex items-center justify-center shrink-0 border border-[#F5C5B5]">
-            <!-- 마라로제 떡볶이 커스텀 SVG 일러스트 -->
-            <svg class="w-14 h-14" viewBox="0 0 64 64" fill="none" aria-label="마라로제 떡볶이 일러스트">
-              <ellipse cx="32" cy="53" rx="22" ry="5" fill="#E8C7B8" />
-              <path d="M13 28C13 43 21 51 32 51C43 51 51 43 51 28H13Z" fill="#FFFDF9" stroke="#D9B7A7" stroke-width="2" />
-              <ellipse cx="32" cy="28" rx="19" ry="7" fill="#FF8A70" />
-              <path d="M16 28C20 24 25 32 32 27C39 22 44 31 48 27" stroke="#E63926" stroke-width="2.4" stroke-linecap="round" />
-              <rect x="20" y="24" width="10" height="4.5" rx="2.2" fill="#FFF6EA" />
-              <rect x="34" y="25" width="10" height="4.5" rx="2.2" fill="#FFF6EA" />
-              <circle cx="24" cy="20" r="2.2" fill="#C52817" />
-              <circle cx="40" cy="19" r="2.2" fill="#C52817" />
-              <circle cx="32" cy="17" r="1.8" fill="#FF6B2B" />
-            </svg>
-          </div>
+    <!-- 3. 상단 고정 공지 배너 -->
+    <div class="notice-banner-wrap">
+      <button type="button" class="notice-banner" onclick="openNoticeModal()">
+        <span class="notice-text">
+          <span class="notice-tag">[공지]</span>11월 이달의 입덕 레시피 왕을 찾습니다! (1등 상품권 3만원)
+        </span>
+        <svg class="notice-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
 
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-1">
-              <h2 class="text-[16px] font-black text-brand-ink truncate">마라로제 떡볶이</h2>
-              <span id="primaryMenuSubtotal" class="text-[15px] font-black text-brand-red shrink-0">17,000원</span>
-            </div>
-            <p id="selectedOptionSummaryText" class="text-[12px] font-semibold text-brand-warmGray mt-1 leading-snug">
-              맵기 2단계(불닭 맵기) · 쫄깃 밀떡 · 기본 구성
-            </p>
+    <!-- 4. 피드형 게시글 리스트 -->
+    <main class="feed-section" id="feedContainer"></main>
+    <div class="empty-state" id="emptyState">조건에 맞는 게시글이 아직 없어요. 첫 글을 남겨보세요! 🥘</div>
 
-            <!-- 수량 조절 (- / +) -->
-            <div class="mt-2.5 flex items-center justify-between">
-              <span class="text-[11px] font-bold text-brand-warmGray">수량</span>
-              <div class="flex items-center gap-2 bg-white px-1.5 py-1 rounded-xl border border-[#E5D7C7]">
-                <button
-                  type="button"
-                  onclick="changePrimaryQty(-1)"
-                  aria-label="수량 감소"
-                  class="w-6 h-6 rounded-lg bg-brand-creamDark text-brand-ink font-extrabold text-sm flex items-center justify-center active:scale-95">
-                  -
-                </button>
-                <span id="primaryQtyText" class="text-[13px] font-black w-5 text-center text-brand-ink">1</span>
-                <button
-                  type="button"
-                  onclick="changePrimaryQty(1)"
-                  aria-label="수량 증가"
-                  class="w-6 h-6 rounded-lg bg-brand-red text-white font-extrabold text-sm flex items-center justify-center active:scale-95">
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- 5. 우측 하단 플로팅 글쓰기 버튼 -->
+    <div class="fab-wrap">
+      <button type="button" class="fab-btn" onclick="openWriteModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>글쓰기</span>
+      </button>
+    </div>
 
-        <!-- 맵기 선택 -->
-        <div>
-          <p class="text-[12px] font-bold text-brand-warmGray mb-1.5">맵기 단계</p>
-          <div id="spiceOptionGroup" class="grid grid-cols-3 gap-1.5">
-            <!-- JS 렌더링 -->
-          </div>
-        </div>
+    <!-- 6. 하단 고정 네비게이션 바 -->
+    <nav class="bottom-nav" aria-label="하단 탭 메뉴">
+      <a href="tteokbokki_menu.html" class="nav-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>홈/메뉴</span>
+      </a>
+      <a href="tteokbokki_about.html" class="nav-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>브랜드</span>
+      </a>
+      <a href="tteokbokki_community.html" class="nav-item active" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>커뮤니티</span>
+      </a>
+      <button type="button" class="nav-item" onclick="showToast('로그인 후 내 주문내역과 등급을 확인할 수 있어요!')">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>마이페이지</span>
+      </button>
+    </nav>
+  </div>
 
-        <!-- 떡 종류 선택 -->
-        <div>
-          <p class="text-[12px] font-bold text-brand-warmGray mb-1.5">떡 종류</p>
-          <div id="doughOptionGroup" class="grid grid-cols-3 gap-1.5">
-            <!-- JS 렌더링 -->
-          </div>
-        </div>
+  <!-- 새 게시글 작성 모달 -->
+  <div class="modal-backdrop" id="writeModal" onclick="closeModalOnBackdrop(event, 'writeModal')">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 class="modal-title">새 게시글 작성</h2>
+        <button type="button" class="icon-btn" aria-label="닫기" onclick="closeModal('writeModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
 
-        <!-- 추가 토핑 -->
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <p class="text-[12px] font-bold text-brand-warmGray">추가 토핑</p>
-            <span class="text-[11px] text-brand-warmGray">초기 기본 구성 (0원)</span>
-          </div>
-          <div id="toppingOptionGroup" class="space-y-1.5">
-            <!-- JS 렌더링 -->
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. 배달/포장 & 배달 주소·요청사항 카드 -->
-      <section aria-label="배달/포장 및 배달 주소·요청사항" class="bg-white rounded-3xl p-4 shadow-soft-card border border-[#F2E6D8] space-y-3.5">
-        <h3 class="text-[15px] font-extrabold text-brand-ink">배달/포장 및 배달 정보</h3>
-
-        <div class="grid grid-cols-2 gap-2 bg-brand-creamDark p-1 rounded-2xl">
-          <button
-            type="button"
-            id="fulfillDeliveryBtn"
-            onclick="setFulfillMode('delivery')"
-            class="py-2 rounded-xl text-[13px] font-extrabold bg-brand-red text-white shadow-2xs transition">
-            🛵 배달 (3,000원)
-          </button>
-          <button
-            type="button"
-            id="fulfillPickupBtn"
-            onclick="setFulfillMode('pickup')"
-            class="py-2 rounded-xl text-[13px] font-extrabold text-brand-warmGray hover:text-brand-ink transition">
-            🏪 포장 (0원)
-          </button>
-        </div>
-
-        <div id="deliveryAddressBlock" class="bg-brand-cream rounded-2xl p-3 border border-[#EFE3D5] space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-brand-warmGray">배달 주소</span>
-            <button
-              type="button"
-              onclick="cycleAddress()"
-              class="text-[11px] font-extrabold text-brand-red underline underline-offset-2">
-              주소 변경
-            </button>
-          </div>
-          <p id="addressMainText" class="text-[13px] font-extrabold text-brand-ink">인천광역시 부평구 삼산동 456-8</p>
-          <p id="addressDetailText" class="text-[12px] text-brand-warmGray">삼산타운 7단지 704동 902호</p>
-        </div>
-
-        <div id="pickupStoreBlock" class="hidden bg-brand-cream rounded-2xl p-3 border border-[#EFE3D5] space-y-0.5">
-          <span class="text-[11px] font-bold text-brand-orange">매장 포장 위치 (배달팁 0원)</span>
-          <p class="text-[13px] font-extrabold text-brand-ink">떡볶이마켓 부평삼산점</p>
-          <p class="text-[12px] text-brand-warmGray">인천광역시 부평구 삼산동 1층 · 조리 약 15분</p>
-        </div>
-
-        <div class="space-y-1.5">
-          <label for="orderRequestInput" class="block text-[12px] font-bold text-brand-warmGray">
-            라이더 · 조리 요청사항
-          </label>
-          <input
-            type="text"
-            id="orderRequestInput"
-            value="문 앞에 두고 벨 눌러주세요 · 마라로제 소스 넉넉히 부탁드려요"
-            placeholder="라이더 및 조리 요청사항을 입력하세요"
-            class="w-full h-10 px-3.5 rounded-2xl bg-brand-cream border border-[#E5D7C7] text-[12px] text-brand-ink focus:outline-none focus:border-brand-red"
-          />
-          <div class="flex flex-wrap gap-1.5 pt-0.5">
-            <button type="button" onclick="appendRequestChip('문 앞에 놔주세요')" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-brand-creamDark text-brand-warmGray hover:bg-[#E7DDD0]">+ 문 앞</button>
-            <button type="button" onclick="appendRequestChip('초인종 눌러주세요')" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-brand-creamDark text-brand-warmGray hover:bg-[#E7DDD0]">+ 벨 눌러주세요</button>
-            <button type="button" onclick="appendRequestChip('단무지 많이 주세요')" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-brand-creamDark text-brand-warmGray hover:bg-[#E7DDD0]">+ 단무지 많이</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. 결제 정보 카드 (결제.png 스타일 반영) -->
-      <section aria-label="결제 정보" class="bg-white rounded-3xl p-5 shadow-soft-card border border-[#F2E6D8] space-y-3.5">
-        <div class="flex items-center justify-between">
-          <h3 class="text-[16px] font-black text-brand-ink tracking-tight">결제 정보</h3>
-          <select
-            id="couponSelect"
-            aria-label="쿠폰 선택"
-            onchange="updateCheckoutSummary()"
-            class="h-8 px-2.5 rounded-xl bg-brand-cream border border-[#E5D7C7] text-[11px] font-bold text-brand-ink focus:outline-none focus:border-brand-red">
-            <option value="2000" selected>마라로제 첫 주문 쿠폰 (-2,000원)</option>
-            <option value="0">쿠폰 미적용 (0원)</option>
+      <form id="writeForm" onsubmit="submitNewPost(event)">
+        <div class="form-group">
+          <label class="form-label" for="postCategory">카테고리 선택</label>
+          <select id="postCategory" class="form-select">
+            <option value="recipe">🥄 꿀조합 레시피</option>
+            <option value="photo">📸 먹방 인증</option>
+            <option value="chat">💬 자유수다</option>
           </select>
         </div>
 
-        <div class="space-y-2.5 text-[13px]">
-          <div class="flex justify-between items-center text-brand-warmGray">
-            <span>떡볶이 메뉴 금액</span>
-            <span id="summaryMenuAmount" class="font-bold text-[14px] text-brand-ink">17,000원</span>
-          </div>
-          <div class="flex justify-between items-center text-brand-warmGray">
-            <span id="summaryDeliveryLabel">배달팁</span>
-            <span id="summaryDeliveryAmount" class="font-bold text-[14px] text-brand-ink">3,000원</span>
-          </div>
-          <div class="flex justify-between items-center text-brand-orange">
-            <span id="summaryCouponLabel">마라로제 첫 주문 쿠폰 할인</span>
-            <span id="summaryDiscountAmount" class="font-bold text-[14px]">-2,000원</span>
-          </div>
+        <div class="form-group">
+          <label class="form-label" for="postMenuTag">주문 메뉴 태그 (선택)</label>
+          <select id="postMenuTag" class="form-select">
+            <option value="바질 페스토 크림 떡볶이">🌿 바질 페스토 크림 떡볶이</option>
+            <option value="마라로제 떡볶이">🔥 마라로제 떡볶이</option>
+            <option value="오리지널 매콤 떡볶이">🥘 오리지널 매콤 떡볶이</option>
+            <option value="꾸덕 투움바 떡볶이">🧀 꾸덕 투움바 떡볶이</option>
+            <option value="모듬 튀김 & 찰순대 세트">🍤 모듬 튀김 & 찰순대 세트</option>
+            <option value="">메뉴 태그 선택 안 함</option>
+          </select>
         </div>
 
-        <div class="border-t border-dashed border-[#E6D8C8] pt-3.5 flex items-center justify-between">
-          <span class="text-[15px] font-extrabold text-brand-ink">총 결제 금액</span>
-          <span id="summaryFinalAmount" class="text-[22px] font-black text-brand-red tracking-tight">18,000원</span>
+        <div class="form-group">
+          <label class="form-label" for="postTitle">제목</label>
+          <input type="text" id="postTitle" class="form-input" placeholder="예: 바질 크림에 모짜렐라 추가는 국룰입니다" required />
         </div>
 
-        <!-- 결제 수단 박스 (기본값: 카카오페이 (일시불)) -->
-        <div class="bg-[#FFF9F2] rounded-2xl px-3.5 py-2.5 border border-[#EFE3D5] space-y-2">
-          <div class="flex items-center justify-between text-[13px]">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-brand-orange shrink-0"></span>
-              <span class="font-bold text-brand-ink">결제 수단</span>
-            </div>
-            <span id="selectedPaymentBadgeText" class="font-extrabold text-brand-ink">카카오페이 (일시불)</span>
-          </div>
-
-          <div id="paymentMethodsContainer" class="grid grid-cols-2 gap-1.5 pt-1">
-            <!-- JS 렌더링 -->
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. 주문자 정보 및 필수 결제 동의 체크박스 -->
-      <section aria-label="주문자 정보 및 결제 동의" class="bg-white rounded-3xl p-4 shadow-soft-card border border-[#F2E6D8] space-y-3">
-        <h3 class="text-[14px] font-extrabold text-brand-ink">주문자 정보 및 결제 동의</h3>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label for="ordererNameInput" class="block text-[11px] font-bold text-brand-warmGray mb-1">주문자명</label>
-            <input
-              type="text"
-              id="ordererNameInput"
-              value="김민지"
-              placeholder="주문자 이름"
-              class="w-full h-9 px-3 rounded-xl bg-brand-cream border border-[#E5D7C7] text-[12px] font-semibold text-brand-ink focus:outline-none focus:border-brand-red"
-            />
-          </div>
-          <div>
-            <label for="ordererPhoneInput" class="block text-[11px] font-bold text-brand-warmGray mb-1">연락처</label>
-            <input
-              type="tel"
-              id="ordererPhoneInput"
-              value="010-4829-7310"
-              placeholder="010-0000-0000"
-              class="w-full h-9 px-3 rounded-xl bg-brand-cream border border-[#E5D7C7] text-[12px] font-semibold text-brand-ink focus:outline-none focus:border-brand-red"
-            />
-          </div>
+        <div class="form-group">
+          <label class="form-label" for="postContent">내용</label>
+          <textarea id="postContent" class="form-textarea" placeholder="입덕러들과 나누고 싶은 나만의 꿀조합이나 생생한 후기를 적어주세요!" required></textarea>
         </div>
 
-        <label class="flex items-start gap-2 pt-1 text-[12px] text-brand-warmGray cursor-pointer">
-          <input
-            type="checkbox"
-            id="agreeRequiredCheckbox"
-            checked
-            class="mt-0.5 w-4 h-4 accent-brand-red rounded shrink-0"
-          />
-          <span>
-            <strong class="text-brand-ink">[필수]</strong> 마라로제 떡볶이 주문 내용 및 결제 조건(메뉴 17,000원, 배달팁 3,000원, 쿠폰 -2,000원)에 동의합니다.
-          </span>
-        </label>
-      </section>
-
-    </main>
-
-    <!-- 6. 하단 고정 결제 버튼 -->
-    <footer class="sticky bottom-0 z-30 bg-white/95 backdrop-blur-md px-4 py-3.5 border-t border-[#EDE2D4] shadow-bottom-cta">
-      <button
-        type="button"
-        id="paySubmitBtn"
-        onclick="handlePaySubmit()"
-        class="w-full h-12 rounded-2xl bg-gradient-to-r from-brand-red to-brand-orange hover:brightness-105 active:scale-[0.98] transition text-white font-extrabold text-[15px] shadow-md shadow-brand-red/25 flex items-center justify-center gap-1.5">
-        <span id="paySubmitBtnLabel">18,000원 결제하기</span>
-      </button>
-    </footer>
-
-    <!-- 결제 확인 / 결제 요약 모달 (체크아웃 화면 내 확인용) -->
-    <div
-      id="checkoutResultModal"
-      class="hidden fixed sm:absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end justify-center p-0 sm:p-3">
-      <div class="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl border border-[#EFE3D5] animate-pop-in space-y-4">
-        <div class="flex items-center justify-between border-b border-[#F2E8DC] pb-3">
-          <div>
-            <span id="modalBadgeText" class="text-[11px] font-extrabold text-brand-red bg-brand-roseTint px-2.5 py-0.5 rounded-full">
-              결제 요약 확인
-            </span>
-            <h4 id="modalTitleText" class="text-[17px] font-black text-brand-ink mt-1">마라로제 떡볶이 주문 확인</h4>
-          </div>
-          <button
-            type="button"
-            onclick="closeResultModal()"
-            class="w-8 h-8 rounded-full bg-brand-creamDark flex items-center justify-center text-brand-ink font-bold">
-            ✕
-          </button>
-        </div>
-
-        <div id="modalSummaryBody" class="bg-[#FFF9F2] rounded-2xl p-3.5 border border-[#EFE3D5] space-y-2 text-[12px]">
-          <!-- JS로 동적 채움 -->
-        </div>
-
-        <div class="grid grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onclick="closeResultModal()"
-            class="h-11 rounded-2xl bg-brand-creamDark text-brand-ink font-bold text-[13px] active:scale-98">
-            결제페이지 수정
-          </button>
-          <button
-            type="button"
-            onclick="closeResultModal()"
-            class="h-11 rounded-2xl bg-gradient-to-r from-brand-red to-brand-orange text-white font-extrabold text-[13px] active:scale-98">
-            확인
-          </button>
-        </div>
-      </div>
+        <button type="submit" class="submit-post-btn">게시글 등록하기</button>
+      </form>
     </div>
-
-    <!-- 토스트 알림 -->
-    <div
-      id="toastBanner"
-      class="pointer-events-none opacity-0 translate-y-2 fixed sm:absolute bottom-22 left-1/2 -translate-x-1/2 z-50 bg-brand-ink/90 text-white text-[12px] font-semibold px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap transition-all duration-300">
-      알림 메시지
-    </div>
-
   </div>
 
+  <!-- 공지사항 상세 모달 -->
+  <div class="modal-backdrop" id="noticeModal" onclick="closeModalOnBackdrop(event, 'noticeModal')">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 class="modal-title">📢 11월 이달의 입덕 레시피 왕 이벤트</h2>
+        <button type="button" class="icon-btn" aria-label="닫기" onclick="closeModal('noticeModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="notice-detail-box">
+        입덕러 여러분만의 숨겨진 토핑 조합을 <strong>[🥄 꿀조합 레시피]</strong> 탭에 공유해 주세요!<br /><br />
+        • <strong>참여 기간:</strong> 2026년 11월 1일 ~ 11월 30일<br />
+        • <strong>선정 혜택:</strong><br />
+          - 🥇 1등 (1명): 입덕볶이 모바일 상품권 30,000원<br />
+          - 🥈 2등 (3명): 입덕볶이 모바일 상품권 10,000원<br />
+          - 🥉 참여상 (10명): 모듬 튀김 무료 쿠폰 증정
+      </div>
+      <button type="button" class="submit-post-btn" onclick="closeModal('noticeModal'); openWriteModal();">지금 바로 레시피 응모하기</button>
+    </div>
+  </div>
+
+  <!-- 하단 토스트 알림 -->
+  <div class="toast" id="toastMsg">안내 메시지</div>
+
   <script>
-    // 기준 단가: 떡볶이 메뉴 금액 17,000원, 배달팁 3,000원, 기본 쿠폰 할인 2,000원 -> 총 18,000원
-    const BASE_PRICE = 17000;
-    const DELIVERY_FEE = 3000;
-
-    const SPICE_LEVELS = [
-      { id: 'step-1-5', label: '1.5단계(신라면 맵기)' },
-      { id: 'step-2-0', label: '맵기 2단계(불닭 맵기)' },
-      { id: 'step-3-0', label: '3단계(마라얼얼)' }
+    // =========================================
+    // 1. 초기 게시글 샘플 데이터
+    // =========================================
+    let posts = [
+      {
+        id: 101,
+        author: '바질처돌이',
+        avatar: '🌿',
+        avatarClass: 'av-mint',
+        rank: '로제 입덕러',
+        rankClass: 'mint',
+        time: '12분 전',
+        category: 'recipe',
+        categoryLabel: '🥄 꿀조합 레시피',
+        popular: true,
+        title: '바질 페스토 크림 + 눈꽃치즈 + 참치마요 주먹밥 = 극락 조합',
+        body: '입덕볶이 10번 넘게 시켜 먹으면서 정착한 최종 황금 레시피입니다.\n바질 크림 소스가 워낙 꾸덕해서 눈꽃치즈 추가한 다음 참치마요 주먹밥 한 입 크게 뭉쳐서 소스 푹 찍어 먹으면 진짜 레스토랑 파스타 부럽지 않아요!',
+        visual: {
+          theme: 'vc-basil',
+          caption: '향긋한 바질 크림 × 고소한 치즈 풍미',
+          emojis: '🌿🧀🍙',
+          menuTag: '바질 페스토 크림 떡볶이 외 1건'
+        },
+        likes: 48,
+        liked: false,
+        bookmarked: false,
+        comments: [
+          { author: '떡볶이박사', time: '8분 전', text: '이 조합 진짜 인정이요!! 저도 어제 그대로 시켜 먹었습니다 ㅎㅎ' },
+          { author: '성수동야식왕', time: '3분 전', text: '여기에 김말이 추가해서 찍어 먹어도 미쳤어요!' }
+        ]
+      },
+      {
+        id: 102,
+        author: '맵부심만렙',
+        avatar: '🔥',
+        avatarClass: 'av-coral',
+        rank: '맵부심 만렙',
+        rankClass: '',
+        time: '43분 전',
+        category: 'photo',
+        categoryLabel: '📸 먹방 인증',
+        popular: true,
+        title: '마라로제 떡볶이에 넓적당면 + 분모자 추가 야식 인증합니다',
+        body: '퇴근하고 스트레스 확 풀고 싶어서 마라로제 매운맛에 중국당면 추가했어요. 쫀득쫀득한 분모자랑 탱글한 당면에 알싸한 마라 크림 소스가 쫙 배어있어서 쿨피스 한 통 순삭했습니다 🔥',
+        visual: {
+          theme: 'vc-mala',
+          caption: '얼얼한 마라와 부드러운 로제의 중독성',
+          emojis: '🥘🔥🧃',
+          menuTag: '마라로제 떡볶이 외 2건'
+        },
+        likes: 62,
+        liked: true,
+        bookmarked: true,
+        comments: [
+          { author: '마라수혈시급', time: '25분 전', text: '와 비주얼 대박... 오늘 저녁 메뉴는 마라로제로 정했습니다!' }
+        ]
+      },
+      {
+        id: 103,
+        author: '밀떡파수장',
+        avatar: '🍢',
+        avatarClass: 'av-yellow',
+        rank: '떡볶이 박사',
+        rankClass: 'gold',
+        time: '2시간 전',
+        category: 'recipe',
+        categoryLabel: '🥄 꿀조합 레시피',
+        popular: true,
+        title: '오리지널 매콤 떡볶이 + 찰순대 내장 + 모듬튀김 국물 비빔밥 코스',
+        body: '역시 기본 오리지널 소스가 진리입니다. 1차로 쫀득한 밀떡이랑 어묵 건져 먹고, 2차로 모듬튀김이랑 찰순대 간을 특제 고추장 국물에 푹 적셔 먹은 뒤 남은 소스에 밥 비벼 먹으면 완벽한 풀코스 완성!',
+        visual: {
+          theme: 'vc-classic',
+          caption: '48시간 숙성 특제 소스의 정석 풀코스',
+          emojis: '🥘🍤🍢',
+          menuTag: '오리지널 매콤 떡볶이 외 2건'
+        },
+        likes: 35,
+        liked: false,
+        bookmarked: false,
+        comments: [
+          { author: '순대간사랑', time: '1시간 전', text: '순대 간을 떡볶이 국물에 찍어 먹는 건 진짜 배우신 분...' }
+        ]
+      },
+      {
+        id: 104,
+        author: '새벽감성입덕',
+        avatar: '🌙',
+        avatarClass: 'av-purple',
+        rank: '신입 입덕러',
+        rankClass: 'mint',
+        time: '4시간 전',
+        category: 'photo',
+        categoryLabel: '📸 먹방 인증',
+        popular: false,
+        title: '신메뉴 꾸덕 투움바 떡볶이 통새우 퀄리티 실화인가요?',
+        body: '새로 나온 투움바 떡볶이 궁금해서 시켜봤는데 통새우가 생각보다 훨씬 큼직하고 탱글해요! 갈릭 크림 향이 진해서 매운 거 잘 못 먹는 친구랑 같이 먹기 딱 좋았습니다 🧀🦐',
+        visual: {
+          theme: 'vc-toowoomba',
+          caption: '진한 체다 갈릭 크림 × 탱글 통새우',
+          emojis: '🧀🍤🍄',
+          menuTag: '꾸덕 투움바 떡볶이'
+        },
+        likes: 27,
+        liked: false,
+        bookmarked: false,
+        comments: []
+      },
+      {
+        id: 105,
+        author: '떡볶이유목민정착',
+        avatar: '💬',
+        avatarClass: 'av-blue',
+        rank: '떡볶이 박사',
+        rankClass: 'gold',
+        time: '어제',
+        category: 'chat',
+        categoryLabel: '💬 자유수다',
+        popular: false,
+        title: '다들 입덕볶이 시킬 때 밀떡파인가요 쌀떡파인가요?',
+        body: '저는 무조건 소스 쫙 배어드는 쫀득한 밀떡파인데, 친구는 당일 생산 가래떡 식감 살아있는 쌀떡이 최고라고 하네요! 입덕러분들의 최애 떡 취향이 궁금합니다 😄',
+        visual: null,
+        likes: 19,
+        liked: false,
+        bookmarked: false,
+        comments: [
+          { author: '쌀떡외길인생', time: '어제', text: '입덕볶이는 당일 뽑은 쌀떡이 진짜 쫄깃해서 무조건 쌀떡 추천합니다!' },
+          { author: '바질처돌이', time: '어제', text: '오리지널은 밀떡, 크림/로제 계열은 쌀떡이 잘 어울려요!' }
+        ]
+      }
     ];
 
-    const DOUGH_TYPES = [
-      { id: 'wheat', label: '쫄깃 밀떡', extra: 0 },
-      { id: 'rice', label: '쫀득 쌀떡', extra: 0 },
-      { id: 'bunmoja', label: '넓적 분모자', extra: 2500 }
-    ];
+    let currentCategory = 'all';
+    let toastTimer = null;
 
-    const TOPPING_ITEMS = [
-      { id: 'mozzarella', label: '모짜렐라 치즈', price: 2500 },
-      { id: 'soft-egg', label: '반숙 계란', price: 1000 },
-      { id: 'fried-assorted', label: '모듬튀김 4종', price: 3500 }
-    ];
+    const feedContainer = document.getElementById('feedContainer');
+    const emptyState = document.getElementById('emptyState');
+    const toastEl = document.getElementById('toastMsg');
 
-    const ADDRESSES = [
-      { main: '인천광역시 부평구 삼산동 456-8', detail: '삼산타운 7단지 704동 902호' },
-      { main: '인천광역시 부평구 길주로 623', detail: '삼산월드프라자 5층 501호' },
-      { main: '인천광역시 연수구 송도과학로 32', detail: '송도 테크노파크 IT센터 104동 1205호' }
-    ];
+    // =========================================
+    // 2. 피드 렌더링 함수
+    // =========================================
+    function renderFeed() {
+      const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
 
-    const PAYMENT_OPTIONS = [
-      '카카오페이 (일시불)',
-      '네이버페이',
-      '토스페이',
-      '신용·체크카드'
-    ];
+      const filtered = posts.filter((post) => {
+        // 카테고리 필터
+        const matchCat =
+          currentCategory === 'all' ||
+          (currentCategory === 'popular' && post.popular) ||
+          post.category === currentCategory;
 
-    const state = {
-      primaryQty: 1,
-      spiceId: 'step-2-0',
-      doughId: 'wheat',
-      toppings: [],
-      fulfillMode: 'delivery', // 'delivery' | 'pickup'
-      addressIndex: 0,
-      paymentMethod: '카카오페이 (일시불)',
-      isProcessingPayment: false
-    };
+        // 검색어 필터
+        const matchSearch =
+          !keyword ||
+          post.title.toLowerCase().includes(keyword) ||
+          post.body.toLowerCase().includes(keyword) ||
+          post.author.toLowerCase().includes(keyword) ||
+          (post.visual && post.visual.menuTag.toLowerCase().includes(keyword));
 
-    function formatWon(value) {
-      return `${Number(value || 0).toLocaleString('ko-KR')}원`;
-    }
+        return matchCat && matchSearch;
+      });
 
-    function showToast(msg) {
-      const el = document.getElementById('toastBanner');
-      el.textContent = msg;
-      el.classList.remove('opacity-0', 'translate-y-2');
-      el.classList.add('opacity-100', 'translate-y-0');
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => {
-        el.classList.remove('opacity-100', 'translate-y-0');
-        el.classList.add('opacity-0', 'translate-y-2');
-      }, 2100);
-    }
-
-    function getPrimaryUnitPrice() {
-      const dough = DOUGH_TYPES.find((d) => d.id === state.doughId) || DOUGH_TYPES[0];
-      const toppingSum = state.toppings.reduce((acc, tid) => {
-        const t = TOPPING_ITEMS.find((item) => item.id === tid);
-        return acc + (t ? t.price : 0);
-      }, 0);
-      return BASE_PRICE + dough.extra + toppingSum;
-    }
-
-    function getPrimaryOptionLabel() {
-      const spice = SPICE_LEVELS.find((s) => s.id === state.spiceId)?.label || '맵기 2단계(불닭 맵기)';
-      const dough = DOUGH_TYPES.find((d) => d.id === state.doughId) || DOUGH_TYPES[0];
-      const extraToppings = state.toppings
-        .map((tid) => TOPPING_ITEMS.find((t) => t.id === tid)?.label)
-        .filter(Boolean);
-      const baseDesc = dough.extra === 0 && extraToppings.length === 0 ? '기본 구성' : '';
-      return [spice, dough.label, ...extraToppings, baseDesc].filter(Boolean).join(' · ');
-    }
-
-    function renderOptionControls() {
-      document.getElementById('spiceOptionGroup').innerHTML = SPICE_LEVELS.map((sp) => {
-        const active = state.spiceId === sp.id;
-        return `
-          <button
-            type="button"
-            onclick="selectSpice('${sp.id}')"
-            class="py-2 px-1.5 rounded-xl text-[11px] font-extrabold border text-center leading-tight transition ${
-              active
-                ? 'bg-brand-red text-white border-brand-red shadow-2xs'
-                : 'bg-brand-cream text-brand-warmGray border-[#E5D7C7] hover:text-brand-ink'
-            }">
-            ${sp.label}
-          </button>
-        `;
-      }).join('');
-
-      document.getElementById('doughOptionGroup').innerHTML = DOUGH_TYPES.map((dg) => {
-        const active = state.doughId === dg.id;
-        return `
-          <button
-            type="button"
-            onclick="selectDough('${dg.id}')"
-            class="py-2 px-1.5 rounded-xl text-[11px] font-extrabold border text-center leading-tight transition ${
-              active
-                ? 'bg-[#FFF0EC] text-brand-red border-brand-red'
-                : 'bg-brand-cream text-brand-warmGray border-[#E5D7C7] hover:text-brand-ink'
-            }">
-            <div>${dg.label}</div>
-            <div class="text-[10px] font-semibold mt-0.5 ${active ? 'text-brand-red' : 'text-brand-warmGray/80'}">
-              +${formatWon(dg.extra)}
-            </div>
-          </button>
-        `;
-      }).join('');
-
-      document.getElementById('toppingOptionGroup').innerHTML = TOPPING_ITEMS.map((tp) => {
-        const checked = state.toppings.includes(tp.id);
-        return `
-          <label class="flex items-center justify-between px-3 py-2 rounded-2xl bg-brand-cream border text-[12px] cursor-pointer transition ${
-            checked ? 'border-brand-red/50 bg-[#FFF7F4]' : 'border-[#EFE3D5]'
-          }">
-            <span class="flex items-center gap-2 font-bold text-brand-ink">
-              <input
-                type="checkbox"
-                ${checked ? 'checked' : ''}
-                onchange="toggleTopping('${tp.id}')"
-                class="w-4 h-4 accent-brand-red rounded"
-              />
-              ${tp.label}
-            </span>
-            <span class="font-extrabold text-brand-orange">+${formatWon(tp.price)}</span>
-          </label>
-        `;
-      }).join('');
-
-      document.getElementById('paymentMethodsContainer').innerHTML = PAYMENT_OPTIONS.map((pm) => {
-        const active = state.paymentMethod === pm;
-        return `
-          <button
-            type="button"
-            onclick="selectPayment('${pm}')"
-            class="py-2 px-2 rounded-xl text-[11px] font-extrabold border text-center transition ${
-              active
-                ? 'bg-[#FFF0EC] border-brand-red text-brand-red'
-                : 'bg-white border-[#E5D7C7] text-brand-warmGray hover:text-brand-ink'
-            }">
-            ${pm}
-          </button>
-        `;
-      }).join('');
-    }
-
-    function selectSpice(id) {
-      state.spiceId = id;
-      renderOptionControls();
-      updateCheckoutSummary();
-    }
-
-    function selectDough(id) {
-      state.doughId = id;
-      renderOptionControls();
-      updateCheckoutSummary();
-    }
-
-    function toggleTopping(id) {
-      if (state.toppings.includes(id)) {
-        state.toppings = state.toppings.filter((item) => item !== id);
-      } else {
-        state.toppings.push(id);
-      }
-      renderOptionControls();
-      updateCheckoutSummary();
-    }
-
-    function changePrimaryQty(delta) {
-      state.primaryQty = Math.max(1, state.primaryQty + delta);
-      updateCheckoutSummary();
-    }
-
-    function setFulfillMode(mode) {
-      state.fulfillMode = mode;
-      const dBtn = document.getElementById('fulfillDeliveryBtn');
-      const pBtn = document.getElementById('fulfillPickupBtn');
-      const addrBlock = document.getElementById('deliveryAddressBlock');
-      const pickupBlock = document.getElementById('pickupStoreBlock');
-
-      if (mode === 'delivery') {
-        dBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold bg-brand-red text-white shadow-2xs transition';
-        pBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold text-brand-warmGray hover:text-brand-ink transition';
-        addrBlock.classList.remove('hidden');
-        pickupBlock.classList.add('hidden');
-      } else {
-        pBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold bg-brand-red text-white shadow-2xs transition';
-        dBtn.className = 'py-2 rounded-xl text-[13px] font-extrabold text-brand-warmGray hover:text-brand-ink transition';
-        addrBlock.classList.add('hidden');
-        pickupBlock.classList.remove('hidden');
-      }
-      updateCheckoutSummary();
-    }
-
-    function cycleAddress() {
-      state.addressIndex = (state.addressIndex + 1) % ADDRESSES.length;
-      const addr = ADDRESSES[state.addressIndex];
-      document.getElementById('addressMainText').textContent = addr.main;
-      document.getElementById('addressDetailText').textContent = addr.detail;
-      showToast(`배달 주소 변경: ${addr.main}`);
-    }
-
-    function appendRequestChip(chipText) {
-      const input = document.getElementById('orderRequestInput');
-      const current = input.value.trim();
-      if (!current.includes(chipText)) {
-        input.value = current ? `${current} · ${chipText}` : chipText;
-      }
-    }
-
-    function selectPayment(method) {
-      state.paymentMethod = method;
-      document.getElementById('selectedPaymentBadgeText').textContent = method;
-      renderOptionControls();
-    }
-
-    function computeTotals() {
-      const menuAmount = getPrimaryUnitPrice() * state.primaryQty;
-      const deliveryAmount = state.fulfillMode === 'delivery' ? DELIVERY_FEE : 0;
-      const couponDiscount = Number(document.getElementById('couponSelect')?.value || 0);
-      const finalAmount = Math.max(0, menuAmount + deliveryAmount - couponDiscount);
-      return { menuAmount, deliveryAmount, couponDiscount, finalAmount };
-    }
-
-    function updateCheckoutSummary() {
-      const totals = computeTotals();
-      document.getElementById('primaryQtyText').textContent = state.primaryQty;
-      document.getElementById('primaryMenuSubtotal').textContent = formatWon(totals.menuAmount);
-      document.getElementById('selectedOptionSummaryText').textContent = getPrimaryOptionLabel();
-
-      document.getElementById('summaryMenuAmount').textContent = formatWon(totals.menuAmount);
-      document.getElementById('summaryDeliveryLabel').textContent =
-        state.fulfillMode === 'delivery' ? '배달팁' : '배달팁 (포장 0원)';
-      document.getElementById('summaryDeliveryAmount').textContent = formatWon(totals.deliveryAmount);
-      document.getElementById('summaryCouponLabel').textContent =
-        totals.couponDiscount > 0 ? '마라로제 첫 주문 쿠폰 할인' : '쿠폰 할인 미적용';
-      document.getElementById('summaryDiscountAmount').textContent = `-${formatWon(totals.couponDiscount)}`;
-      document.getElementById('summaryFinalAmount').textContent = formatWon(totals.finalAmount);
-      document.getElementById('selectedPaymentBadgeText').textContent = state.paymentMethod;
-
-      if (!state.isProcessingPayment) {
-        document.getElementById('paySubmitBtnLabel').textContent = `${formatWon(totals.finalAmount)} 결제하기`;
-      }
-    }
-
-    function buildModalDetails(isPaid) {
-      const totals = computeTotals();
-      const addr = ADDRESSES[state.addressIndex];
-      const reqText = document.getElementById('orderRequestInput')?.value || '요청사항 없음';
-      const ordererName = document.getElementById('ordererNameInput')?.value.trim() || '김민지';
-      const ordererPhone = document.getElementById('ordererPhoneInput')?.value.trim() || '010-4829-7310';
-
-      document.getElementById('modalBadgeText').textContent = isPaid
-        ? '결제 승인 요청 완료 · 체크아웃 요약'
-        : '체크아웃 결제 요약';
-      document.getElementById('modalTitleText').textContent = isPaid
-        ? '마라로제 떡볶이 결제 내역 확인'
-        : '마라로제 떡볶이 결제 내역 미리보기';
-
-      document.getElementById('modalSummaryBody').innerHTML = `
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">선택 메뉴</span>
-          <span class="font-extrabold text-brand-ink">마라로제 떡볶이 × ${state.primaryQty}</span>
-        </div>
-        <div class="text-[11px] text-brand-warmGray bg-white px-2.5 py-1.5 rounded-xl border border-[#EFE3D5]">
-          옵션: ${getPrimaryOptionLabel()}
-        </div>
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">주문자</span>
-          <span class="font-bold text-brand-ink">${ordererName} (${ordererPhone})</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">수령 방식</span>
-          <span class="font-bold text-brand-ink">${state.fulfillMode === 'delivery' ? `배달 (${addr.main})` : '매장포장 (0원)'}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">떡볶이 메뉴 금액</span>
-          <span class="font-bold text-brand-ink">${formatWon(totals.menuAmount)}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">배달팁</span>
-          <span class="font-bold text-brand-ink">${formatWon(totals.deliveryAmount)}</span>
-        </div>
-        <div class="flex justify-between text-brand-orange">
-          <span>마라로제 첫 주문 쿠폰 할인</span>
-          <span class="font-bold">-${formatWon(totals.couponDiscount)}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">결제 수단</span>
-          <span class="font-bold text-brand-ink">${state.paymentMethod}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-brand-warmGray">요청사항</span>
-          <span class="font-medium text-brand-ink text-right max-w-[205px] truncate">${reqText}</span>
-        </div>
-        <div class="pt-2 border-t border-dashed border-[#E2D2C0] flex justify-between items-center">
-          <span class="font-extrabold text-brand-ink">총 결제 금액</span>
-          <span class="text-[17px] font-black text-brand-red">${formatWon(totals.finalAmount)}</span>
-        </div>
-      `;
-    }
-
-    function closeResultModal() {
-      document.getElementById('checkoutResultModal').classList.add('hidden');
-    }
-
-    function handleHeaderClose() {
-      buildModalDetails(false);
-      document.getElementById('checkoutResultModal').classList.remove('hidden');
-      showToast('결제 내역을 확인해 주세요.');
-    }
-
-    function handlePaySubmit() {
-      if (state.isProcessingPayment) return;
-      const ordererName = document.getElementById('ordererNameInput')?.value.trim();
-      const ordererPhone = document.getElementById('ordererPhoneInput')?.value.trim();
-      const agreed = document.getElementById('agreeRequiredCheckbox')?.checked;
-
-      if (!ordererName) {
-        showToast('주문자명을 입력해 주세요.');
-        return;
-      }
-      if (!ordererPhone) {
-        showToast('연락처를 입력해 주세요.');
-        return;
-      }
-      if (!agreed) {
-        showToast('필수 결제 조건 동의를 체크해 주세요.');
+      if (filtered.length === 0) {
+        feedContainer.innerHTML = '';
+        emptyState.style.display = 'block';
         return;
       }
 
-      const totals = computeTotals();
-      const btn = document.getElementById('paySubmitBtn');
-      const label = document.getElementById('paySubmitBtnLabel');
+      emptyState.style.display = 'none';
+      feedContainer.innerHTML = filtered
+        .map((post) => {
+          const visualHTML = post.visual
+            ? `
+              <div class="visual-card ${post.visual.theme}">
+                <div class="visual-info">
+                  <span class="visual-caption">${escapeHTML(post.visual.caption)}</span>
+                  <span class="menu-chip">🛒 ${escapeHTML(post.visual.menuTag)}</span>
+                </div>
+                <div class="visual-emoji-group" aria-hidden="true">${post.visual.emojis}</div>
+              </div>
+            `
+            : '';
 
-      state.isProcessingPayment = true;
-      btn.disabled = true;
-      btn.classList.add('opacity-80');
-      label.textContent = `${state.paymentMethod} 결제 진행 중...`;
+          const commentsHTML = post.comments
+            .map(
+              (c) => `
+              <div class="comment-item">
+                <div class="comment-item-top">
+                  <span class="comment-author">${escapeHTML(c.author)}</span>
+                  <span class="comment-time">${escapeHTML(c.time)}</span>
+                </div>
+                <p class="comment-text">${escapeHTML(c.text)}</p>
+              </div>
+            `
+            )
+            .join('');
 
-      setTimeout(() => {
-        state.isProcessingPayment = false;
-        btn.disabled = false;
-        btn.classList.remove('opacity-80');
-        label.textContent = `${formatWon(totals.finalAmount)} 결제하기`;
-        buildModalDetails(true);
-        document.getElementById('checkoutResultModal').classList.remove('hidden');
-        showToast(`${formatWon(totals.finalAmount)} 결제 요청이 처리되었습니다.`);
-      }, 600);
+          return `
+            <article class="post-card" id="post-${post.id}">
+              <!-- 작성자 프로필 -->
+              <div class="post-header">
+                <div class="author-info">
+                  <div class="avatar ${post.avatarClass}" aria-hidden="true">${post.avatar}</div>
+                  <div class="author-meta">
+                    <div class="author-name-row">
+                      <span class="author-name">${escapeHTML(post.author)}</span>
+                      <span class="rank-badge ${post.rankClass}">${escapeHTML(post.rank)}</span>
+                    </div>
+                    <span class="post-time">${escapeHTML(post.time)}</span>
+                  </div>
+                </div>
+                <span class="post-cat-tag">${escapeHTML(post.categoryLabel)}</span>
+              </div>
+
+              <!-- 제목 & 본문 -->
+              <h2 class="post-title">${escapeHTML(post.title)}</h2>
+              <p class="post-body">${escapeHTML(post.body)}</p>
+
+              <!-- 썸네일 비주얼 카드 -->
+              ${visualHTML}
+
+              <!-- 하단 인터랙션 바 -->
+              <div class="post-footer">
+                <div class="interact-left">
+                  <button type="button" class="action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span>${post.likes}</span>
+                  </button>
+
+                  <button type="button" class="action-btn" onclick="toggleComments(${post.id})">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    <span>${post.comments.length}</span>
+                  </button>
+                </div>
+
+                <div class="interact-right">
+                  <button type="button" class="action-btn ${post.bookmarked ? 'bookmarked' : ''}" aria-label="북마크" onclick="toggleBookmark(${post.id})">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                  </button>
+                  <button type="button" class="action-btn" aria-label="공유하기" onclick="sharePost('${escapeHTML(post.title)}')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="18" cy="5" r="3"></circle>
+                      <circle cx="6" cy="12" r="3"></circle>
+                      <circle cx="18" cy="19" r="3"></circle>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 인라인 댓글 펼침 영역 -->
+              <div class="comment-drawer" id="drawer-${post.id}">
+                <div class="comment-list">
+                  ${commentsHTML || '<p style="font-size:12px; color:#8B95A1; padding:4px 2px;">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</p>'}
+                </div>
+                <form class="comment-form" onsubmit="addComment(event, ${post.id})">
+                  <input type="text" class="comment-input" id="c-input-${post.id}" placeholder="따뜻한 댓글을 남겨주세요..." required />
+                  <button type="submit" class="comment-submit">등록</button>
+                </form>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
     }
 
-    function resetToDefaultMaraRose() {
-      state.primaryQty = 1;
-      state.spiceId = 'step-2-0';
-      state.doughId = 'wheat';
-      state.toppings = [];
-      state.fulfillMode = 'delivery';
-      state.addressIndex = 0;
-      state.paymentMethod = '카카오페이 (일시불)';
-      document.getElementById('couponSelect').value = '2000';
-      document.getElementById('agreeRequiredCheckbox').checked = true;
-      const addr = ADDRESSES[0];
-      document.getElementById('addressMainText').textContent = addr.main;
-      document.getElementById('addressDetailText').textContent = addr.detail;
-      setFulfillMode('delivery');
-      renderOptionControls();
-      updateCheckoutSummary();
-      showToast('기본 선택(17,000원 + 3,000원 - 2,000원 = 18,000원)으로 복원했어요.');
+    // XSS 방지용 간단한 이스케이프 헬퍼
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      renderOptionControls();
-      updateCheckoutSummary();
+    // =========================================
+    // 3. 인터랙션 핸들러 (좋아요, 댓글, 북마크, 공유)
+    // =========================================
+    function toggleLike(postId) {
+      const post = posts.find((p) => p.id === postId);
+      if (!post) return;
+      post.liked = !post.liked;
+      post.likes += post.liked ? 1 : -1;
+      renderFeed();
+    }
+
+    function toggleBookmark(postId) {
+      const post = posts.find((p) => p.id === postId);
+      if (!post) return;
+      post.bookmarked = !post.bookmarked;
+      renderFeed();
+      showToast(post.bookmarked ? '꿀조합 보관함에 저장했어요!' : '보관함에서 해제했어요');
+    }
+
+    function toggleComments(postId) {
+      const drawer = document.getElementById(`drawer-${postId}`);
+      if (drawer) {
+        drawer.classList.toggle('open');
+      }
+    }
+
+    function addComment(event, postId) {
+      event.preventDefault();
+      const inputEl = document.getElementById(`c-input-${postId}`);
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      const post = posts.find((p) => p.id === postId);
+      if (!post) return;
+
+      post.comments.push({
+        author: '나(입덕러)',
+        time: '방금 전',
+        text
+      });
+
+      renderFeed();
+      // 방금 댓글 단 게시글의 댓글창은 열린 상태 유지
+      const reopenedDrawer = document.getElementById(`drawer-${postId}`);
+      if (reopenedDrawer) reopenedDrawer.classList.add('open');
+      showToast('댓글이 등록되었어요!');
+    }
+
+    function sharePost(title) {
+      const tempInput = document.createElement('input');
+      tempInput.value = `[입덕 커뮤니티] ${title}`;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast('게시글 링크가 클립보드에 복사되었어요!');
+    }
+
+    // =========================================
+    // 4. 카테고리 필터 & 검색 토글
+    // =========================================
+    document.querySelectorAll('.category-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.category-tab').forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCategory = tab.dataset.category;
+        renderFeed();
+      });
     });
+
+    function toggleSearchBar() {
+      const wrap = document.getElementById('searchBarWrap');
+      wrap.classList.toggle('open');
+      if (wrap.classList.contains('open')) {
+        document.getElementById('searchInput').focus();
+      } else {
+        document.getElementById('searchInput').value = '';
+        renderFeed();
+      }
+    }
+
+    // =========================================
+    // 5. 모달 제어 & 새 글 등록
+    // =========================================
+    function openWriteModal() {
+      document.getElementById('writeModal').classList.add('open');
+    }
+
+    function openNoticeModal() {
+      document.getElementById('noticeModal').classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(event, modalId) {
+      if (event.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    function submitNewPost(event) {
+      event.preventDefault();
+
+      const category = document.getElementById('postCategory').value;
+      const menuTag = document.getElementById('postMenuTag').value;
+      const title = document.getElementById('postTitle').value.trim();
+      const body = document.getElementById('postContent').value.trim();
+
+      if (!title || !body) return;
+
+      const catLabelMap = {
+        recipe: '🥄 꿀조합 레시피',
+        photo: '📸 먹방 인증',
+        chat: '💬 자유수다'
+      };
+
+      const visualThemeMap = {
+        '바질 페스토 크림 떡볶이': { theme: 'vc-basil', emojis: '🌿🥘🧀', caption: '향긋한 바질 페스토 크림 인증!' },
+        '마라로제 떡볶이': { theme: 'vc-mala', emojis: '🔥🥘🧃', caption: '얼얼매콤 마라로제 중독 후기!' },
+        '오리지널 매콤 떡볶이': { theme: 'vc-classic', emojis: '🥘🌶️🍢', caption: '역시 기본이 최고! 오리지널 매콤' },
+        '꾸덕 투움바 떡볶이': { theme: 'vc-toowoomba', emojis: '🧀🍤🍄', caption: '꾸덕한 투움바 크림 & 통새우' },
+        '모듬 튀김 & 찰순대 세트': { theme: 'vc-night', emojis: '🍤🍢🍙', caption: '바삭 모듬튀김과 찰순대 조합' }
+      };
+
+      const selectedVisual = menuTag && visualThemeMap[menuTag]
+        ? {
+            theme: visualThemeMap[menuTag].theme,
+            caption: visualThemeMap[menuTag].caption,
+            emojis: visualThemeMap[menuTag].emojis,
+            menuTag
+          }
+        : null;
+
+      const newPost = {
+        id: Date.now(),
+        author: '입덕러_나',
+        avatar: '🥘',
+        avatarClass: 'av-coral',
+        rank: '열혈 입덕러',
+        rankClass: '',
+        time: '방금 전',
+        category,
+        categoryLabel: catLabelMap[category] || '💬 자유수다',
+        popular: true,
+        title,
+        body,
+        visual: selectedVisual,
+        likes: 1,
+        liked: true,
+        bookmarked: false,
+        comments: []
+      };
+
+      posts.unshift(newPost);
+
+      // 전체 탭으로 전환해 새 글 즉시 확인
+      currentCategory = 'all';
+      document.querySelectorAll('.category-tab').forEach((t) => t.classList.remove('active'));
+      document.querySelector('.category-tab[data-category="all"]').classList.add('active');
+
+      renderFeed();
+      document.getElementById('writeForm').reset();
+      closeModal('writeModal');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast('새 게시글이 커뮤니티에 등록되었어요!');
+    }
+
+    // =========================================
+    // 6. 토스트 및 뒤로가기
+    // =========================================
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 2200);
+    }
+
+    function handleBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'tteokbokki_menu.html';
+      }
+    }
+
+    // 초기 피드 렌더링 실행
+    renderFeed();
   </script>
 </body>
 </html>

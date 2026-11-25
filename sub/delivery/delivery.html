@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>빨간떡볶이연구소 - 배달 주문</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    // 쿠폰 페이지와 통일된 떡볶이·분식 브랜드 테마 팔레트 및 폰트 설정
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans KR"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            tteokRed: {
+              50: '#FFF5F4',
+              100: '#FFE6E3',
+              200: '#FFCCC7',
+              500: '#E53935',
+              600: '#D32F2F',
+              700: '#B71C1C',
+            },
+            coralCream: {
+              50: '#FFFBF7',
+              100: '#FFF2E6',
+              200: '#FFE2CC',
+            },
+          },
+          boxShadow: {
+            app: '0 22px 54px -14px rgba(183, 28, 28, 0.16)',
+            floating: '0 -8px 28px -6px rgba(45, 22, 20, 0.12)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* 부드러운 중립 배경 및 모바일 앱 터치 피드백 스타일 */
+    body {
+      background-color: #F6F3F1;
+      color: #261615;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 배달 진행 바 애니메이션 */
+    @keyframes steamFloat {
+      0%, 100% {
+        transform: translateY(0px);
+        opacity: 0.85;
+      }
+      50% {
+        transform: translateY(-3px);
+        opacity: 0.45;
+      }
+    }
+
+    .steam-line {
+      animation: steamFloat 2.2s ease-in-out infinite;
+    }
+
+    @keyframes sheetSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sheet-anim {
+      animation: sheetSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes toastPop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    .toast-anim {
+      animation: toastPop 0.22s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-stretch sm:py-6">
+  <!-- 모바일 앱 컨테이너 (최대 너비 500px) -->
+  <div class="w-full max-w-[500px] min-h-screen sm:min-h-[880px] bg-coralCream-50 sm:rounded-[32px] sm:border sm:border-tteokRed-100 shadow-app flex flex-col relative overflow-x-clip">
+
+    <!-- 1. 상단 앱 헤더 -->
+    <header class="sticky top-0 z-30 bg-coralCream-50/95 backdrop-blur-md border-b border-tteokRed-100 px-4 py-3.5 flex items-center justify-between sm:rounded-t-[32px]">
+      <div class="flex items-center gap-1.5">
+        <button
+          type="button"
+          id="backHomeBtn"
+          aria-label="홈 또는 이전 화면으로 이동"
+          class="p-2.5 -ml-1.5 rounded-full text-stone-700 hover:bg-tteokRed-50 active:scale-95 transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-stone-900 leading-tight">
+            배달 주문
+          </h1>
+          <p class="text-[11px] text-stone-500">빨간떡볶이연구소 부평삼산점</p>
+        </div>
+      </div>
+
+      <!-- 우측 상태/쿠폰 링크 필 -->
+      <div class="flex items-center gap-1.5">
+        <button
+          type="button"
+          id="statusPillBtn"
+          class="px-2.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-bold flex items-center gap-1 hover:bg-emerald-100 active:scale-95 transition"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>배달 가능</span>
+        </button>
+        <button
+          type="button"
+          id="couponQuickBtn"
+          class="px-2.5 py-1.5 rounded-full bg-tteokRed-50 border border-tteokRed-200 text-tteokRed-600 text-[11px] font-bold hover:bg-tteokRed-100 active:scale-95 transition"
+        >
+          쿠폰 -3,000원
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 스크롤 콘텐츠 (하단 고정 CTA 영역 확보를 위해 pb-36 지정) -->
+    <main class="flex-1 px-4 pt-4 pb-36 space-y-4">
+
+      <!-- 2. 커스텀 SVG 배달 일러스트 배너 -->
+      <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#D32F2F] via-[#E5483B] to-[#FF7A59] text-white p-4 shadow-md">
+        <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 pointer-events-none"></div>
+        <div class="absolute right-20 -bottom-8 w-24 h-24 rounded-full bg-amber-200/15 pointer-events-none"></div>
+
+        <div class="relative z-10 flex items-center justify-between gap-3">
+          <div class="space-y-1.5 flex-1">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold">
+              <span>🛵 방금 끓인 떡볶이 직배송</span>
+            </span>
+            <h2 class="text-base sm:text-lg font-extrabold leading-snug">
+              따끈한 로제·바질크림<br />
+              문 앞까지 안전 배달!
+            </h2>
+            <p class="text-xs text-white/90">
+              보온 포장 용기 제공 · 25,000원 이상 무료배달
+            </p>
+          </div>
+
+          <!-- 떡볶이 배달 박스/냄비 + 라이더/배달가방 + 김/로제소스 SVG -->
+          <div class="w-28 h-28 shrink-0 flex items-center justify-center">
+            <svg viewBox="0 0 136 136" class="w-full h-full drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="떡볶이 배달 가방과 로제 떡볶이 일러스트">
+              <!-- 김이 모락모락 나는 라인 -->
+              <path class="steam-line" d="M36 30C33 24 39 19 36 13" stroke="#FFF6EA" stroke-width="2.4" stroke-linecap="round" />
+              <path class="steam-line" style="animation-delay:0.4s" d="M54 27C51 21 57 16 54 10" stroke="#FFF6EA" stroke-width="2.4" stroke-linecap="round" />
+              <path class="steam-line" style="animation-delay:0.8s" d="M72 30C69 24 75 19 72 13" stroke="#FFF6EA" stroke-width="2.4" stroke-linecap="round" />
+
+              <!-- 배달 보온가방 / 박스 본체 -->
+              <rect x="20" y="54" width="68" height="54" rx="12" fill="#FFF8F0" stroke="#7F1D1D" stroke-width="2.5" />
+              <!-- 가방 손잡이 및 스트랩 -->
+              <path d="M38 54V46C38 41.5817 41.5817 38 46 38H62C66.4183 38 70 41.5817 70 46V54" stroke="#FFE0B2" stroke-width="3.5" stroke-linecap="round" />
+              <!-- 매콤 로제 소스 밴드 -->
+              <path d="M22 60H86V76C86 79.5 80 82 54 82C28 82 22 79.5 22 76V60Z" fill="#FF6B57" />
+
+              <!-- 떡가래와 고추/바질 포인트 -->
+              <rect x="31" y="51" width="19" height="7.5" rx="3.75" transform="rotate(-7 31 51)" fill="#FFFDF9" stroke="#C2410C" stroke-width="1.7" />
+              <rect x="54" y="49" width="20" height="7.5" rx="3.75" transform="rotate(9 54 49)" fill="#FFFDF9" stroke="#C2410C" stroke-width="1.7" />
+              <ellipse cx="44" cy="69" rx="5" ry="2.8" transform="rotate(-18 44 69)" fill="#4CAF50" />
+              <path d="M63 68C68 65 73 67 75 71" stroke="#B71C1C" stroke-width="2.4" stroke-linecap="round" />
+
+              <!-- 라이더 헬멧/배달 뱃지 원형 포인트 -->
+              <circle cx="99" cy="92" r="21" fill="#FFD54F" stroke="#7F1D1D" stroke-width="2.4" />
+              <!-- 헬멧 실루엣 -->
+              <path d="M86 92C86 84.8203 91.8203 79 99 79C106.18 79 112 84.8203 112 92H86Z" fill="#E53935" stroke="#7F1D1D" stroke-width="2" />
+              <path d="M99 92L114 92" stroke="#7F1D1D" stroke-width="2.4" stroke-linecap="round" />
+              <circle cx="99" cy="99" r="3" fill="#7F1D1D" />
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 배달 주소 & 도착 예정 정보 카드 -->
+      <section aria-labelledby="address-heading" class="bg-white rounded-2xl border border-tteokRed-100 p-4 shadow-sm space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="space-y-1 flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-tteokRed-100 text-tteokRed-700 text-[11px] font-bold">
+                배달지
+              </span>
+              <span class="text-xs font-bold text-tteokRed-600" id="etaBadgeText">
+                약 30~40분 도착
+              </span>
+            </div>
+            <h2 id="address-heading" class="text-sm sm:text-base font-extrabold text-stone-900 truncate" id="currentAddressTitle">
+              인천광역시 부평구 삼산동 462-1
+            </h2>
+            <p class="text-xs text-stone-500 truncate" id="currentAddressDetail">
+              삼산타운 104동 1203호 · 공동현관 비밀번호 #1203*
+            </p>
+          </div>
+
+          <button
+            type="button"
+            id="toggleAddressEditBtn"
+            class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-tteokRed-300 hover:bg-tteokRed-50 text-xs font-bold text-stone-700 shrink-0 active:scale-95 transition"
+          >
+            주소 변경
+          </button>
+        </div>
+
+        <!-- 인라인 주소 수정 폼 (토글로 열림) -->
+        <form id="addressEditForm" class="hidden rounded-2xl bg-coralCream-50 border border-tteokRed-100 p-3 space-y-2.5">
+          <div>
+            <label for="roadAddressInput" class="block text-[11px] font-bold text-stone-700 mb-1">
+              도로명 / 지번 주소
+            </label>
+            <input
+              type="text"
+              id="roadAddressInput"
+              value="인천광역시 부평구 삼산동 462-1"
+              class="w-full h-10 px-3 rounded-xl bg-white border border-stone-200 text-xs sm:text-sm text-stone-900 focus:outline-none focus:border-tteokRed-500 focus:ring-2 focus:ring-tteokRed-500/15"
+            />
+          </div>
+          <div>
+            <label for="detailAddressInput" class="block text-[11px] font-bold text-stone-700 mb-1">
+              상세 주소 및 출입 안내
+            </label>
+            <input
+              type="text"
+              id="detailAddressInput"
+              value="삼산타운 104동 1203호 · 공동현관 비밀번호 #1203*"
+              class="w-full h-10 px-3 rounded-xl bg-white border border-stone-200 text-xs sm:text-sm text-stone-900 focus:outline-none focus:border-tteokRed-500 focus:ring-2 focus:ring-tteokRed-500/15"
+            />
+          </div>
+          <div class="flex justify-end gap-2 pt-1">
+            <button
+              type="button"
+              id="cancelAddressBtn"
+              class="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-semibold text-stone-600 hover:bg-stone-50"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              class="px-3.5 py-1.5 rounded-xl bg-tteokRed-600 hover:bg-tteokRed-700 text-white text-xs font-bold"
+            >
+              주소 저장
+            </button>
+          </div>
+        </form>
+
+        <!-- 실시간 배달 진행 단계 인디케이터 -->
+        <div class="pt-1 border-t border-dashed border-stone-200">
+          <div class="flex items-center justify-between text-[11px] font-bold mb-2">
+            <span class="text-stone-800">실시간 배달 진행 현황</span>
+            <span class="text-tteokRed-600" id="stepStatusLabel">1단계 · 조리 준비 중</span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-1.5" role="group" aria-label="배달 진행 단계 선택">
+            <button
+              type="button"
+              data-step="0"
+              class="delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-tteokRed-50 border-tteokRed-500 text-tteokRed-700"
+            >
+              <span class="block text-[10px] font-extrabold">STEP 1</span>
+              <span class="block text-[11px] font-bold truncate">조리 시작</span>
+            </button>
+            <button
+              type="button"
+              data-step="1"
+              class="delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-stone-50 border-stone-200 text-stone-500 hover:border-tteokRed-200"
+            >
+              <span class="block text-[10px] font-extrabold">STEP 2</span>
+              <span class="block text-[11px] font-bold truncate">포장 완료</span>
+            </button>
+            <button
+              type="button"
+              data-step="2"
+              class="delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-stone-50 border-stone-200 text-stone-500 hover:border-tteokRed-200"
+            >
+              <span class="block text-[10px] font-extrabold">STEP 3</span>
+              <span class="block text-[11px] font-bold truncate">배달 출발</span>
+            </button>
+            <button
+              type="button"
+              data-step="3"
+              class="delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-stone-50 border-stone-200 text-stone-500 hover:border-tteokRed-200"
+            >
+              <span class="block text-[10px] font-extrabold">STEP 4</span>
+              <span class="block text-[11px] font-bold truncate">도착 완료</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 배달 방식 & 라이더 요청사항 섹션 -->
+      <section aria-labelledby="delivery-option-heading" class="bg-white rounded-2xl border border-tteokRed-100 p-4 shadow-sm space-y-4">
+        <div>
+          <h2 id="delivery-option-heading" class="text-sm sm:text-base font-extrabold text-stone-900 mb-2.5">
+            배달 수령 방식 선택
+          </h2>
+          <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="배달 수령 방식">
+            <button
+              type="button"
+              data-method="doorstep"
+              class="method-chip rounded-2xl border-2 border-tteokRed-500 bg-tteokRed-50/80 p-2.5 text-center transition active:scale-[0.98]"
+            >
+              <span class="block text-sm font-extrabold text-tteokRed-700">문 앞</span>
+              <span class="block text-[10px] text-tteokRed-600/90 mt-0.5">현관 앞 보관</span>
+            </button>
+            <button
+              type="button"
+              data-method="direct"
+              class="method-chip rounded-2xl border border-stone-200 bg-white hover:border-tteokRed-300 p-2.5 text-center transition active:scale-[0.98]"
+            >
+              <span class="block text-sm font-extrabold text-stone-800">직접 전달</span>
+              <span class="block text-[10px] text-stone-500 mt-0.5">벨/전화 후 대면</span>
+            </button>
+            <button
+              type="button"
+              data-method="contactless"
+              class="method-chip rounded-2xl border border-stone-200 bg-white hover:border-tteokRed-300 p-2.5 text-center transition active:scale-[0.98]"
+            >
+              <span class="block text-sm font-extrabold text-stone-800">비대면</span>
+              <span class="block text-[10px] text-stone-500 mt-0.5">문자 사진 전송</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="border-t border-dashed border-stone-200 pt-3.5 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs sm:text-sm font-bold text-stone-800">라이더 및 가게 요청사항</span>
+            <span class="text-[11px] text-stone-400">중복 선택 가능</span>
+          </div>
+
+          <!-- 빠른 요청 칩 -->
+          <div class="flex flex-wrap gap-1.5" id="presetChipsContainer">
+            <button
+              type="button"
+              data-preset="단무지 많이"
+              class="preset-chip px-3 py-1.5 rounded-full border border-stone-200 bg-coralCream-50 hover:border-tteokRed-300 text-xs font-semibold text-stone-700 transition active:scale-95"
+            >
+              단무지 많이
+            </button>
+            <button
+              type="button"
+              data-preset="초인종 누르지 말아주세요"
+              class="preset-chip px-3 py-1.5 rounded-full border border-stone-200 bg-coralCream-50 hover:border-tteokRed-300 text-xs font-semibold text-stone-700 transition active:scale-95"
+            >
+              초인종 누르지 말아주세요
+            </button>
+            <button
+              type="button"
+              data-preset="문 앞에 두고 노크해 주세요"
+              class="preset-chip px-3 py-1.5 rounded-full border border-stone-200 bg-coralCream-50 hover:border-tteokRed-300 text-xs font-semibold text-stone-700 transition active:scale-95"
+            >
+              문 앞에 두고 노크해 주세요
+            </button>
+          </div>
+
+          <!-- 직접 입력 필드 -->
+          <div>
+            <label for="riderCustomNoteInput" class="sr-only">라이더 직접 요청사항 입력</label>
+            <input
+              type="text"
+              id="riderCustomNoteInput"
+              placeholder="직접 요청사항 입력 (예: 소스 넉넉히, 도착 시 문자 부탁드려요)"
+              maxlength="80"
+              class="w-full h-11 px-3.5 rounded-xl bg-coralCream-50 border border-stone-200 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-tteokRed-500 focus:ring-2 focus:ring-tteokRed-500/15 transition"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 주문 떡볶이 메뉴 & 배달비 요약 카드 -->
+      <section aria-labelledby="order-items-heading" class="bg-white rounded-2xl border border-tteokRed-100 p-4 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 id="order-items-heading" class="text-sm sm:text-base font-extrabold text-stone-900">
+            주문 메뉴 및 배달비
+          </h2>
+          <span id="totalQtyBadge" class="px-2.5 py-0.5 rounded-full bg-tteokRed-100 text-tteokRed-700 text-xs font-bold">
+            총 3개
+          </span>
+        </div>
+
+        <!-- 메뉴 리스트 컨테이너 -->
+        <div id="menuItemsList" class="divide-y divide-stone-100"></div>
+
+        <!-- 무료 배달 기준 프로그레스 바 -->
+        <div class="rounded-2xl bg-coralCream-50 border border-tteokRed-100 p-3 space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span id="freeDeliveryMsg" class="font-bold text-stone-800">
+              25,000원 이상 주문 시 무료배달!
+            </span>
+            <span id="freeDeliveryPercent" class="font-extrabold text-tteokRed-600">100%</span>
+          </div>
+          <div class="w-full h-2.5 rounded-full bg-tteokRed-100 overflow-hidden">
+            <div
+              id="freeDeliveryBar"
+              class="h-full rounded-full bg-gradient-to-r from-tteokRed-500 to-amber-400 transition-all duration-300"
+              style="width: 100%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- 금액 내역 -->
+        <div class="space-y-2 text-sm pt-1">
+          <div class="flex items-center justify-between text-stone-600">
+            <span>메뉴 소계</span>
+            <span id="subtotalText" class="font-semibold text-stone-800">29,500원</span>
+          </div>
+
+          <div class="flex items-center justify-between text-stone-600">
+            <span>배달팁 (삼산동 기준)</span>
+            <span id="deliveryFeeText" class="font-bold text-emerald-600">무료 (0원)</span>
+          </div>
+
+          <div class="flex items-center justify-between text-tteokRed-600">
+            <div class="flex items-center gap-1.5">
+              <span>적용 쿠폰 할인</span>
+              <button
+                type="button"
+                id="toggleCouponDemoBtn"
+                class="text-[11px] underline font-semibold text-tteokRed-600 hover:text-tteokRed-700"
+              >
+                변경
+              </button>
+            </div>
+            <span id="couponDiscountText" class="font-bold">-3,000원</span>
+          </div>
+
+          <div class="border-t border-dashed border-stone-200 pt-3 flex items-center justify-between">
+            <span class="text-sm font-bold text-stone-900">총 배달 결제 금액</span>
+            <span id="finalTotalText" class="text-xl font-extrabold text-tteokRed-600 tracking-tight">26,500원</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 6. 하단 고정 배달 주문 CTA 바 -->
+    <footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] z-30 bg-white/95 backdrop-blur-md border-t border-tteokRed-100 px-4 pt-3 pb-4 sm:rounded-b-[32px] shadow-floating">
+      <div class="flex items-center justify-between text-xs text-stone-500 mb-2 px-0.5">
+        <span id="footerMethodLabel">문 앞 배달 · 약 30~40분</span>
+        <span id="footerDiscountLabel" class="font-semibold text-tteokRed-600">쿠폰 -3,000원 적용</span>
+      </div>
+      <button
+        type="button"
+        id="openOrderConfirmBtn"
+        class="w-full h-12 rounded-2xl bg-gradient-to-r from-tteokRed-600 to-tteokRed-500 hover:from-tteokRed-700 hover:to-tteokRed-600 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base shadow-md shadow-tteokRed-500/25 flex items-center justify-center gap-2 transition"
+      >
+        <span id="orderCtaLabel">26,500원 배달 주문하기</span>
+      </button>
+    </footer>
+
+    <!-- 주문 확인 요약 모달/시트 -->
+    <div
+      id="orderConfirmModal"
+      class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-stone-950/50 backdrop-blur-[2px] p-0 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirmModalTitle"
+    >
+      <div class="sheet-anim w-full max-w-[500px] bg-white rounded-t-[28px] sm:rounded-3xl p-5 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+          <div>
+            <span class="text-[11px] font-bold text-tteokRed-600">주문 내역 최종 확인</span>
+            <h3 id="confirmModalTitle" class="text-lg font-extrabold text-stone-900">배달 주문 확인서</h3>
+          </div>
+          <button
+            type="button"
+            id="closeConfirmModalBtn"
+            aria-label="주문 확인 창 닫기"
+            class="p-2 rounded-full text-stone-500 hover:bg-stone-100"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="confirmSummaryBody" class="space-y-2.5 text-xs sm:text-sm text-stone-700 bg-coralCream-50 rounded-2xl p-3.5 border border-tteokRed-100"></div>
+
+        <div class="flex gap-2.5 pt-1">
+          <button
+            type="button"
+            id="cancelConfirmBtn"
+            class="flex-1 h-11 rounded-xl border border-stone-200 bg-white font-bold text-xs sm:text-sm text-stone-700 hover:bg-stone-50"
+          >
+            수정하기
+          </button>
+          <button
+            type="button"
+            id="finalSubmitOrderBtn"
+            class="flex-[1.6] h-11 rounded-xl bg-tteokRed-600 hover:bg-tteokRed-700 font-extrabold text-xs sm:text-sm text-white shadow-md shadow-tteokRed-500/20"
+          >
+            결제 및 배달 요청 완료
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 커스텀 토스트 메시지 -->
+    <div
+      id="toastBanner"
+      class="toast-anim fixed bottom-24 left-1/2 -translate-x-1/2 z-50 hidden max-w-[440px] w-[90%] px-4 py-3 rounded-2xl bg-stone-900 text-white text-xs sm:text-sm font-medium shadow-xl text-center"
+      role="status"
+    ></div>
+  </div>
+
+  <script>
+    /**
+     * 떡볶이 배달 주문 페이지 인터랙션 및 상태 계산 스크립트
+     * - 주소 수정, 배달 단계 선택, 수령 방식 및 요청사항 칩/입력 관리
+     * - 메뉴 수량 증감, 무료배달 기준 바 계산, 쿠폰 할인 및 총 결제 금액 실시간 갱신
+     * - 주문 확인 모달 표시 및 완료 피드백 제공
+     */
+    (function () {
+      const FREE_DELIVERY_THRESHOLD = 25000;
+      const BASE_DELIVERY_FEE = 3000;
+
+      const DELIVERY_STEPS = [
+        { label: '1단계 · 조리 준비 중', eta: '약 30~40분 도착' },
+        { label: '2단계 · 보온 포장 완료', eta: '약 25~35분 도착' },
+        { label: '3단계 · 라이더 배달 출발', eta: '약 12~18분 도착' },
+        { label: '4단계 · 문 앞 도착 완료', eta: '도착 완료!' },
+      ];
+
+      const METHOD_LABELS = {
+        doorstep: '문 앞',
+        direct: '직접 전달',
+        contactless: '비대면',
+      };
+
+      const COUPON_OPTIONS = [
+        { name: '마라로제 · 바질크림 3,000원 할인', amount: 3000 },
+        { name: '첫 배달 2,000원 감사 쿠폰', amount: 2000 },
+        { name: '쿠폰 미적용', amount: 0 },
+      ];
+
+      // 주문 떡볶이 & 분식 메뉴 상태
+      let menuItems = [
+        {
+          id: 'basil-cream',
+          name: '바질 페스토 크림 떡볶이',
+          desc: '향긋한 바질 크림 + 쫀득한 쌀떡',
+          price: 14500,
+          qty: 1,
+          svgType: 'basil',
+        },
+        {
+          id: 'mara-rose',
+          name: '마라로제 떡볶이',
+          desc: '얼얼한 마라와 부드러운 로제 소스',
+          price: 15000,
+          qty: 1,
+          svgType: 'mara',
+        },
+        {
+          id: 'assorted-fried',
+          name: '모둠 튀김',
+          desc: '김말이 · 야채튀김 · 오징어튀김',
+          price: 8500,
+          qty: 1,
+          svgType: 'fried',
+        },
+      ];
+
+      // 배달 및 요청 상태
+      let addressInfo = {
+        road: '인천광역시 부평구 삼산동 462-1',
+        detail: '삼산타운 104동 1203호 · 공동현관 비밀번호 #1203*',
+      };
+      let currentStepIndex = 0;
+      let deliveryMethod = 'doorstep';
+      let selectedPresets = new Set(['초인종 누르지 말아주세요']);
+      let couponIndex = 0;
+      let toastTimer = null;
+
+      // DOM 참조
+      const menuItemsList = document.getElementById('menuItemsList');
+      const totalQtyBadge = document.getElementById('totalQtyBadge');
+      const subtotalText = document.getElementById('subtotalText');
+      const deliveryFeeText = document.getElementById('deliveryFeeText');
+      const couponDiscountText = document.getElementById('couponDiscountText');
+      const finalTotalText = document.getElementById('finalTotalText');
+      const freeDeliveryMsg = document.getElementById('freeDeliveryMsg');
+      const freeDeliveryPercent = document.getElementById('freeDeliveryPercent');
+      const freeDeliveryBar = document.getElementById('freeDeliveryBar');
+      const footerMethodLabel = document.getElementById('footerMethodLabel');
+      const footerDiscountLabel = document.getElementById('footerDiscountLabel');
+      const orderCtaLabel = document.getElementById('orderCtaLabel');
+      const couponQuickBtn = document.getElementById('couponQuickBtn');
+      const toggleCouponDemoBtn = document.getElementById('toggleCouponDemoBtn');
+      const riderCustomNoteInput = document.getElementById('riderCustomNoteInput');
+      const toggleAddressEditBtn = document.getElementById('toggleAddressEditBtn');
+      const addressEditForm = document.getElementById('addressEditForm');
+      const cancelAddressBtn = document.getElementById('cancelAddressBtn');
+      const roadAddressInput = document.getElementById('roadAddressInput');
+      const detailAddressInput = document.getElementById('detailAddressInput');
+      const currentAddressTitle = document.getElementById('address-heading');
+      const currentAddressDetail = document.getElementById('currentAddressDetail');
+      const etaBadgeText = document.getElementById('etaBadgeText');
+      const stepStatusLabel = document.getElementById('stepStatusLabel');
+      const openOrderConfirmBtn = document.getElementById('openOrderConfirmBtn');
+      const orderConfirmModal = document.getElementById('orderConfirmModal');
+      const closeConfirmModalBtn = document.getElementById('closeConfirmModalBtn');
+      const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+      const finalSubmitOrderBtn = document.getElementById('finalSubmitOrderBtn');
+      const confirmSummaryBody = document.getElementById('confirmSummaryBody');
+      const toastBanner = document.getElementById('toastBanner');
+      const backHomeBtn = document.getElementById('backHomeBtn');
+      const statusPillBtn = document.getElementById('statusPillBtn');
+
+      function formatKRW(amount) {
+        return `${Math.max(0, Math.round(amount)).toLocaleString('ko-KR')}원`;
+      }
+
+      function showToast(msg) {
+        toastBanner.textContent = msg;
+        toastBanner.classList.remove('hidden');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastBanner.classList.add('hidden');
+        }, 2500);
+      }
+
+      /**
+       * 메뉴별 커스텀 SVG 썸네일 생성
+       */
+      function getMenuSvg(type) {
+        if (type === 'basil') {
+          return `
+            <svg viewBox="0 0 64 64" class="w-12 h-12 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="64" height="64" rx="16" fill="#FFF2E6" />
+              <ellipse cx="32" cy="36" rx="18" ry="11" fill="#FFFDF9" stroke="#C2410C" stroke-width="2" />
+              <ellipse cx="32" cy="34" rx="14" ry="7.5" fill="#FDE68A" />
+              <ellipse cx="27" cy="33" rx="4.5" ry="2.5" transform="rotate(-20 27 33)" fill="#2E7D32" />
+              <ellipse cx="37" cy="35" rx="4.5" ry="2.5" transform="rotate(18 37 35)" fill="#43A047" />
+              <rect x="22" y="27" width="11" height="5" rx="2.5" fill="#FFFDF9" stroke="#9A3412" stroke-width="1.5" />
+            </svg>
+          `;
+        }
+        if (type === 'mara') {
+          return `
+            <svg viewBox="0 0 64 64" class="w-12 h-12 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="64" height="64" rx="16" fill="#FFE6E3" />
+              <ellipse cx="32" cy="36" rx="18" ry="11" fill="#FFF8F5" stroke="#B71C1C" stroke-width="2" />
+              <ellipse cx="32" cy="34" rx="14" ry="7.5" fill="#FF6B57" />
+              <rect x="24" y="28" width="12" height="5" rx="2.5" transform="rotate(8 24 28)" fill="#FFFDF9" stroke="#B71C1C" stroke-width="1.5" />
+              <path d="M36 33C39 30 43 31 44 35" stroke="#7F1D1D" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          `;
+        }
+        return `
+          <svg viewBox="0 0 64 64" class="w-12 h-12 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="64" height="64" rx="16" fill="#FFF7E0" />
+            <rect x="16" y="28" width="14" height="12" rx="4" transform="rotate(-12 16 28)" fill="#FBBF24" stroke="#92400E" stroke-width="1.8" />
+            <rect x="31" y="25" width="15" height="11" rx="4" transform="rotate(14 31 25)" fill="#F59E0B" stroke="#92400E" stroke-width="1.8" />
+            <rect x="24" y="36" width="16" height="10" rx="4" fill="#FCD34D" stroke="#92400E" stroke-width="1.8" />
+          </svg>
+        `;
+      }
+
+      /**
+       * 주문 메뉴 목록 렌더링
+       */
+      function renderMenuItems() {
+        menuItemsList.innerHTML = '';
+
+        menuItems.forEach((item) => {
+          const row = document.createElement('div');
+          row.className = 'py-3 first:pt-1 last:pb-1 flex items-center justify-between gap-3';
+
+          row.innerHTML = `
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              ${getMenuSvg(item.svgType)}
+              <div class="min-w-0">
+                <h3 class="text-sm font-extrabold text-stone-900 truncate">${item.name}</h3>
+                <p class="text-[11px] text-stone-500 truncate">${item.desc}</p>
+                <p class="text-xs font-bold text-stone-800 mt-0.5">
+                  ${formatKRW(item.price * item.qty)}
+                </p>
+              </div>
+            </div>
+
+            <!-- 수량 조절 컨트롤 -->
+            <div class="flex items-center rounded-xl border border-stone-200 bg-coralCream-50 overflow-hidden shrink-0">
+              <button
+                type="button"
+                aria-label="${item.name} 수량 감소"
+                data-action="dec"
+                data-id="${item.id}"
+                class="qty-btn w-8 h-8 flex items-center justify-center text-stone-700 hover:bg-tteokRed-100 active:scale-95 font-bold transition"
+              >
+                −
+              </button>
+              <span class="w-7 text-center text-xs font-extrabold text-stone-900">${item.qty}</span>
+              <button
+                type="button"
+                aria-label="${item.name} 수량 증가"
+                data-action="inc"
+                data-id="${item.id}"
+                class="qty-btn w-8 h-8 flex items-center justify-center text-stone-700 hover:bg-tteokRed-100 active:scale-95 font-bold transition"
+              >
+                +
+              </button>
+            </div>
+          `;
+
+          menuItemsList.appendChild(row);
+        });
+
+        // 수량 증감 이벤트 바인딩
+        menuItemsList.querySelectorAll('.qty-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const action = btn.getAttribute('data-action');
+            const target = menuItems.find((m) => m.id === id);
+            if (!target) return;
+
+            if (action === 'inc') {
+              target.qty += 1;
+            } else if (action === 'dec') {
+              if (target.qty <= 1) {
+                showToast('최소 1개 이상 담아야 배달 주문이 가능해요.');
+                return;
+              }
+              target.qty -= 1;
+            }
+
+            updateAll();
+          });
+        });
+      }
+
+      /**
+       * 배달비, 쿠폰, 총 금액 계산 및 UI 갱신
+       */
+      function updateSummary() {
+        const totalQty = menuItems.reduce((acc, item) => acc + item.qty, 0);
+        const subtotal = menuItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+
+        // 무료 배달 기준 바 계산
+        const pct = Math.min(100, Math.round((subtotal / FREE_DELIVERY_THRESHOLD) * 100));
+        freeDeliveryBar.style.width = `${pct}%`;
+        freeDeliveryPercent.textContent = `${pct}%`;
+
+        const isFreeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD;
+        if (isFreeDelivery) {
+          freeDeliveryMsg.textContent = '무료배달 조건 달성! 배달팁 0원 적용 중';
+          deliveryFeeText.textContent = '무료 (0원)';
+          deliveryFeeText.className = 'font-bold text-emerald-600';
+        } else {
+          const diff = FREE_DELIVERY_THRESHOLD - subtotal;
+          freeDeliveryMsg.textContent = `${formatKRW(diff)}만 더 담으면 무료배달!`;
+          deliveryFeeText.textContent = formatKRW(BASE_DELIVERY_FEE);
+          deliveryFeeText.className = 'font-bold text-stone-800';
+        }
+
+        const deliveryFee = isFreeDelivery ? 0 : BASE_DELIVERY_FEE;
+        const activeCoupon = COUPON_OPTIONS[couponIndex];
+        const discount = Math.min(activeCoupon.amount, subtotal + deliveryFee);
+        const finalTotal = Math.max(0, subtotal + deliveryFee - discount);
+
+        totalQtyBadge.textContent = `총 ${totalQty}개`;
+        subtotalText.textContent = formatKRW(subtotal);
+        couponDiscountText.textContent = discount > 0 ? `-${formatKRW(discount)}` : '-0원';
+        finalTotalText.textContent = formatKRW(finalTotal);
+
+        couponQuickBtn.textContent = discount > 0 ? `쿠폰 -${formatKRW(discount)}` : '쿠폰 선택';
+        footerMethodLabel.textContent = `${METHOD_LABELS[deliveryMethod]} 배달 · ${DELIVERY_STEPS[currentStepIndex].eta}`;
+        footerDiscountLabel.textContent = discount > 0 ? `쿠폰 -${formatKRW(discount)} 적용` : '쿠폰 미적용';
+        orderCtaLabel.textContent = `${formatKRW(finalTotal)} 배달 주문하기`;
+      }
+
+      /**
+       * 배달 단계 UI 동기화
+       */
+      function syncDeliverySteps() {
+        const stepInfo = DELIVERY_STEPS[currentStepIndex];
+        stepStatusLabel.textContent = stepInfo.label;
+        etaBadgeText.textContent = stepInfo.eta;
+
+        document.querySelectorAll('.delivery-step-btn').forEach((btn) => {
+          const idx = Number(btn.getAttribute('data-step'));
+          if (idx === currentStepIndex) {
+            btn.className =
+              'delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-tteokRed-50 border-tteokRed-500 text-tteokRed-700';
+          } else if (idx < currentStepIndex) {
+            btn.className =
+              'delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-tteokRed-100/50 border-tteokRed-200 text-tteokRed-600';
+          } else {
+            btn.className =
+              'delivery-step-btn rounded-xl py-2 px-1.5 text-center border transition bg-stone-50 border-stone-200 text-stone-500 hover:border-tteokRed-200';
+          }
+        });
+      }
+
+      /**
+       * 수령 방식 칩 스타일 동기화
+       */
+      function syncDeliveryMethodChips() {
+        document.querySelectorAll('.method-chip').forEach((chip) => {
+          const method = chip.getAttribute('data-method');
+          const titleEl = chip.querySelector('span:first-child');
+          const subEl = chip.querySelector('span:last-child');
+          if (method === deliveryMethod) {
+            chip.className =
+              'method-chip rounded-2xl border-2 border-tteokRed-500 bg-tteokRed-50/80 p-2.5 text-center transition active:scale-[0.98]';
+            titleEl.className = 'block text-sm font-extrabold text-tteokRed-700';
+            subEl.className = 'block text-[10px] text-tteokRed-600/90 mt-0.5';
+          } else {
+            chip.className =
+              'method-chip rounded-2xl border border-stone-200 bg-white hover:border-tteokRed-300 p-2.5 text-center transition active:scale-[0.98]';
+            titleEl.className = 'block text-sm font-extrabold text-stone-800';
+            subEl.className = 'block text-[10px] text-stone-500 mt-0.5';
+          }
+        });
+      }
+
+      /**
+       * 프리셋 요청 칩 스타일 동기화
+       */
+      function syncPresetChips() {
+        document.querySelectorAll('.preset-chip').forEach((chip) => {
+          const val = chip.getAttribute('data-preset');
+          if (selectedPresets.has(val)) {
+            chip.className =
+              'preset-chip px-3 py-1.5 rounded-full border border-tteokRed-500 bg-tteokRed-600 text-xs font-bold text-white transition active:scale-95';
+          } else {
+            chip.className =
+              'preset-chip px-3 py-1.5 rounded-full border border-stone-200 bg-coralCream-50 hover:border-tteokRed-300 text-xs font-semibold text-stone-700 transition active:scale-95';
+          }
+        });
+      }
+
+      function updateAll() {
+        renderMenuItems();
+        syncDeliverySteps();
+        syncDeliveryMethodChips();
+        syncPresetChips();
+        updateSummary();
+      }
+
+      // 주소 수정 폼 토글 및 저장
+      toggleAddressEditBtn.addEventListener('click', () => {
+        addressEditForm.classList.toggle('hidden');
+        if (!addressEditForm.classList.contains('hidden')) {
+          roadAddressInput.focus();
+        }
+      });
+
+      cancelAddressBtn.addEventListener('click', () => {
+        roadAddressInput.value = addressInfo.road;
+        detailAddressInput.value = addressInfo.detail;
+        addressEditForm.classList.add('hidden');
+      });
+
+      addressEditForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nextRoad = roadAddressInput.value.trim();
+        const nextDetail = detailAddressInput.value.trim();
+        if (!nextRoad) {
+          showToast('배달 주소를 입력해 주세요.');
+          roadAddressInput.focus();
+          return;
+        }
+        addressInfo.road = nextRoad;
+        addressInfo.detail = nextDetail || '상세 주소 미입력';
+        currentAddressTitle.textContent = addressInfo.road;
+        currentAddressDetail.textContent = addressInfo.detail;
+        addressEditForm.classList.add('hidden');
+        showToast('배달 주소가 업데이트되었습니다.');
+      });
+
+      // 배달 단계 버튼 클릭
+      document.querySelectorAll('.delivery-step-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentStepIndex = Number(btn.getAttribute('data-step'));
+          syncDeliverySteps();
+          updateSummary();
+          showToast(DELIVERY_STEPS[currentStepIndex].label);
+        });
+      });
+
+      // 배달 수령 방식 선택
+      document.querySelectorAll('.method-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          deliveryMethod = chip.getAttribute('data-method');
+          syncDeliveryMethodChips();
+          updateSummary();
+          showToast(`'${METHOD_LABELS[deliveryMethod]}' 수령 방식으로 선택되었습니다.`);
+        });
+      });
+
+      // 프리셋 요청사항 토글
+      document.querySelectorAll('.preset-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const val = chip.getAttribute('data-preset');
+          if (selectedPresets.has(val)) {
+            selectedPresets.delete(val);
+          } else {
+            selectedPresets.add(val);
+          }
+          syncPresetChips();
+        });
+      });
+
+      // 쿠폰 순환 변경 버튼
+      const cycleCoupon = () => {
+        couponIndex = (couponIndex + 1) % COUPON_OPTIONS.length;
+        updateSummary();
+        const chosen = COUPON_OPTIONS[couponIndex];
+        showToast(chosen.amount > 0 ? `'${chosen.name}' 적용` : '쿠폰을 적용하지 않았습니다.');
+      };
+      couponQuickBtn.addEventListener('click', cycleCoupon);
+      toggleCouponDemoBtn.addEventListener('click', cycleCoupon);
+
+      // 상단 버튼 피드백
+      backHomeBtn.addEventListener('click', () => showToast('떡볶이 홈 화면으로 이동합니다.'));
+      statusPillBtn.addEventListener('click', () => showToast('부평삼산점 현재 조리 및 배달 정상 운영 중입니다.'));
+
+      // 주문 확인 모달 열기/닫기/완료
+      openOrderConfirmBtn.addEventListener('click', () => {
+        const subtotal = menuItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+        const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : BASE_DELIVERY_FEE;
+        const activeCoupon = COUPON_OPTIONS[couponIndex];
+        const discount = Math.min(activeCoupon.amount, subtotal + deliveryFee);
+        const finalTotal = Math.max(0, subtotal + deliveryFee - discount);
+
+        const notes = [...selectedPresets];
+        if (riderCustomNoteInput.value.trim()) {
+          notes.push(riderCustomNoteInput.value.trim());
+        }
+        const menuSummaryText = menuItems.map((m) => `${m.name} ${m.qty}개`).join(', ');
+
+        confirmSummaryBody.innerHTML = `
+          <div class="flex justify-between gap-2">
+            <span class="text-stone-500 shrink-0">도착 주소</span>
+            <span class="font-bold text-stone-900 text-right">${addressInfo.road} (${addressInfo.detail})</span>
+          </div>
+          <div class="flex justify-between gap-2">
+            <span class="text-stone-500 shrink-0">수령 방식</span>
+            <span class="font-bold text-stone-900">${METHOD_LABELS[deliveryMethod]} · ${DELIVERY_STEPS[currentStepIndex].eta}</span>
+          </div>
+          <div class="flex justify-between gap-2">
+            <span class="text-stone-500 shrink-0">주문 메뉴</span>
+            <span class="font-bold text-stone-900 text-right">${menuSummaryText}</span>
+          </div>
+          <div class="flex justify-between gap-2">
+            <span class="text-stone-500 shrink-0">요청사항</span>
+            <span class="font-semibold text-stone-800 text-right">${notes.length ? notes.join(' / ') : '없음'}</span>
+          </div>
+          <div class="border-t border-tteokRed-100 pt-2 flex justify-between items-center">
+            <span class="font-bold text-stone-900">총 결제 금액</span>
+            <span class="text-base font-extrabold text-tteokRed-600">${formatKRW(finalTotal)}</span>
+          </div>
+        `;
+
+        orderConfirmModal.classList.remove('hidden');
+        orderConfirmModal.classList.add('flex');
+      });
+
+      function closeConfirmModal() {
+        orderConfirmModal.classList.add('hidden');
+        orderConfirmModal.classList.remove('flex');
+      }
+
+      closeConfirmModalBtn.addEventListener('click', closeConfirmModal);
+      cancelConfirmBtn.addEventListener('click', closeConfirmModal);
+      orderConfirmModal.addEventListener('click', (e) => {
+        if (e.target === orderConfirmModal) closeConfirmModal();
+      });
+
+      finalSubmitOrderBtn.addEventListener('click', () => {
+        closeConfirmModal();
+        currentStepIndex = 0;
+        syncDeliverySteps();
+        updateSummary();
+        showToast('배달 주문이 접수되었습니다! 따끈하게 조리해 배달할게요.');
+      });
+
+      // 초기 화면 렌더링
+      updateAll();
+    })();
+  </script>
+</body>
+</html>

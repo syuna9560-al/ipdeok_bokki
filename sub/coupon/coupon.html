@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>빨간떡볶이연구소 - 쿠폰함 및 쿠폰 적용</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <script>
+    // 떡볶이/분식 브랜드 테마에 맞춘 컬러 및 폰트 커스텀 설정
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans KR"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            tteokRed: {
+              50: '#FFF5F4',
+              100: '#FFE6E3',
+              200: '#FFCCC7',
+              500: '#E53935',
+              600: '#D32F2F',
+              700: '#B71C1C',
+            },
+            coralCream: {
+              50: '#FFFBF7',
+              100: '#FFF2E6',
+              200: '#FFE2CC',
+            },
+          },
+          boxShadow: {
+            app: '0 20px 50px -12px rgba(183, 28, 28, 0.16)',
+            floating: '0 -8px 28px -6px rgba(45, 22, 20, 0.12)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* 커스텀 스크롤바 및 쿠폰 티켓 컷아웃 디테일 */
+    body {
+      background-color: #FFF6F2;
+      color: #2B1817;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 쿠폰 카드 좌우 반원 노치 효과 */
+    .coupon-notch-left,
+    .coupon-notch-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      background-color: #FFFBF7;
+      border-radius: 9999px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .coupon-notch-left {
+      left: -9px;
+      border-right: 1px solid #F3D9D2;
+    }
+
+    .coupon-notch-right {
+      right: -9px;
+      border-left: 1px solid #F3D9D2;
+    }
+
+    .coupon-card.selected .coupon-notch-left {
+      border-right-color: #E53935;
+    }
+
+    .coupon-card.selected .coupon-notch-right {
+      border-left-color: #E53935;
+    }
+
+    /* 부드러운 토스트/알림 애니메이션 */
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    .animate-pop {
+      animation: popIn 0.22s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-stretch sm:py-6">
+  <!-- 모바일 앱 컨테이너 (최대 너비 500px) -->
+  <div class="w-full max-w-[500px] min-h-screen sm:min-h-[860px] bg-coralCream-50 sm:rounded-[32px] sm:border sm:border-tteokRed-100 shadow-app flex flex-col relative overflow-x-clip">
+
+    <!-- 상단 헤더 -->
+    <header class="sticky top-0 z-30 bg-coralCream-50/95 backdrop-blur-md border-b border-tteokRed-100 px-4 py-3.5 flex items-center justify-between rounded-t-[32px]">
+      <button
+        type="button"
+        id="backBtn"
+        aria-label="뒤로 가기"
+        class="p-2.5 -ml-1.5 rounded-full text-stone-700 hover:bg-tteokRed-50 active:scale-95 transition"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      </button>
+
+      <div class="text-center">
+        <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-stone-900">쿠폰함 및 할인 적용</h1>
+        <p class="text-[11px] text-stone-500">장바구니: 바질 페스토 크림 떡볶이 외 1건</p>
+      </div>
+
+      <button
+        type="button"
+        id="clearCouponBtn"
+        class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-tteokRed-600 hover:bg-tteokRed-50 active:scale-95 transition"
+      >
+        선택해제
+      </button>
+    </header>
+
+    <!-- 메인 스크롤 콘텐츠 (하단 고정 바 공간 확보를 위해 pb-36 설정) -->
+    <main class="flex-1 px-4 pt-4 pb-36 space-y-5">
+
+      <!-- 떡볶이 & 분식 테마 SVG 배너 일러스트 -->
+      <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#D32F2F] via-[#E54B3C] to-[#FF7A59] text-white p-4 shadow-md">
+        <!-- 배경 장식 원 -->
+        <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 pointer-events-none"></div>
+        <div class="absolute right-16 -bottom-8 w-24 h-24 rounded-full bg-amber-200/15 pointer-events-none"></div>
+
+        <div class="relative z-10 flex items-center justify-between gap-3">
+          <div class="space-y-1.5 flex-1">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold">
+              <span>🔥 오늘의 분식 혜택</span>
+            </span>
+            <h2 class="text-base sm:text-lg font-extrabold leading-snug">
+              바질크림 · 마라로제<br />
+              떡볶이 할인 쿠폰 쓰세요!
+            </h2>
+            <p class="text-xs text-white/90">
+              최소 주문 18,000원부터 사용 가능 · 중복 적용 불가
+            </p>
+          </div>
+
+          <!-- 커스텀 떡볶이 냄비 & 쿠폰 뱃지 SVG 일러스트 -->
+          <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
+            <svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="따뜻한 떡볶이 냄비 일러스트">
+              <!-- 김이 모락모락 나는 라인 -->
+              <path d="M38 28C35 22 41 18 38 12" stroke="#FFF4E6" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+              <path d="M58 25C55 19 61 14 58 9" stroke="#FFF4E6" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+              <path d="M77 29C74 23 80 18 77 13" stroke="#FFF4E6" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+
+              <!-- 냄비 손잡이 -->
+              <rect x="14" y="54" width="14" height="7" rx="3.5" fill="#FFE0B2"/>
+              <rect x="92" y="54" width="14" height="7" rx="3.5" fill="#FFE0B2"/>
+
+              <!-- 냄비 몸통 -->
+              <path d="M26 48H94V78C94 87.9411 85.9411 96 76 96H44C34.0589 96 26 87.9411 26 78V48Z" fill="#FFF8F0" stroke="#7F1D1D" stroke-width="2.5"/>
+              <!-- 매콤 로제 소스 층 -->
+              <path d="M28 52H92V66C92 69.5 87 72 60 72C33 72 28 69.5 28 66V52Z" fill="#FF6B57"/>
+
+              <!-- 떡가래 조각들 -->
+              <rect x="35" y="45" width="20" height="8" rx="4" transform="rotate(-8 35 45)" fill="#FFFDF9" stroke="#C2410C" stroke-width="1.8"/>
+              <rect x="60" y="43" width="21" height="8" rx="4" transform="rotate(10 60 43)" fill="#FFFDF9" stroke="#C2410C" stroke-width="1.8"/>
+              <rect x="47" y="53" width="22" height="8" rx="4" transform="rotate(4 47 53)" fill="#FFFDF9" stroke="#C2410C" stroke-width="1.8"/>
+
+              <!-- 바질 잎 포인트 -->
+              <ellipse cx="42" cy="61" rx="5.5" ry="3" transform="rotate(-22 42 61)" fill="#4CAF50"/>
+              <ellipse cx="75" cy="59" rx="5.5" ry="3" transform="rotate(24 75 59)" fill="#66BB6A"/>
+
+              <!-- 쿠폰 뱃지 스티커 -->
+              <circle cx="94" cy="30" r="15" fill="#FFD54F" stroke="#B45309" stroke-width="2"/>
+              <text x="94" y="34" text-anchor="middle" fill="#7C2D12" font-size="11" font-weight="800">%</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- 쿠폰 코드 직접 입력 영역 -->
+      <section aria-labelledby="code-input-heading" class="bg-white rounded-2xl border border-tteokRed-100 p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-2.5">
+          <h2 id="code-input-heading" class="text-sm font-bold text-stone-800 flex items-center gap-1.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-tteokRed-500"></span>
+            쿠폰 코드 직접 입력
+          </h2>
+          <span class="text-[11px] text-stone-400">예: TTEOK3000, BASIL15</span>
+        </div>
+
+        <form id="couponCodeForm" class="flex items-stretch gap-2" novalidate>
+          <div class="relative flex-1">
+            <input
+              type="text"
+              id="couponCodeInput"
+              placeholder="프로모션/시크릿 코드 입력"
+              maxlength="20"
+              class="w-full h-11 px-3.5 rounded-xl bg-coralCream-50 border border-stone-200 text-sm font-medium text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-tteokRed-500 focus:ring-2 focus:ring-tteokRed-500/15 uppercase transition"
+            />
+          </div>
+          <button
+            type="submit"
+            id="registerCodeBtn"
+            class="px-4 h-11 rounded-xl bg-stone-900 hover:bg-tteokRed-600 active:scale-[0.98] text-white text-sm font-bold shrink-0 transition"
+          >
+            등록
+          </button>
+        </form>
+
+        <!-- 입력 피드백 메시지 -->
+        <p id="codeFeedback" class="mt-2 text-xs hidden" role="status"></p>
+      </section>
+
+      <!-- 보유 쿠폰 목록 -->
+      <section aria-labelledby="coupon-list-heading" class="space-y-3">
+        <div class="flex items-center justify-between px-0.5">
+          <h2 id="coupon-list-heading" class="text-sm sm:text-base font-extrabold text-stone-900 flex items-center gap-2">
+            <span>보유 쿠폰</span>
+            <span id="couponCountBadge" class="px-2 py-0.5 rounded-full bg-tteokRed-100 text-tteokRed-700 text-xs font-bold">
+              3장
+            </span>
+          </h2>
+          <span class="text-xs text-stone-500">1개 선택 가능</span>
+        </div>
+
+        <!-- 쿠폰 카드들이 렌더링되는 컨테이너 -->
+        <div id="couponListContainer" class="space-y-3"></div>
+      </section>
+
+      <!-- 결제 예정 금액 요약 카드 -->
+      <section aria-labelledby="payment-summary-heading" class="bg-white rounded-2xl border border-tteokRed-100 p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 id="payment-summary-heading" class="text-sm sm:text-base font-extrabold text-stone-900">
+            결제 예정 금액
+          </h2>
+          <span id="appliedCouponChip" class="hidden px-2.5 py-0.5 rounded-full bg-tteokRed-50 border border-tteokRed-200 text-tteokRed-600 text-[11px] font-bold">
+            쿠폰 적용됨
+          </span>
+        </div>
+
+        <!-- 주문 메뉴 요약 -->
+        <div class="rounded-xl bg-coralCream-50 px-3 py-2.5 text-xs text-stone-600 flex items-center justify-between">
+          <span>바질 페스토 크림 떡볶이 (1) + 모둠튀김 (1)</span>
+          <span class="font-semibold text-stone-800">23,000원</span>
+        </div>
+
+        <div class="space-y-2 text-sm pt-1">
+          <div class="flex items-center justify-between text-stone-600">
+            <span>주문 금액</span>
+            <span id="orderAmountText" class="font-semibold text-stone-800">23,000원</span>
+          </div>
+
+          <div class="flex items-center justify-between text-tteokRed-600">
+            <span>쿠폰 할인 금액</span>
+            <span id="discountAmountText" class="font-bold">-0원</span>
+          </div>
+
+          <div class="border-t border-dashed border-stone-200 pt-3 flex items-center justify-between">
+            <span class="text-sm font-bold text-stone-900">최종 결제 금액</span>
+            <span id="finalAmountText" class="text-xl font-extrabold text-tteokRed-600 tracking-tight">23,000원</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 하단 안내 문구 -->
+      <div class="px-1 text-[11px] leading-relaxed text-stone-400 space-y-1">
+        <p>• 최소 주문 금액 충족 시 쿠폰이 정상 적용되며, 배달팁은 별도 산정될 수 있습니다.</p>
+        <p>• 쿠폰 사용 후 주문 취소 시 유효기간 내 쿠폰이 자동 복원됩니다.</p>
+      </div>
+    </main>
+
+    <!-- 하단 고정 '쿠폰 적용하기' 버튼 영역 -->
+    <footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] z-30 bg-white/95 backdrop-blur-md border-t border-tteokRed-100 px-4 pt-3 pb-4 sm:rounded-b-[32px] shadow-floating">
+      <div class="flex items-center justify-between text-xs text-stone-500 mb-2 px-0.5">
+        <span id="bottomStatusText">선택된 쿠폰이 없습니다</span>
+        <span id="bottomSavedText" class="font-semibold text-tteokRed-600">할인 0원</span>
+      </div>
+      <button
+        type="button"
+        id="applyCouponBtn"
+        class="w-full h-12 rounded-2xl bg-gradient-to-r from-tteokRed-600 to-tteokRed-500 hover:from-tteokRed-700 hover:to-tteokRed-600 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base shadow-md shadow-tteokRed-500/25 flex items-center justify-center gap-2 transition"
+      >
+        <span id="applyBtnLabel">쿠폰 없이 주문하기 (23,000원)</span>
+      </button>
+    </footer>
+
+    <!-- 커스텀 토스트 메시지 (alert 대체) -->
+    <div
+      id="toastMessage"
+      class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 hidden max-w-[440px] w-[90%] px-4 py-3 rounded-2xl bg-stone-900 text-white text-xs sm:text-sm font-medium shadow-xl text-center animate-pop"
+      role="alert"
+    ></div>
+  </div>
+
+  <script>
+    /**
+     * 떡볶이 주문 앱 쿠폰함 상태 관리 및 인터랙션 스크립트
+     * - 장바구니 주문 금액 기준으로 쿠폰 할인 금액 및 최종 결제 금액을 실시간 계산합니다.
+     * - 보유 쿠폰 선택, 쿠폰 코드 직접 입력/추가, 선택 해제, 하단 적용하기 동작을 제공합니다.
+     */
+    (function () {
+      // 현재 장바구니 주문 금액 (바질 페스토 크림 떡볶이 14,500원 + 모둠튀김 8,500원)
+      const ORDER_AMOUNT = 23000;
+
+      // 초기 보유 쿠폰 데이터
+      let coupons = [
+        {
+          id: 'cpn-roze-3000',
+          title: '마라로제 · 바질크림 3,000원 할인',
+          subtitle: '떡볶이 단품 및 세트 전 메뉴 사용 가능',
+          type: 'fixed', // 'fixed' | 'percent'
+          value: 3000,
+          minOrder: 18000,
+          maxDiscount: 3000,
+          expiry: 'D-3 · 11월 28일까지',
+          badge: '인기메뉴',
+          usable: true,
+        },
+        {
+          id: 'cpn-basil-15pct',
+          title: '바질 페스토 크림 떡볶이 15% 쿠폰',
+          subtitle: '최대 4,500원 할인 · 분식 사이드 포함',
+          type: 'percent',
+          value: 15,
+          minOrder: 20000,
+          maxDiscount: 4500,
+          expiry: 'D-6 · 12월 01일까지',
+          badge: '15% OFF',
+          usable: true,
+        },
+        {
+          id: 'cpn-vip-5000',
+          title: '단골 분식러 5,000원 특별 쿠폰',
+          subtitle: '30,000원 이상 주문 시 사용 가능',
+          type: 'fixed',
+          value: 5000,
+          minOrder: 30000, // 현재 주문 금액(23,000원) 미달 -> 조건 미충족 상태로 표시
+          maxDiscount: 5000,
+          expiry: 'D-10 · 12월 05일까지',
+          badge: '단골혜택',
+          usable: false,
+        },
+      ];
+
+      // 프로모션 코드 등록 맵
+      const PROMO_CODES = {
+        TTEOK3000: {
+          id: 'promo-tteok3000',
+          title: '시크릿 떡볶이 3,000원 즉시할인',
+          subtitle: '코드 등록 완료 · 전 메뉴 적용 가능',
+          type: 'fixed',
+          value: 3000,
+          minOrder: 15000,
+          maxDiscount: 3000,
+          expiry: '오늘 자정까지',
+          badge: '코드적용',
+          usable: true,
+        },
+        BASIL15: {
+          id: 'promo-basil15',
+          title: '바질크림 러버 15% 특별 쿠폰',
+          subtitle: '코드 등록 완료 · 최대 4,000원 할인',
+          type: 'percent',
+          value: 15,
+          minOrder: 18000,
+          maxDiscount: 4000,
+          expiry: 'D-4 · 11월 29일까지',
+          badge: '15% OFF',
+          usable: true,
+        },
+      };
+
+      // 현재 선택된 쿠폰 ID (null이면 미선택)
+      let selectedCouponId = 'cpn-roze-3000';
+      let toastTimer = null;
+
+      // DOM 요소 참조
+      const couponListContainer = document.getElementById('couponListContainer');
+      const couponCountBadge = document.getElementById('couponCountBadge');
+      const orderAmountText = document.getElementById('orderAmountText');
+      const discountAmountText = document.getElementById('discountAmountText');
+      const finalAmountText = document.getElementById('finalAmountText');
+      const appliedCouponChip = document.getElementById('appliedCouponChip');
+      const bottomStatusText = document.getElementById('bottomStatusText');
+      const bottomSavedText = document.getElementById('bottomSavedText');
+      const applyBtnLabel = document.getElementById('applyBtnLabel');
+      const applyCouponBtn = document.getElementById('applyCouponBtn');
+      const clearCouponBtn = document.getElementById('clearCouponBtn');
+      const backBtn = document.getElementById('backBtn');
+      const couponCodeForm = document.getElementById('couponCodeForm');
+      const couponCodeInput = document.getElementById('couponCodeInput');
+      const codeFeedback = document.getElementById('codeFeedback');
+      const toastMessage = document.getElementById('toastMessage');
+
+      /**
+       * 원화 포맷 유틸리티
+       */
+      function formatKRW(amount) {
+        return `${Math.max(0, Math.round(amount)).toLocaleString('ko-KR')}원`;
+      }
+
+      /**
+       * 쿠폰별 실제 할인 금액 계산
+       */
+      function calculateDiscount(coupon, orderTotal) {
+        if (!coupon || orderTotal < coupon.minOrder) return 0;
+
+        if (coupon.type === 'fixed') {
+          return Math.min(coupon.value, orderTotal);
+        }
+
+        if (coupon.type === 'percent') {
+          const rawDiscount = Math.floor((orderTotal * coupon.value) / 100);
+          const capped = coupon.maxDiscount ? Math.min(rawDiscount, coupon.maxDiscount) : rawDiscount;
+          return Math.min(capped, orderTotal);
+        }
+
+        return 0;
+      }
+
+      /**
+       * 토스트 알림 표시 (alert 대체)
+       */
+      function showToast(message) {
+        if (!toastMessage) return;
+        toastMessage.textContent = message;
+        toastMessage.classList.remove('hidden');
+
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastMessage.classList.add('hidden');
+        }, 2600);
+      }
+
+      /**
+       * 인라인 코드 입력 피드백 표시
+       */
+      function setCodeFeedback(message, isError = false) {
+        codeFeedback.textContent = message;
+        codeFeedback.classList.remove('hidden', 'text-emerald-600', 'text-tteokRed-600');
+        codeFeedback.classList.add(isError ? 'text-tteokRed-600' : 'text-emerald-600');
+      }
+
+      /**
+       * 보유 쿠폰 목록 렌더링
+       */
+      function renderCoupons() {
+        // 주문 금액 기준으로 각 쿠폰의 사용 가능 여부 최신화
+        coupons = coupons.map((cpn) => ({
+          ...cpn,
+          usable: ORDER_AMOUNT >= cpn.minOrder,
+        }));
+
+        // 만약 선택된 쿠폰이 사용 불가 상태가 되었다면 선택 해제
+        if (selectedCouponId) {
+          const current = coupons.find((c) => c.id === selectedCouponId);
+          if (!current || !current.usable) {
+            selectedCouponId = null;
+          }
+        }
+
+        couponCountBadge.textContent = `${coupons.length}장`;
+        couponListContainer.innerHTML = '';
+
+        coupons.forEach((coupon) => {
+          const isSelected = coupon.id === selectedCouponId && coupon.usable;
+          const discountPreview = calculateDiscount(coupon, ORDER_AMOUNT);
+
+          const card = document.createElement('div');
+          card.setAttribute('role', 'radio');
+          card.setAttribute('aria-checked', String(isSelected));
+          card.setAttribute('aria-disabled', String(!coupon.usable));
+          card.tabIndex = coupon.usable ? 0 : -1;
+
+          card.className = [
+            'coupon-card relative rounded-2xl border p-4 transition select-none',
+            isSelected
+              ? 'selected bg-tteokRed-50/75 border-tteokRed-500 ring-2 ring-tteokRed-500/20 shadow-sm cursor-pointer'
+              : coupon.usable
+              ? 'bg-white border-[#F3D9D2] hover:border-tteokRed-300 shadow-sm cursor-pointer'
+              : 'bg-stone-100/80 border-stone-200 opacity-65 cursor-not-allowed',
+          ].join(' ');
+
+          // 좌우 티켓 노치 추가
+          card.innerHTML = `
+            <span class="coupon-notch-left"></span>
+            <span class="coupon-notch-right"></span>
+
+            <div class="flex items-start justify-between gap-3 pl-1">
+              <div class="space-y-1 flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${
+                    coupon.usable
+                      ? 'bg-tteokRed-100 text-tteokRed-700'
+                      : 'bg-stone-200 text-stone-600'
+                  }">
+                    ${coupon.badge}
+                  </span>
+
+                  ${
+                    isSelected
+                      ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-tteokRed-600 text-white">적용됨</span>`
+                      : ''
+                  }
+
+                  <span class="text-[11px] text-stone-400">${coupon.expiry}</span>
+                </div>
+
+                <h3 class="text-sm sm:text-[15px] font-extrabold text-stone-900 truncate">
+                  ${coupon.title}
+                </h3>
+
+                <p class="text-xs text-stone-500">
+                  ${coupon.subtitle} · ${coupon.minOrder.toLocaleString('ko-KR')}원 이상 주문 시
+                </p>
+
+                ${
+                  coupon.usable
+                    ? `<p class="text-xs font-bold text-tteokRed-600 pt-0.5">
+                        예상 할인: -${formatKRW(discountPreview)}
+                      </p>`
+                    : `<p class="text-xs font-semibold text-stone-500 pt-0.5">
+                        ${(coupon.minOrder - ORDER_AMOUNT).toLocaleString('ko-KR')}원 더 담으면 사용 가능
+                      </p>`
+                }
+              </div>
+
+              <!-- 커스텀 라디오/체크 인디케이터 -->
+              <div class="pt-1 shrink-0">
+                <span class="w-6 h-6 rounded-full flex items-center justify-center border-2 transition ${
+                  isSelected
+                    ? 'border-tteokRed-600 bg-tteokRed-600 text-white'
+                    : coupon.usable
+                    ? 'border-stone-300 bg-white text-transparent'
+                    : 'border-stone-300 bg-stone-200 text-transparent'
+                }">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          `;
+
+          // 클릭 및 키보드(Enter/Space) 선택 이벤트
+          const handleSelect = () => {
+            if (!coupon.usable) {
+              showToast(`최소 주문 금액(${formatKRW(coupon.minOrder)}) 미달로 사용할 수 없는 쿠폰입니다.`);
+              return;
+            }
+
+            if (selectedCouponId === coupon.id) {
+              // 이미 선택된 쿠폰을 다시 누르면 해제
+              selectedCouponId = null;
+              showToast('쿠폰 선택을 해제했어요.');
+            } else {
+              selectedCouponId = coupon.id;
+              showToast(`'${coupon.title}'이 선택되었습니다.`);
+            }
+
+            updateUI();
+          };
+
+          card.addEventListener('click', handleSelect);
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleSelect();
+            }
+          });
+
+          couponListContainer.appendChild(card);
+        });
+      }
+
+      /**
+       * 결제 예정 금액 요약 및 하단 고정 바 갱신
+       */
+      function updateSummary() {
+        const selectedCoupon = coupons.find((c) => c.id === selectedCouponId && c.usable) || null;
+        const discount = selectedCoupon ? calculateDiscount(selectedCoupon, ORDER_AMOUNT) : 0;
+        const finalAmount = Math.max(0, ORDER_AMOUNT - discount);
+
+        orderAmountText.textContent = formatKRW(ORDER_AMOUNT);
+        discountAmountText.textContent = discount > 0 ? `-${formatKRW(discount)}` : '-0원';
+        finalAmountText.textContent = formatKRW(finalAmount);
+
+        if (selectedCoupon) {
+          appliedCouponChip.classList.remove('hidden');
+          appliedCouponChip.textContent = `${formatKRW(discount)} 할인 적용`;
+          bottomStatusText.textContent = `적용 쿠폰: ${selectedCoupon.title}`;
+          bottomSavedText.textContent = `${formatKRW(discount)} 절약`;
+          applyBtnLabel.textContent = `${formatKRW(discount)} 할인받고 쿠폰 적용하기 (${formatKRW(finalAmount)})`;
+        } else {
+          appliedCouponChip.classList.add('hidden');
+          bottomStatusText.textContent = '선택된 쿠폰이 없습니다';
+          bottomSavedText.textContent = '할인 0원';
+          applyBtnLabel.textContent = `쿠폰 없이 주문하기 (${formatKRW(ORDER_AMOUNT)})`;
+        }
+      }
+
+      /**
+       * 전체 UI 동기화
+       */
+      function updateUI() {
+        renderCoupons();
+        updateSummary();
+      }
+
+      // 쿠폰 코드 직접 등록 폼 처리
+      couponCodeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const rawCode = couponCodeInput.value.trim().toUpperCase();
+
+        if (!rawCode) {
+          setCodeFeedback('쿠폰 코드를 입력해 주세요.', true);
+          couponCodeInput.focus();
+          return;
+        }
+
+        const matchedPromo = PROMO_CODES[rawCode];
+        if (!matchedPromo) {
+          setCodeFeedback('유효하지 않거나 만료된 쿠폰 코드입니다. (TTEOK3000 / BASIL15 테스트 가능)', true);
+          return;
+        }
+
+        const alreadyExists = coupons.some((c) => c.id === matchedPromo.id);
+        if (alreadyExists) {
+          selectedCouponId = matchedPromo.id;
+          setCodeFeedback('이미 등록된 쿠폰이라 바로 선택해 드렸어요!', false);
+          couponCodeInput.value = '';
+          updateUI();
+          showToast(`'${matchedPromo.title}' 쿠폰이 선택되었습니다.`);
+          return;
+        }
+
+        // 새 쿠폰을 목록 최상단에 추가하고 자동 선택
+        const newCoupon = { ...matchedPromo };
+        coupons = [newCoupon, ...coupons];
+        selectedCouponId = newCoupon.id;
+        couponCodeInput.value = '';
+        setCodeFeedback(`'${newCoupon.title}' 쿠폰이 등록되어 적용되었습니다!`, false);
+        updateUI();
+        showToast(`쿠폰 등록 완료! ${newCoupon.title}`);
+      });
+
+      // 선택해제 버튼
+      clearCouponBtn.addEventListener('click', () => {
+        if (!selectedCouponId) {
+          showToast('현재 선택된 쿠폰이 없습니다.');
+          return;
+        }
+        selectedCouponId = null;
+        updateUI();
+        showToast('적용된 쿠폰을 해제했습니다.');
+      });
+
+      // 뒤로 가기 버튼
+      backBtn.addEventListener('click', () => {
+        showToast('이전 주문 화면으로 돌아갑니다.');
+      });
+
+      // 하단 고정 '쿠폰 적용하기' 버튼
+      applyCouponBtn.addEventListener('click', () => {
+        const selectedCoupon = coupons.find((c) => c.id === selectedCouponId && c.usable) || null;
+        if (selectedCoupon) {
+          const discount = calculateDiscount(selectedCoupon, ORDER_AMOUNT);
+          showToast(`'${selectedCoupon.title}' (${formatKRW(discount)} 할인)이 주문서에 반영되었습니다!`);
+        } else {
+          showToast('쿠폰 미적용 상태로 주문 금액이 확정되었습니다.');
+        }
+      });
+
+      // 초기 렌더링 실행
+      updateUI();
+    })();
+  </script>
+</body>
+</html>

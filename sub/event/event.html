@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>신메뉴 주문 시 쥬시쿨이 공짜! | 특별 프로모션</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard & Black Han Sans (배너와 어울리는 경쾌하고 굵은 헤드라인 폰트) -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+            display: ['"Black Han Sans"', 'Pretendard', 'sans-serif'],
+          },
+          colors: {
+            peachBg: '#FFD39A',
+            peachLight: '#FFF5E8',
+            brandOrange: '#FF6B1A',
+            brandRed: '#D92B1C',
+            brandDark: '#2C130C',
+          },
+          boxShadow: {
+            'card': '0 10px 25px -5px rgba(217, 43, 28, 0.12), 0 4px 10px -2px rgba(44, 19, 12, 0.05)',
+            'pop': '0 4px 0px #2C130C',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 커스텀 스크롤 및 미세 애니메이션 */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background-color: #F4EFEA;
+      color: #2C130C;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .text-stroke-dark {
+      -webkit-text-stroke: 1.5px #2C130C;
+      paint-order: stroke fill;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(2deg); }
+    }
+    @keyframes pulseBadge {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .animate-float {
+      animation: floatSlow 3.2s ease-in-out infinite;
+    }
+    .animate-badge {
+      animation: pulseBadge 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-brandOrange selection:text-white">
+
+  <!-- 모바일 최적화 메인 컨테이너 (최대 너비 500px 중앙 정렬) -->
+  <div class="max-w-[500px] mx-auto min-h-screen bg-[#FFF9F2] shadow-2xl relative pb-28 overflow-x-hidden">
+
+    <!-- 상단 미니 네비게이션 바 -->
+    <header class="sticky top-0 z-40 bg-[#FFD39A]/95 backdrop-blur-md border-b border-[#2C130C]/10 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-brandRed text-white font-display text-sm shadow-sm">불</span>
+        <span class="font-extrabold text-sm tracking-tight text-brandDark">화끈분식 <span class="text-brandRed">SPECIAL EVENT</span></span>
+      </div>
+      <button onclick="copyEventLink()" class="text-xs font-bold bg-white/80 hover:bg-white text-brandDark px-3 py-1.5 rounded-full border border-brandDark/15 transition flex items-center gap-1.5 active:scale-95">
+        <i class="fa-solid fa-share-nodes text-brandRed"></i> 공유하기
+      </button>
+    </header>
+
+    <!-- 1. 상단 히어로 배너 섹션 (생성된 이미지 및 톤앤매너 완벽 연동) -->
+    <section class="relative bg-gradient-to-b from-[#FFD39A] via-[#FFCA85] to-[#D92B1C] pt-4 pb-8 px-4">
+      <!-- 상단 이벤트 뱃지 -->
+      <div class="flex justify-center mb-3">
+        <span class="inline-flex items-center gap-1.5 bg-brandDark text-[#FFD39A] text-xs font-extrabold px-3.5 py-1 rounded-full tracking-wide shadow">
+          <i class="fa-solid fa-fire text-brandOrange"></i> 신메뉴 출시 기념 한정 프로모션
+        </span>
+      </div>
+
+      <!-- 첨부된 홍보 이미지 카드 프레임 -->
+      <div class="relative rounded-3xl overflow-hidden border-[3px] border-brandDark shadow-[0_12px_30px_rgba(44,19,12,0.28)] bg-[#FFD39A]">
+        <img 
+          src="watermarked_img_1064948675878055893.png" 
+          alt="매콤함과 달콤함의 환상 조합! 신메뉴 주문 시 쥬시쿨이 공짜!" 
+          class="w-full h-auto block object-cover"
+          onerror="this.style.display='none'; document.getElementById('hero-fallback').classList.remove('hidden');"
+        />
+
+        <!-- 이미지 로드 실패 시 동일한 디자인 톤의 폴백 그래픽 배너 -->
+        <div id="hero-fallback" class="hidden p-6 text-center bg-gradient-to-b from-[#FFD39A] to-[#D92B1C]">
+          <div class="inline-block bg-brandRed text-white font-display text-sm px-3 py-1 rounded-full border-2 border-brandDark mb-2 -rotate-3">공짜!</div>
+          <p class="font-extrabold text-brandDark text-base mb-1">매콤함과 달콤함의 환상 조합!</p>
+          <h1 class="font-display text-4xl sm:text-5xl leading-tight text-brandOrange text-stroke-dark drop-shadow">
+            신메뉴 주문 시<br/>
+            <span class="text-white">쥬시쿨</span>이 공짜!
+          </h1>
+          <p class="mt-3 text-xs font-bold text-brandDark bg-white/80 inline-block px-3 py-1 rounded-full">
+            신메뉴 1종 이상 주문 시 쥬시쿨(종이팩 450ml) 1개 무료 증정
+          </p>
+        </div>
+
+        <!-- 우측 하단 라이브 한정수량 뱃지 -->
+        <div class="absolute top-3 right-3 bg-brandRed text-white text-[11px] font-extrabold px-3 py-1 rounded-full border-2 border-brandDark shadow-pop animate-badge">
+          100% 증정
+        </div>
+      </div>
+
+      <!-- 히어로 하단 요약 띠 -->
+      <div class="mt-4 bg-brandDark/90 text-white rounded-2xl p-3.5 flex items-center justify-between border border-white/15 backdrop-blur-sm">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-brandOrange/20 border border-brandOrange flex items-center justify-center text-brandOrange text-lg shrink-0">
+            <i class="fa-solid fa-gift"></i>
+          </div>
+          <div>
+            <p class="text-[11px] text-[#FFD39A] font-semibold">단 1개만 시켜도 바로 적용!</p>
+            <p class="text-sm font-extrabold tracking-tight">쥬시쿨 450ml 대용량 팩 무료</p>
+          </div>
+        </div>
+        <a href="#menu-simulator" class="bg-brandOrange hover:bg-orange-500 text-white text-xs font-extrabold px-3 py-2 rounded-xl transition shrink-0">
+          메뉴 보기 <i class="fa-solid fa-chevron-down ml-0.5"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. 이벤트 핵심 요약 카드 (한눈에 보는 혜택) -->
+    <section class="px-4 -mt-3 relative z-10">
+      <div class="bg-white rounded-3xl p-5 border-2 border-brandDark shadow-card">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-dashed border-orange-200">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brandRed"></span>
+            <h2 class="font-extrabold text-lg text-brandDark tracking-tight">한눈에 보는 이벤트 혜택</h2>
+          </div>
+          <span class="text-[11px] font-bold text-brandRed bg-red-50 px-2.5 py-1 rounded-full">선착순 한정</span>
+        </div>
+
+        <ul class="space-y-3.5 text-sm">
+          <li class="flex items-start gap-3">
+            <span class="shrink-0 w-16 text-center py-1 rounded-lg bg-[#FFF2E0] text-brandOrange font-extrabold text-xs">이벤트 기간</span>
+            <div class="flex-1">
+              <p class="font-bold text-brandDark">신메뉴 출시 기념 ~ 한정 수량 소진 시까지</p>
+              <p class="text-xs text-stone-500 mt-0.5">조기 소진 시 별도 공지 후 종료될 수 있습니다.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="shrink-0 w-16 text-center py-1 rounded-lg bg-red-50 text-brandRed font-extrabold text-xs">증정 혜택</span>
+            <div class="flex-1">
+              <p class="font-bold text-brandDark">
+                신메뉴 1종 이상 주문 시 <span class="text-brandRed underline decoration-2 underline-offset-2">쥬시쿨 450ml 1개 무료</span>
+              </p>
+              <div class="mt-1.5 flex flex-wrap gap-1.5">
+                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-pink-50 text-pink-600 border border-pink-200">🍑 복숭아맛</span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-600 border border-purple-200">🟣 자두맛</span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 border border-amber-200">🍍 파인애플맛</span>
+              </div>
+              <p class="text-[11px] text-stone-500 mt-1">* 주문 옵션에서 원하는 맛 선택 가능 (미선택 시 랜덤 발송)</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="shrink-0 w-16 text-center py-1 rounded-lg bg-stone-100 text-stone-700 font-extrabold text-xs">참여 대상</span>
+            <div class="flex-1">
+              <p class="font-bold text-brandDark">배달 · 포장 · 매장 식사 주문 고객 전원</p>
+              <p class="text-xs text-stone-500 mt-0.5">전 지점 동시 진행 (일부 특수 매장 제외)</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. 이벤트 대상 신메뉴 소개 & 인터랙티브 주문 시뮬레이터 -->
+    <section id="menu-simulator" class="px-4 pt-8">
+      <div class="text-center mb-5">
+        <span class="inline-block text-xs font-extrabold text-brandRed bg-red-100 px-3 py-1 rounded-full mb-1.5">NEW MENU LINE-UP</span>
+        <h2 class="font-display text-2xl sm:text-3xl text-brandDark tracking-tight">
+          오늘 끌리는 <span class="text-brandRed">신메뉴</span>를 담아보세요!
+        </h2>
+        <p class="text-xs text-stone-600 mt-1">신메뉴를 담으면 <strong>쥬시쿨 450ml(0원)</strong>가 자동으로 추가됩니다.</p>
+      </div>
+
+      <!-- 신메뉴 카드 리스트 (JS 렌더링) -->
+      <div id="menu-list" class="space-y-3.5">
+        <!-- JavaScript로 3종의 신메뉴 카드가 렌더링됩니다 -->
+      </div>
+
+      <!-- 실시간 혜택 적용 장바구니 시뮬레이터 박스 -->
+      <div id="cart-preview-box" class="mt-5 rounded-3xl border-2 border-brandDark bg-white overflow-hidden shadow-card transition-all">
+        <div class="bg-brandDark text-white px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-bag-shopping text-[#FFD39A]"></i>
+            <span class="font-extrabold text-sm">내 혜택 미리보기</span>
+          </div>
+          <span id="cart-count-badge" class="text-xs font-bold bg-brandRed px-2.5 py-0.5 rounded-full">0개 선택됨</span>
+        </div>
+
+        <div class="p-4">
+          <!-- 선택된 메뉴가 없을 때 -->
+          <div id="empty-cart-msg" class="text-center py-5">
+            <p class="text-sm font-bold text-stone-500">위에서 신메뉴의 <span class="text-brandOrange">[+ 담기]</span> 버튼을 눌러보세요!</p>
+            <p class="text-xs text-stone-400 mt-1">담는 즉시 쥬시쿨 공짜 혜택이 활성화됩니다.</p>
+          </div>
+
+          <!-- 선택된 메뉴가 있을 때 -->
+          <div id="active-cart-content" class="hidden space-y-4">
+            <!-- 담긴 신메뉴 목록 -->
+            <div id="selected-menus-list" class="space-y-2 border-b border-stone-100 pb-3"></div>
+
+            <!-- 자동 적용된 쥬시쿨 무료 증정 카드 -->
+            <div class="rounded-2xl bg-gradient-to-r from-[#FFF3E0] to-[#FFE4E1] border-2 border-brandOrange p-3.5 relative">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="bg-brandRed text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md">이벤트 증정</span>
+                  <span class="font-extrabold text-sm text-brandDark">쥬시쿨 (종이팩 450ml)</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-stone-400 line-through mr-1">1,500원</span>
+                  <span class="font-extrabold text-sm text-brandRed">0원 (공짜!)</span>
+                </div>
+              </div>
+
+              <!-- 증정 쥬시쿨 맛 선택 버튼 -->
+              <p class="text-[11px] font-bold text-stone-600 mb-2">👇 공짜로 받을 쥬시쿨 맛을 선택하세요:</p>
+              <div class="grid grid-cols-3 gap-2" id="juicy-flavor-selector">
+                <button type="button" onclick="selectFlavor('복숭아맛')" data-flavor="복숭아맛" class="flavor-btn py-2 px-2 rounded-xl text-xs font-extrabold border-2 border-brandRed bg-white text-brandRed shadow-sm transition flex items-center justify-center gap-1">
+                  🍑 복숭아
+                </button>
+                <button type="button" onclick="selectFlavor('자두맛')" data-flavor="자두맛" class="flavor-btn py-2 px-2 rounded-xl text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-brandOrange transition flex items-center justify-center gap-1">
+                  🟣 자두
+                </button>
+                <button type="button" onclick="selectFlavor('파인애플맛')" data-flavor="파인애플맛" class="flavor-btn py-2 px-2 rounded-xl text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-brandOrange transition flex items-center justify-center gap-1">
+                  🍍 파인애플
+                </button>
+              </div>
+            </div>
+
+            <!-- 합계 금액 안내 -->
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs font-bold text-stone-500">총 예상 결제금액 (쥬시쿨 무료 포함)</span>
+              <span id="total-price-text" class="font-extrabold text-lg text-brandDark">0원</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 매콤달콤 꿀조합 포인트 (3단 포인트 섹션) -->
+    <section class="px-4 pt-9">
+      <div class="bg-[#2C130C] rounded-3xl p-5 text-white relative overflow-hidden shadow-xl">
+        <!-- 배경 장식 글로우 -->
+        <div class="absolute -top-12 -right-12 w-36 h-36 bg-brandRed/30 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-brandOrange/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="text-center mb-5 relative z-10">
+          <span class="text-[11px] font-extrabold tracking-widest text-[#FFD39A] uppercase">BEST PAIRING</span>
+          <h2 class="font-display text-2xl mt-1">
+            왜 <span class="text-[#FFD39A]">떡볶이 + 쥬시쿨</span>일까?
+          </h2>
+        </div>
+
+        <div class="space-y-3 relative z-10">
+          <!-- Point 01 -->
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brandRed to-brandOrange flex flex-col items-center justify-center shrink-0 shadow">
+              <span class="text-[9px] font-extrabold opacity-90">POINT</span>
+              <span class="font-display text-lg leading-none">01</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-sm text-[#FFD39A]">입안 가득 얼얼한 특제 매콤 양념</h3>
+              <p class="text-xs text-stone-300 mt-1 leading-relaxed">
+                72시간 숙성 고춧가루와 비법 육수로 낸 화끈하고 중독성 강한 신메뉴 양념!
+              </p>
+            </div>
+          </div>
+
+          <!-- Point 02 -->
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brandOrange to-amber-400 text-brandDark flex flex-col items-center justify-center shrink-0 shadow">
+              <span class="text-[9px] font-extrabold">POINT</span>
+              <span class="font-display text-lg leading-none">02</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-sm text-[#FFD39A]">매운맛을 단번에 잡는 달콤 시원 450ml</h3>
+              <p class="text-xs text-stone-300 mt-1 leading-relaxed">
+                미니 팩이 아닌 넉넉한 450ml 대용량 종이팩으로 마지막 한 입까지 쿨하게 진화!
+              </p>
+            </div>
+          </div>
+
+          <!-- Point 03 -->
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-white flex flex-col items-center justify-center shrink-0 shadow">
+              <span class="text-[9px] font-extrabold opacity-90">POINT</span>
+              <span class="font-display text-lg leading-none">03</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-sm text-[#FFD39A]">얼음컵에 부어 마시면 분식 페어링 완성</h3>
+              <p class="text-xs text-stone-300 mt-1 leading-relaxed">
+                투명 얼음컵에 찰랑찰랑 부어 마시면 매콤함과 달콤함이 어우러지는 완벽한 한 끼!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 이벤트 참여 방법 (Step 1 -> Step 2 -> Step 3) -->
+    <section class="px-4 pt-9">
+      <div class="text-center mb-5">
+        <span class="text-xs font-extrabold text-brandOrange">HOW TO JOIN</span>
+        <h2 class="font-display text-2xl text-brandDark mt-0.5">초간단 참여 방법</h2>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2.5">
+        <!-- Step 1 -->
+        <div class="bg-white rounded-2xl p-3.5 border border-orange-200 text-center shadow-sm relative">
+          <span class="inline-block bg-brandDark text-[#FFD39A] text-[10px] font-extrabold px-2 py-0.5 rounded-full mb-2">STEP 01</span>
+          <div class="w-11 h-11 mx-auto rounded-full bg-[#FFF2E0] text-brandOrange flex items-center justify-center text-lg mb-2">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <p class="font-extrabold text-xs text-brandDark">신메뉴 선택</p>
+          <p class="text-[11px] text-stone-500 mt-1 leading-snug">신메뉴 1종 이상<br/>장바구니 담기</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-white rounded-2xl p-3.5 border border-orange-200 text-center shadow-sm relative">
+          <span class="inline-block bg-brandDark text-[#FFD39A] text-[10px] font-extrabold px-2 py-0.5 rounded-full mb-2">STEP 02</span>
+          <div class="w-11 h-11 mx-auto rounded-full bg-red-50 text-brandRed flex items-center justify-center text-lg mb-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <p class="font-extrabold text-xs text-brandDark">혜택 자동적용</p>
+          <p class="text-[11px] text-stone-500 mt-1 leading-snug">쥬시쿨 450ml<br/>0원 자동 증정</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-white rounded-2xl p-3.5 border border-orange-200 text-center shadow-sm relative">
+          <span class="inline-block bg-brandRed text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full mb-2">STEP 03</span>
+          <div class="w-11 h-11 mx-auto rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-lg mb-2">
+            <i class="fa-solid fa-face-laugh-beam"></i>
+          </div>
+          <p class="font-extrabold text-xs text-brandDark">맛있게 즐기기</p>
+          <p class="text-[11px] text-stone-500 mt-1 leading-snug">매콤 떡볶이와<br/>공짜 쥬시쿨 짠!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5-2. 꼭 확인해주세요 (유의사항 아코디언 토글) -->
+    <section class="px-4 pt-7 pb-4">
+      <div class="bg-stone-100 rounded-2xl border border-stone-200 overflow-hidden">
+        <button 
+          type="button" 
+          onclick="toggleNotice()" 
+          class="w-full px-4 py-3.5 flex items-center justify-between text-left font-bold text-xs text-stone-700 hover:bg-stone-200/50 transition"
+          aria-expanded="false"
+          id="notice-toggle-btn"
+        >
+          <span class="flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-exclamation text-stone-500"></i> 이벤트 유의사항 안내
+          </span>
+          <i id="notice-chevron" class="fa-solid fa-chevron-down text-stone-500 transition-transform duration-200"></i>
+        </button>
+
+        <div id="notice-content" class="hidden px-4 pb-4 pt-1 text-[11px] text-stone-600 space-y-1.5 border-t border-stone-200/80 leading-relaxed">
+          <p>• 본 이벤트는 신메뉴 1종 이상 주문 시 주문 건당 쥬시쿨(종이팩 450ml) 1개가 무료 증정됩니다.</p>
+          <p>• 사이드 메뉴 및 음료 단품만 주문 시에는 이벤트 혜택이 적용되지 않습니다.</p>
+          <p>• 매장별 재고 상황에 따라 선택하신 맛(복숭아/자두/파인애플)이 품절될 경우 다른 맛으로 대체 발송될 수 있습니다.</p>
+          <p>• 타 할인 쿠폰 및 제휴 프로모션과 중복 적용이 가능하나, 일부 배달 플랫폼 정책에 따라 상이할 수 있습니다.</p>
+          <p>• 준비된 사은품 수량 소진 시 이벤트는 사전 고지 없이 조기 종료될 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 하단 고정 CTA 바 -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] z-40 bg-white/95 backdrop-blur-md border-t border-orange-200 px-4 py-3 shadow-[0_-8px_20px_rgba(44,19,12,0.08)]">
+      <button 
+        type="button" 
+        onclick="openOrderModal()" 
+        class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-brandRed via-[#E83A1E] to-brandOrange text-white font-extrabold text-base shadow-lg hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2 border-2 border-brandDark"
+      >
+        <span>신메뉴 주문하고 쥬시쿨 공짜로 받기</span>
+        <span class="bg-white text-brandRed text-xs font-black px-2 py-0.5 rounded-full">FREE</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- 주문 / 쿠폰 혜택 확인 모달 -->
+  <div id="order-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="bg-white w-full max-w-[420px] rounded-3xl border-[3px] border-brandDark overflow-hidden shadow-2xl transform transition-all scale-95 opacity-0" id="order-modal-card">
+      <!-- 모달 헤더 -->
+      <div class="bg-gradient-to-r from-[#FFD39A] to-[#FFB866] px-5 py-4 border-b-2 border-brandDark flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="bg-brandRed text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full">혜택 적용 완료</span>
+          <h3 class="font-extrabold text-brandDark text-base">주문 및 공짜 쿠폰 확인</h3>
+        </div>
+        <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-brandDark flex items-center justify-center font-bold">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 모달 본문 -->
+      <div class="p-5 space-y-4">
+        <div class="bg-[#FFF9F2] rounded-2xl p-4 border border-orange-200">
+          <p class="text-xs font-bold text-stone-500 mb-2">선택하신 주문 내역</p>
+          <div id="modal-menu-summary" class="space-y-1.5 text-sm font-bold text-brandDark">
+            <!-- JS에서 채워짐 -->
+          </div>
+          <div class="mt-3 pt-3 border-t border-dashed border-orange-300 flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-base">🎁</span>
+              <span class="text-xs font-extrabold text-brandRed">쥬시쿨 450ml (<span id="modal-flavor-text">복숭아맛</span>)</span>
+            </div>
+            <span class="text-xs font-black bg-brandRed text-white px-2 py-0.5 rounded-md">0원 공짜!</span>
+          </div>
+        </div>
+
+        <!-- 매장/배달 주문 쿠폰 코드 복사 박스 -->
+        <div class="bg-stone-100 rounded-2xl p-3.5 text-center border border-stone-200">
+          <p class="text-[11px] font-bold text-stone-500 mb-1">배달앱 요청사항 / 매장 제시용 프로모션 코드</p>
+          <div class="flex items-center justify-center gap-2">
+            <code id="promo-code-text" class="font-mono font-extrabold text-base tracking-wider text-brandDark bg-white px-3 py-1 rounded-lg border border-stone-300">JUICYCOOL-FREE</code>
+            <button onclick="copyPromoCode()" class="bg-brandDark text-[#FFD39A] text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-stone-800 active:scale-95 transition">
+              복사
+            </button>
+          </div>
+        </div>
+
+        <div class="flex gap-2.5 pt-1">
+          <button onclick="closeOrderModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-stone-200 text-stone-700 hover:bg-stone-300 transition">
+            더 둘러보기
+          </button>
+          <button onclick="confirmSimulatedOrder()" class="flex-[1.6] py-3 rounded-xl font-extrabold text-sm bg-brandRed text-white hover:bg-red-700 shadow transition">
+            혜택 적용하고 주문하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 메시지 (alert() 대체) -->
+  <div id="toast-msg" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-2">
+    <div class="bg-brandDark text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg border border-white/15 flex items-center gap-2 whitespace-nowrap">
+      <i class="fa-solid fa-circle-check text-[#FFD39A]"></i>
+      <span id="toast-text">알림 메시지</span>
+    </div>
+  </div>
+
+  <script>
+    // 1. 신메뉴 데이터 정의 (매콤달콤 떡볶이 3종)
+    const newMenus = [
+      {
+        id: 'menu1',
+        badge: '대표 신메뉴 🔥',
+        badgeColor: 'bg-brandRed text-white',
+        name: '화끈 직화 국물 떡볶이',
+        desc: '불향 가득 특제 매콤 양념에 쫄깃한 밀떡, 두툼한 사각어묵과 삶은 계란이 듬뿍!',
+        spicyLevel: '매콤달콤 🌶️🌶️',
+        price: 11900,
+        emoji: '🍲',
+        bgAccent: 'from-red-50 to-orange-50'
+      },
+      {
+        id: 'menu2',
+        badge: '꾸덕 중독 🧀',
+        badgeColor: 'bg-brandOrange text-white',
+        name: '마라로제 크림 떡볶이',
+        desc: '얼얼한 마라 풍미와 부드러운 생크림의 황금비율! 분모자와 비엔나 소시지 토핑까지',
+        spicyLevel: '얼얼매콤 🌶️🌶️🌶️',
+        price: 13900,
+        emoji: '🥘',
+        bgAccent: 'from-amber-50 to-orange-50'
+      },
+      {
+        id: 'menu3',
+        badge: '스트레스 타파 ⚡',
+        badgeColor: 'bg-brandDark text-[#FFD39A]',
+        name: '폭탄 청양 매운 떡볶이',
+        desc: '청양고추와 베트남 고춧가루로 화끈하게 매운맛! 쥬시쿨 필수 주문 추천 메뉴',
+        spicyLevel: '극강 매운맛 🌶️🌶️🌶️🌶️',
+        price: 12500,
+        emoji: '🌶️',
+        bgAccent: 'from-rose-50 to-red-50'
+      }
+    ];
+
+    // 상태 관리 객체
+    let cart = {}; // { menuId: quantity }
+    let selectedFlavor = '복숭아맛';
+
+    // 2. 초기 렌더링 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMenuCards();
+      updateCartUI();
+    });
+
+    // 신메뉴 카드 목록 렌더링
+    function renderMenuCards() {
+      const container = document.getElementById('menu-list');
+      container.innerHTML = newMenus.map(menu => {
+        const qty = cart[menu.id] || 0;
+        return `
+          <div class="bg-white rounded-2xl p-4 border-2 ${qty > 0 ? 'border-brandRed shadow-md' : 'border-orange-100 shadow-sm'} transition-all">
+            <div class="flex gap-3.5 items-center">
+              <!-- 메뉴 일러스트/아이콘 썸네일 -->
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br ${menu.bgAccent} border border-orange-200/70 flex flex-col items-center justify-center shrink-0 relative">
+                <span class="text-3xl">${menu.emoji}</span>
+                <span class="text-[10px] font-extrabold text-brandRed mt-1">+쥬시쿨 증정</span>
+              </div>
+
+              <!-- 메뉴 정보 -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md ${menu.badgeColor}">${menu.badge}</span>
+                  <span class="text-[10px] font-bold text-stone-500">${menu.spicyLevel}</span>
+                </div>
+                <h3 class="font-extrabold text-base text-brandDark truncate">${menu.name}</h3>
+                <p class="text-xs text-stone-500 line-clamp-2 mt-0.5 leading-snug">${menu.desc}</p>
+
+                <div class="mt-2.5 flex items-center justify-between">
+                  <span class="font-extrabold text-base text-brandDark">${menu.price.toLocaleString()}원</span>
+
+                  ${qty === 0 ? `
+                    <button 
+                      type="button" 
+                      onclick="addToCart('${menu.id}')" 
+                      class="bg-[#FFF2E0] hover:bg-brandOrange text-brandOrange hover:text-white font-extrabold text-xs px-3.5 py-2 rounded-xl border border-brandOrange/40 transition active:scale-95"
+                    >
+                      + 담기
+                    </button>
+                  ` : `
+                    <div class="flex items-center gap-2 bg-brandDark text-white rounded-xl px-2 py-1">
+                      <button type="button" onclick="changeQty('${menu.id}', -1)" class="w-6 h-6 flex items-center justify-center font-bold text-sm hover:text-[#FFD39A]">-</button>
+                      <span class="font-extrabold text-xs min-w-[16px] text-center">${qty}</span>
+                      <button type="button" onclick="changeQty('${menu.id}', 1)" class="w-6 h-6 flex items-center justify-center font-bold text-sm hover:text-[#FFD39A]">+</button>
+                    </div>
+                  `}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 장바구니에 메뉴 담기
+    function addToCart(menuId) {
+      const isFirstItem = Object.keys(cart).length === 0;
+      cart[menuId] = (cart[menuId] || 0) + 1;
+      renderMenuCards();
+      updateCartUI();
+
+      if (isFirstItem) {
+        showToast('🎁 쥬시쿨(450ml) 공짜 혜택이 자동 적용되었습니다!');
+      } else {
+        showToast('신메뉴가 장바구니에 추가되었습니다.');
+      }
+    }
+
+    // 수량 조절
+    function changeQty(menuId, delta) {
+      if (!cart[menuId]) return;
+      cart[menuId] += delta;
+      if (cart[menuId] <= 0) {
+        delete cart[menuId];
+      }
+      renderMenuCards();
+      updateCartUI();
+    }
+
+    // 증정 쥬시쿨 맛 선택
+    function selectFlavor(flavor) {
+      selectedFlavor = flavor;
+      document.querySelectorAll('.flavor-btn').forEach(btn => {
+        if (btn.dataset.flavor === flavor) {
+          btn.className = 'flavor-btn py-2 px-2 rounded-xl text-xs font-extrabold border-2 border-brandRed bg-white text-brandRed shadow-sm transition flex items-center justify-center gap-1';
+        } else {
+          btn.className = 'flavor-btn py-2 px-2 rounded-xl text-xs font-bold border border-stone-200 bg-white/80 text-stone-600 hover:border-brandOrange transition flex items-center justify-center gap-1';
+        }
+      });
+      showToast(`공짜 쥬시쿨이 [${flavor}]으로 선택되었습니다.`);
+    }
+
+    // 장바구니 및 혜택 요약 UI 업데이트
+    function updateCartUI() {
+      const entries = Object.entries(cart);
+      const totalCount = entries.reduce((sum, [, qty]) => sum + qty, 0);
+
+      document.getElementById('cart-count-badge').textContent = `${totalCount}개 선택됨`;
+
+      const emptyMsg = document.getElementById('empty-cart-msg');
+      const activeContent = document.getElementById('active-cart-content');
+
+      if (totalCount === 0) {
+        emptyMsg.classList.remove('hidden');
+        activeContent.classList.add('hidden');
+        return;
+      }
+
+      emptyMsg.classList.add('hidden');
+      activeContent.classList.remove('hidden');
+
+      let totalPrice = 0;
+      const listHtml = entries.map(([menuId, qty]) => {
+        const menu = newMenus.find(m => m.id === menuId);
+        const itemTotal = menu.price * qty;
+        totalPrice += itemTotal;
+        return `
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-brandDark">${menu.name} <span class="text-brandOrange">x${qty}</span></span>
+            <span class="font-extrabold text-stone-700">${itemTotal.toLocaleString()}원</span>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('selected-menus-list').innerHTML = listHtml;
+      document.getElementById('total-price-text').textContent = `${totalPrice.toLocaleString()}원`;
+    }
+
+    // 유의사항 아코디언 토글
+    function toggleNotice() {
+      const content = document.getElementById('notice-content');
+      const chevron = document.getElementById('notice-chevron');
+      const btn = document.getElementById('notice-toggle-btn');
+      const isHidden = content.classList.contains('hidden');
+
+      if (isHidden) {
+        content.classList.remove('hidden');
+        chevron.classList.add('rotate-180');
+        btn.setAttribute('aria-expanded', 'true');
+      } else {
+        content.classList.add('hidden');
+        chevron.classList.remove('rotate-180');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    // 하단 CTA 클릭 시 주문 확인 모달 열기
+    function openOrderModal() {
+      // 아무 메뉴도 안 담았을 경우 대표 메뉴 1개를 자동 담아 안내
+      if (Object.keys(cart).length === 0) {
+        cart['menu1'] = 1;
+        renderMenuCards();
+        updateCartUI();
+      }
+
+      const entries = Object.entries(cart);
+      const summaryHtml = entries.map(([menuId, qty]) => {
+        const menu = newMenus.find(m => m.id === menuId);
+        return `
+          <div class="flex justify-between">
+            <span>• ${menu.name} (${qty}개)</span>
+            <span>${(menu.price * qty).toLocaleString()}원</span>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('modal-menu-summary').innerHTML = summaryHtml;
+      document.getElementById('modal-flavor-text').textContent = selectedFlavor;
+
+      const modal = document.getElementById('order-modal');
+      const card = document.getElementById('order-modal-card');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById('order-modal');
+      const card = document.getElementById('order-modal-card');
+      card.classList.remove('scale-100', 'opacity-100');
+      card.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 200);
+    }
+
+    // 프로모션 코드 복사 (iFrame 환경 호환 execCommand 사용)
+    function copyPromoCode() {
+      const code = document.getElementById('promo-code-text').textContent;
+      copyTextFallback(code, '프로모션 코드(JUICYCOOL-FREE)가 복사되었습니다!');
+    }
+
+    // 이벤트 페이지 링크 복사
+    function copyEventLink() {
+      copyTextFallback(window.location.href, '이벤트 페이지 링크가 복사되었습니다!');
+    }
+
+    function copyTextFallback(text, successMessage) {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      tempInput.style.position = 'fixed';
+      tempInput.style.left = '-9999px';
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMessage);
+      } catch (err) {
+        showToast('복사에 실패했습니다. 직접 선택해 복사해 주세요.');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    function confirmSimulatedOrder() {
+      closeOrderModal();
+      showToast(`🎉 신메뉴 + 공짜 쥬시쿨(${selectedFlavor}) 혜택이 적용되었습니다!`);
+    }
+
+    // 커스텀 토스트 알림 표시
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById('toast-msg');
+      document.getElementById('toast-text').textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2600);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>입덕볶이 - 전화주문 안내</title>
+  <!-- Pretendard 웹폰트 로드 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    /* =========================================
+       1. 디자인 토큰 및 기본 리셋
+       ========================================= */
+    :root {
+      --primary-red: #FF3B30;
+      --primary-orange: #FF6B2B;
+      --primary-light: #FFF2F0;
+      --bg-outer: #F2F3F5;
+      --bg-app: #F8F9FA;
+      --surface-white: #FFFFFF;
+      --surface-gray: #F2F4F6;
+      --text-main: #191F28;
+      --text-sub: #4E5968;
+      --text-muted: #8B95A1;
+      --border-light: #E5E8EB;
+      --open-green-bg: #E8F8F0;
+      --open-green-text: #00A854;
+      --prep-gray-bg: #F2F4F6;
+      --prep-gray-text: #6B7684;
+      --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+      --shadow-cta: 0 6px 18px rgba(255, 59, 48, 0.28);
+      --shadow-nav: 0 -2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: var(--bg-outer);
+      color: var(--text-main);
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* =========================================
+       2. 모바일 앱 컨테이너 (최대 너비 500px)
+       ========================================= */
+    .app-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background-color: var(--bg-app);
+      box-shadow: 0 0 24px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 84px; /* 하단 탭바 여백 */
+    }
+
+    /* =========================================
+       3. 상단 고정 헤더 (56px Sticky Header)
+       ========================================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      height: 56px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--surface-gray);
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .icon-btn:hover {
+      background-color: var(--surface-gray);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.94);
+    }
+
+    .header-call-btn {
+      color: var(--primary-red);
+      background-color: var(--primary-light);
+    }
+
+    .header-call-btn:hover {
+      background-color: #FFE4E0;
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* =========================================
+       4. 히어로 배너 카드 (Hero Banner)
+       ========================================= */
+    .hero-wrap {
+      padding: 16px 16px 8px;
+    }
+
+    .hero-card {
+      background: linear-gradient(145deg, #FFF5F2 0%, #FFE3DA 100%);
+      border: 1px solid rgba(255, 59, 48, 0.16);
+      border-radius: 22px;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(255, 75, 43, 0.1);
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      bottom: -35px;
+      left: -35px;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 107, 43, 0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hours-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #FFFFFF;
+      color: var(--primary-red);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      box-shadow: 0 3px 10px rgba(255, 59, 48, 0.12);
+      margin-bottom: 16px;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--open-green-text);
+      box-shadow: 0 0 0 3px rgba(0, 168, 84, 0.2);
+    }
+
+    .hero-svg-box {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 14px;
+      background-color: #FFFFFF;
+      border-radius: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(255, 59, 48, 0.15);
+    }
+
+    .hero-headline {
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1.36;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      word-break: keep-all;
+    }
+
+    .hero-headline span {
+      color: var(--primary-red);
+    }
+
+    .hero-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+      word-break: keep-all;
+    }
+
+    .main-call-cta {
+      width: 100%;
+      height: 52px;
+      border-radius: 15px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-cta);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .main-call-cta:hover {
+      box-shadow: 0 8px 22px rgba(255, 59, 48, 0.36);
+    }
+
+    .main-call-cta:active {
+      transform: scale(0.985);
+    }
+
+    /* =========================================
+       5. 공통 섹션 카드 스타일 & 3단계 전화주문 가이드
+       ========================================= */
+    .section-block {
+      padding: 12px 16px 4px;
+    }
+
+    .section-card {
+      background-color: var(--surface-white);
+      border-radius: 20px;
+      padding: 20px 18px;
+      border: 1px solid var(--surface-gray);
+      box-shadow: var(--shadow-card);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* 3단계 가이드 리스트 */
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background-color: var(--bg-app);
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--surface-gray);
+    }
+
+    .step-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-content h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .step-content p {
+      font-size: 12.5px;
+      color: var(--text-sub);
+      word-break: keep-all;
+    }
+
+    /* =========================================
+       6. 통화 전 인기 메뉴 요약 & 통화 메모장 (Cheat-Sheet)
+       ========================================= */
+    .memo-pad-box {
+      background: linear-gradient(135deg, #FFF9F7 0%, #FFF2EE 100%);
+      border: 1.5px dashed rgba(255, 59, 48, 0.35);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .memo-pad-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .memo-pad-label {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--primary-red);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .memo-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini-pill-btn {
+      border: 1px solid var(--border-light);
+      background-color: #FFFFFF;
+      color: var(--text-sub);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .mini-pill-btn:hover {
+      border-color: var(--primary-red);
+      color: var(--primary-red);
+    }
+
+    .memo-script {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 10px 12px;
+      border-radius: 11px;
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+
+    .memo-placeholder {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .cheat-group {
+      margin-bottom: 14px;
+    }
+
+    .cheat-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .cheat-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .chip-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .select-chip {
+      border: 1px solid var(--border-light);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 11px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .select-chip span.price {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .select-chip.active {
+      background-color: var(--primary-light);
+      border-color: var(--primary-red);
+      color: var(--primary-red);
+      font-weight: 700;
+    }
+
+    .select-chip.active span.price {
+      color: var(--primary-red);
+    }
+
+    /* =========================================
+       7. 가까운 매장 찾기 & 직통 전화 리스트
+       ========================================= */
+    .store-search-box {
+      display: flex;
+      align-items: center;
+      background-color: var(--bg-app);
+      border: 1.5px solid var(--border-light);
+      border-radius: 13px;
+      padding: 0 12px;
+      height: 44px;
+      gap: 8px;
+      margin-bottom: 12px;
+      transition: border-color 0.15s ease;
+    }
+
+    .store-search-box:focus-within {
+      border-color: var(--primary-red);
+      background-color: #FFFFFF;
+    }
+
+    .store-search-box input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .region-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .region-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .region-pill {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      background-color: #FFFFFF;
+      color: var(--text-sub);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .region-pill.active {
+      background-color: var(--text-main);
+      color: #FFFFFF;
+      border-color: var(--text-main);
+    }
+
+    .nearby-toggle {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      background-color: #FFFFFF;
+      color: var(--text-sub);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nearby-toggle.active {
+      background-color: var(--primary-light);
+      border-color: var(--primary-red);
+      color: var(--primary-red);
+    }
+
+    .store-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .store-card {
+      background-color: var(--surface-white);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.18s ease;
+    }
+
+    .store-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .store-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .store-name {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .status-open {
+      background-color: var(--open-green-bg);
+      color: var(--open-green-text);
+    }
+
+    .status-prep {
+      background-color: var(--prep-gray-bg);
+      color: var(--prep-gray-text);
+    }
+
+    .store-dist {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary-red);
+      flex-shrink: 0;
+    }
+
+    .store-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 12.5px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    .store-phone-line {
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+    }
+
+    .store-actions {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 8px;
+    }
+
+    .store-btn {
+      height: 40px;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-direct-call {
+      border: none;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(255, 59, 48, 0.22);
+    }
+
+    .btn-direct-call:active {
+      transform: scale(0.97);
+    }
+
+    .btn-menu-preview {
+      border: 1px solid var(--border-light);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+    }
+
+    .btn-menu-preview:hover {
+      border-color: #D1D6DB;
+      background-color: #EBEEF2;
+    }
+
+    .empty-stores {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      display: none;
+    }
+
+    /* =========================================
+       8. 하단 고정 네비게이션 바 (Bottom Tab Bar)
+       ========================================= */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      height: 62px;
+      background-color: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--surface-gray);
+      box-shadow: var(--shadow-nav);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.15s ease;
+    }
+
+    .nav-item:hover {
+      color: var(--text-sub);
+    }
+
+    .nav-item.active {
+      color: var(--primary-red);
+      font-weight: 700;
+    }
+
+    /* =========================================
+       9. 바텀시트 모달 (전화 연결 확인 & 메뉴 미리보기)
+       ========================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(25, 31, 40, 0.52);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 300;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 500px;
+      background-color: var(--surface-white);
+      border-radius: 24px 24px 0 0;
+      padding: 22px 20px 28px;
+      box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.14);
+      animation: slideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .call-sheet-box {
+      background-color: var(--bg-app);
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      border: 1px solid var(--surface-gray);
+    }
+
+    .call-sheet-store {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .call-sheet-number {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--primary-red);
+      margin-bottom: 6px;
+    }
+
+    .call-sheet-hours {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .call-sheet-memo {
+      background-color: var(--primary-light);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12.5px;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .call-sheet-memo strong {
+      display: block;
+      color: var(--primary-red);
+      margin-bottom: 3px;
+    }
+
+    .sheet-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 10px;
+    }
+
+    .sheet-copy-btn {
+      height: 50px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-light);
+      background-color: #FFFFFF;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .sheet-tel-link {
+      height: 50px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--shadow-cta);
+    }
+
+    /* 메뉴 미리보기 리스트 */
+    .quick-menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .quick-menu-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background-color: var(--bg-app);
+      border-radius: 13px;
+    }
+
+    .qm-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .qm-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .qm-price {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--primary-red);
+    }
+
+    /* 토스트 알림 */
+    .toast {
+      position: fixed;
+      bottom: 78px;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background-color: rgba(25, 31, 40, 0.94);
+      color: #FFFFFF;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.24s ease;
+      z-index: 400;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 1. 상단 고정 헤더 -->
+    <header class="app-header">
+      <button type="button" class="icon-btn" aria-label="뒤로가기" onclick="handleBack()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+
+      <h1 class="header-title">전화주문</h1>
+
+      <button type="button" class="icon-btn header-call-btn" aria-label="대표번호 빠른 전화" onclick="openCallSheet('입덕볶이 전국 대표주문센터', '1588-0224', '매일 11:00 ~ 23:00 연중무휴')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- 2. 히어로 배너 카드 -->
+    <section class="hero-wrap">
+      <div class="hero-card">
+        <div class="hours-badge">
+          <span class="pulse-dot"></span>
+          <span>매일 11:00 ~ 23:00 연중무휴</span>
+        </div>
+
+        <!-- 커스텀 SVG: 수화기 + 떡볶이 일러스트 아이콘 -->
+        <div class="hero-svg-box" aria-hidden="true">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 따뜻한 떡볶이 그릇 -->
+            <ellipse cx="26" cy="36" rx="16" ry="6" fill="#FF3B30"/>
+            <rect x="16" y="31" width="10" height="5" rx="2.5" transform="rotate(-10 16 31)" fill="#FFF8F0"/>
+            <rect x="25" y="30" width="10" height="5" rx="2.5" transform="rotate(8 25 30)" fill="#FFFFFF"/>
+            <path d="M10 36C10 45.3888 17.1634 52 26 52C34.8366 52 42 45.3888 42 36H10Z" fill="#191F28"/>
+            <!-- 통화 전파 웨이브 -->
+            <path d="M41 13C46.5 13 51 17.5 51 23" stroke="#FF6B2B" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M41 18C43.8 18 46 20.2 46 23" stroke="#FF3B30" stroke-width="2.6" stroke-linecap="round"/>
+            <!-- 수화기 아이콘 -->
+            <path d="M51.8 39.2L47.6 35C46.4 33.8 44.4 33.9 43.3 35.1L41.4 37C39.2 35.8 37.3 33.9 36.1 31.7L38 29.8C39.2 28.7 39.3 26.7 38.1 25.5L33.9 21.3C32.7 20.1 30.7 20.1 29.5 21.3L27.9 22.9C25.8 25 25.4 28.3 26.8 31.1C29.6 36.7 34.4 41.5 40 44.3C42.8 45.7 46.1 45.3 48.2 43.2L49.8 41.6C51 40.4 53 40.4 51.8 39.2Z" fill="#FF3B30"/>
+          </svg>
+        </div>
+
+        <h2 class="hero-headline">
+          앱 주문이 어려우신가요?<br />
+          <span>전화 한 통으로 간편하게 주문하세요!</span>
+        </h2>
+        <p class="hero-desc">
+          회원가입이나 복잡한 결제 과정 없이 상담원·매장 직통 연결로 바로 주문할 수 있어요.
+        </p>
+
+        <button type="button" class="main-call-cta" onclick="openCallSheet('입덕볶이 전국 대표주문센터', '1588-0224', '매일 11:00 ~ 23:00 연중무휴')">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          <span>대표번호 바로 전화하기 (1588-0224)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. 전화주문 3단계 안내 -->
+    <section class="section-block">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">📞 초간단 전화주문 3단계</h2>
+          <span class="section-sub">평균 통화 1분 소요</span>
+        </div>
+
+        <div class="steps-list">
+          <div class="step-item">
+            <span class="step-badge">1</span>
+            <div class="step-content">
+              <h3>가까운 매장 선택 또는 대표번호 연결</h3>
+              <p>아래 매장 목록에서 직통 전화를 누르거나 대표번호(1588-0224)로 연결합니다.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <span class="step-badge">2</span>
+            <div class="step-content">
+              <h3>메뉴·맵기·토핑 말씀하시고 주소/연락처 전달</h3>
+              <p>원하시는 메뉴와 맵기 단계, 배달 받으실 주소와 연락처를 말씀해 주세요.</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <span class="step-badge">3</span>
+            <div class="step-content">
+              <h3>결제 방식 선택 및 배달 시작</h3>
+              <p>만나서 카드/현금 결제 또는 휴대폰 문자 결제 링크 중 편한 방식으로 결제하면 조리가 시작됩니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 통화 전 미리 보는 인기 메뉴 요약 & 통화 메모장 -->
+    <section class="section-block">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">📝 통화 전 미리 보는 인기 메뉴 요약</h2>
+          <span class="section-sub">터치해 메모장 담기</span>
+        </div>
+
+        <!-- 실시간 통화 메모장 -->
+        <div class="memo-pad-box">
+          <div class="memo-pad-top">
+            <span class="memo-pad-label">🗣️ 통화 시 이렇게 말씀하세요! (통화 메모장)</span>
+            <div class="memo-actions">
+              <button type="button" class="mini-pill-btn" onclick="copyMemoText()">복사</button>
+              <button type="button" class="mini-pill-btn" onclick="resetMemo()">초기화</button>
+            </div>
+          </div>
+          <div class="memo-script" id="memoScriptDisplay">
+            <span class="memo-placeholder">아래에서 메뉴, 맵기, 토핑을 터치하면 통화할 때 그대로 읽을 수 있는 주문 문장이 완성돼요!</span>
+          </div>
+        </div>
+
+        <!-- 인기 메뉴 선택 -->
+        <div class="cheat-group">
+          <span class="cheat-label">1. 인기 메뉴 선택 (복수 선택 가능)</span>
+          <div class="chip-wrap" id="menuChips">
+            <button type="button" class="select-chip" data-name="오리지널 매콤 떡볶이" data-price="8500" onclick="toggleMemoMenu(this)">
+              🥘 오리지널 매콤 <span class="price">8,500원</span>
+            </button>
+            <button type="button" class="select-chip" data-name="바질 페스토 크림 떡볶이" data-price="11500" onclick="toggleMemoMenu(this)">
+              🌿 바질 크림 <span class="price">11,500원</span>
+            </button>
+            <button type="button" class="select-chip" data-name="마라로제 떡볶이" data-price="12500" onclick="toggleMemoMenu(this)">
+              🔥 마라로제 <span class="price">12,500원</span>
+            </button>
+            <button type="button" class="select-chip" data-name="꾸덕 투움바 떡볶이" data-price="12000" onclick="toggleMemoMenu(this)">
+              🧀 꾸덕 투움바 <span class="price">12,000원</span>
+            </button>
+            <button type="button" class="select-chip" data-name="모듬 튀김 세트" data-price="6500" onclick="toggleMemoMenu(this)">
+              🍤 모듬 튀김 <span class="price">6,500원</span>
+            </button>
+            <button type="button" class="select-chip" data-name="찰순대 & 내장" data-price="4500" onclick="toggleMemoMenu(this)">
+              🍢 찰순대 <span class="price">4,500원</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 맵기 단계 선택 -->
+        <div class="cheat-group">
+          <span class="cheat-label">2. 맵기 단계</span>
+          <div class="chip-wrap" id="spiceChips">
+            <button type="button" class="select-chip" data-spice="순한맛" onclick="selectMemoSpice(this)">🌱 순한맛</button>
+            <button type="button" class="select-chip active" data-spice="보통맛" onclick="selectMemoSpice(this)">🌶️ 보통맛</button>
+            <button type="button" class="select-chip" data-spice="매운맛" onclick="selectMemoSpice(this)">🌶️🌶️ 매운맛</button>
+            <button type="button" class="select-chip" data-spice="핵매운맛" onclick="selectMemoSpice(this)">🔥 핵매운맛</button>
+          </div>
+        </div>
+
+        <!-- 인기 토핑 추가 -->
+        <div class="cheat-group">
+          <span class="cheat-label">3. 인기 토핑 추가</span>
+          <div class="chip-wrap" id="toppingChips">
+            <button type="button" class="select-chip" data-topping="눈꽃모짜치즈" data-price="3000" onclick="toggleMemoTopping(this)">
+              🧀 눈꽃치즈 <span class="price">+3,000</span>
+            </button>
+            <button type="button" class="select-chip" data-topping="넓적분모자" data-price="2500" onclick="toggleMemoTopping(this)">
+              🍡 분모자 <span class="price">+2,500</span>
+            </button>
+            <button type="button" class="select-chip" data-topping="중국당면" data-price="2500" onclick="toggleMemoTopping(this)">
+              🍜 중국당면 <span class="price">+2,500</span>
+            </button>
+            <button type="button" class="select-chip" data-topping="참치마요주먹밥" data-price="4000" onclick="toggleMemoTopping(this)">
+              🍙 참치마요주먹밥 <span class="price">+4,000</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 가까운 매장 찾기 & 직통 전화 리스트 -->
+    <section class="section-block">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">📍 가까운 매장 찾기 &amp; 직통 전화</h2>
+          <span class="section-sub" id="storeCountLabel">총 6개 매장</span>
+        </div>
+
+        <!-- 매장 검색창 -->
+        <div class="store-search-box">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="storeSearchInput" placeholder="매장명 또는 동네 이름 검색 (예: 부평, 송도, 홍대)" oninput="renderStores()" />
+        </div>
+
+        <!-- 지역 필터 & 내 주변 매장 토글 -->
+        <div class="filter-row">
+          <div class="region-pills">
+            <button type="button" class="region-pill active" data-region="all" onclick="selectRegion(this)">전체</button>
+            <button type="button" class="region-pill" data-region="incheon" onclick="selectRegion(this)">인천/경기</button>
+            <button type="button" class="region-pill" data-region="seoul" onclick="selectRegion(this)">서울</button>
+            <button type="button" class="region-pill" data-region="busan" onclick="selectRegion(this)">부산/경남</button>
+          </div>
+
+          <button type="button" class="nearby-toggle" id="nearbyToggleBtn" onclick="toggleNearbyOnly()">
+            <span>📡 내 주변 매장</span>
+          </button>
+        </div>
+
+        <!-- 매장 카드 목록 -->
+        <div class="store-list" id="storeListContainer"></div>
+        <div class="empty-stores" id="emptyStoresMsg">조건에 맞는 매장이 없습니다. 다른 지역이나 검색어를 입력해 보세요!</div>
+      </div>
+    </section>
+
+    <!-- 6. 하단 고정 네비게이션 바 -->
+    <nav class="bottom-nav" aria-label="하단 탭 메뉴">
+      <a href="tteokbokki_menu.html" class="nav-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>메뉴</span>
+      </a>
+      <a href="tteokbokki_about.html" class="nav-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>브랜드</span>
+      </a>
+      <a href="tteokbokki_community.html" class="nav-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>커뮤니티</span>
+      </a>
+      <a href="tteokbokki_phone_order.html" class="nav-item active" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+        </svg>
+        <span>전화주문</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- 바텀시트 1: 전화 연결 확인 모달 -->
+  <div class="modal-backdrop" id="callModal" onclick="closeModalOnBackdrop(event, 'callModal')">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 class="modal-title">📞 전화주문 연결</h2>
+        <button type="button" class="icon-btn" aria-label="닫기" onclick="closeModal('callModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="call-sheet-box">
+        <div class="call-sheet-store" id="callSheetStoreName">입덕볶이 부평삼산점</div>
+        <div class="call-sheet-number" id="callSheetPhone">032-512-0224</div>
+        <div class="call-sheet-hours" id="callSheetHours">매일 11:00 ~ 23:00</div>
+      </div>
+
+      <div class="call-sheet-memo">
+        <strong>🗣️ 내 통화 메모장 요약</strong>
+        <span id="callSheetMemoText">선택한 메뉴가 없습니다. 통화 시 원하시는 메뉴를 말씀해 주세요!</span>
+      </div>
+
+      <div class="sheet-btn-row">
+        <button type="button" class="sheet-copy-btn" onclick="copyCurrentPhone()">번호 복사</button>
+        <a href="tel:1588-0224" class="sheet-tel-link" id="callSheetTelLink" onclick="showToast('전화 앱으로 연결합니다...')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          <span>바로 통화하기</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 바텀시트 2: 매장별 메뉴 미리보기 모달 -->
+  <div class="modal-backdrop" id="menuPreviewModal" onclick="closeModalOnBackdrop(event, 'menuPreviewModal')">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 class="modal-title" id="previewStoreTitle">매장 메뉴 미리보기</h2>
+        <button type="button" class="icon-btn" aria-label="닫기" onclick="closeModal('menuPreviewModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="quick-menu-list">
+        <div class="quick-menu-row">
+          <div>
+            <div class="qm-name">오리지널 매콤 떡볶이</div>
+            <div class="qm-sub">밀떡/쌀떡 선택 · 맵기 1~4단계</div>
+          </div>
+          <div class="qm-price">8,500원</div>
+        </div>
+        <div class="quick-menu-row">
+          <div>
+            <div class="qm-name">바질 페스토 크림 떡볶이 (BEST)</div>
+            <div class="qm-sub">생바질 크림 &amp; 베이컨 칩</div>
+          </div>
+          <div class="qm-price">11,500원</div>
+        </div>
+        <div class="quick-menu-row">
+          <div>
+            <div class="qm-name">마라로제 떡볶이 (HOT)</div>
+            <div class="qm-sub">넓적 분모자 &amp; 푸주 기본 포함</div>
+          </div>
+          <div class="qm-price">12,500원</div>
+        </div>
+        <div class="quick-menu-row">
+          <div>
+            <div class="qm-name">꾸덕 투움바 떡볶이 (NEW)</div>
+            <div class="qm-sub">체다 갈릭 크림 &amp; 통새우 토핑</div>
+          </div>
+          <div class="qm-price">12,000원</div>
+        </div>
+        <div class="quick-menu-row">
+          <div>
+            <div class="qm-name">모듬 튀김 세트 (5종) / 찰순대</div>
+            <div class="qm-sub">사이드 인기 조합</div>
+          </div>
+          <div class="qm-price">6,500원 / 4,500원</div>
+        </div>
+      </div>
+
+      <button type="button" class="main-call-cta" id="previewModalCallBtn">
+        <span>이 매장으로 바로 전화주문하기</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 하단 토스트 알림 -->
+  <div class="toast" id="toastMsg">안내 메시지</div>
+
+  <script>
+    // =========================================
+    // 1. 매장 샘플 데이터 (인천/경기, 서울, 부산/경남)
+    // =========================================
+    const stores = [
+      {
+        id: 1,
+        name: '입덕볶이 부평삼산점',
+        region: 'incheon',
+        status: 'open',
+        statusText: '영업중',
+        distance: '0.8km',
+        distNum: 0.8,
+        address: '인천광역시 부평구 체육관로 28, 1층',
+        hours: '매일 11:00 ~ 23:00',
+        phone: '032-512-0224'
+      },
+      {
+        id: 2,
+        name: '입덕볶이 구월로데오점',
+        region: 'incheon',
+        status: 'open',
+        statusText: '영업중',
+        distance: '2.4km',
+        distNum: 2.4,
+        address: '인천광역시 남동구 인하로507번길 14, 1층',
+        hours: '매일 11:00 ~ 23:30',
+        phone: '032-438-0224'
+      },
+      {
+        id: 3,
+        name: '입덕볶이 송도센트럴점',
+        region: 'incheon',
+        status: 'open',
+        statusText: '영업중',
+        distance: '4.1km',
+        distNum: 4.1,
+        address: '인천광역시 연수구 컨벤시아대로 116, 102호',
+        hours: '매일 11:00 ~ 22:30',
+        phone: '032-831-0224'
+      },
+      {
+        id: 4,
+        name: '입덕볶이 홍대본점',
+        region: 'seoul',
+        status: 'open',
+        statusText: '영업중',
+        distance: '24.5km',
+        distNum: 24.5,
+        address: '서울특별시 마포구 와우산로21길 19, 1층',
+        hours: '매일 11:00 ~ 24:00',
+        phone: '02-336-0224'
+      },
+      {
+        id: 5,
+        name: '입덕볶이 강남역점',
+        region: 'seoul',
+        status: 'open',
+        statusText: '영업중',
+        distance: '31.2km',
+        distNum: 31.2,
+        address: '서울특별시 강남구 강남대로96길 12, 1층',
+        hours: '매일 11:00 ~ 23:30',
+        phone: '02-558-0224'
+      },
+      {
+        id: 6,
+        name: '입덕볶이 해운대점',
+        region: 'busan',
+        status: 'prep',
+        statusText: '브레이크타임',
+        distance: '338km',
+        distNum: 338,
+        address: '부산광역시 해운대구 구남로 24, 1층',
+        hours: '매일 11:30 ~ 23:00 (15:00~16:30 준비시간)',
+        phone: '051-742-0224'
+      }
+    ];
+
+    let selectedRegion = 'all';
+    let nearbyOnly = false;
+    let currentCallPhone = '1588-0224';
+
+    // 통화 메모장 상태
+    let selectedMenus = [];
+    let selectedSpice = '보통맛';
+    let selectedToppings = [];
+
+    let toastTimer = null;
+    const toastEl = document.getElementById('toastMsg');
+
+    // =========================================
+    // 2. 통화 전 인기 메뉴 메모장 로직
+    // =========================================
+    function toggleMemoMenu(btn) {
+      const name = btn.dataset.name;
+      const price = Number(btn.dataset.price);
+      const idx = selectedMenus.findIndex((m) => m.name === name);
+
+      if (idx > -1) {
+        selectedMenus.splice(idx, 1);
+        btn.classList.remove('active');
+      } else {
+        selectedMenus.push({ name, price });
+        btn.classList.add('active');
+      }
+      updateMemoDisplay();
+    }
+
+    function selectMemoSpice(btn) {
+      document.querySelectorAll('#spiceChips .select-chip').forEach((c) => c.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSpice = btn.dataset.spice;
+      updateMemoDisplay();
+    }
+
+    function toggleMemoTopping(btn) {
+      const topping = btn.dataset.topping;
+      const price = Number(btn.dataset.price);
+      const idx = selectedToppings.findIndex((t) => t.topping === topping);
+
+      if (idx > -1) {
+        selectedToppings.splice(idx, 1);
+        btn.classList.remove('active');
+      } else {
+        selectedToppings.push({ topping, price });
+        btn.classList.add('active');
+      }
+      updateMemoDisplay();
+    }
+
+    function getFormattedMemoText() {
+      if (selectedMenus.length === 0 && selectedToppings.length === 0) {
+        return '';
+      }
+      const menuStr = selectedMenus.length > 0 ? selectedMenus.map((m) => m.name).join(', ') : '떡볶이 메뉴';
+      const topStr = selectedToppings.length > 0 ? `에 ${selectedToppings.map((t) => t.topping).join(', ')} 추가해서` : '';
+      const total =
+        selectedMenus.reduce((acc, cur) => acc + cur.price, 0) +
+        selectedToppings.reduce((acc, cur) => acc + cur.price, 0);
+
+      return `"${menuStr}(${selectedSpice})${topStr} 전화주문할게요!" (예상 금액 ${total.toLocaleString()}원)`;
+    }
+
+    function updateMemoDisplay() {
+      const displayEl = document.getElementById('memoScriptDisplay');
+      const text = getFormattedMemoText();
+      if (!text) {
+        displayEl.innerHTML =
+          '<span class="memo-placeholder">아래에서 메뉴, 맵기, 토핑을 터치하면 통화할 때 그대로 읽을 수 있는 주문 문장이 완성돼요!</span>';
+      } else {
+        displayEl.textContent = text;
+      }
+    }
+
+    function copyMemoText() {
+      const text = getFormattedMemoText();
+      if (!text) {
+        showToast('먼저 아래에서 메뉴나 토핑을 선택해 주세요!');
+        return;
+      }
+      copyToClipboard(text, '통화 메모 문장이 복사되었어요!');
+    }
+
+    function resetMemo() {
+      selectedMenus = [];
+      selectedToppings = [];
+      selectedSpice = '보통맛';
+      document.querySelectorAll('#menuChips .select-chip, #toppingChips .select-chip').forEach((c) => c.classList.remove('active'));
+      document.querySelectorAll('#spiceChips .select-chip').forEach((c) => {
+        c.classList.toggle('active', c.dataset.spice === '보통맛');
+      });
+      updateMemoDisplay();
+      showToast('통화 메모장을 초기화했어요');
+    }
+
+    // =========================================
+    // 3. 매장 검색 및 필터링 렌더링
+    // =========================================
+    function selectRegion(btn) {
+      document.querySelectorAll('.region-pill').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRegion = btn.dataset.region;
+      renderStores();
+    }
+
+    function toggleNearbyOnly() {
+      nearbyOnly = !nearbyOnly;
+      const btn = document.getElementById('nearbyToggleBtn');
+      btn.classList.toggle('active', nearbyOnly);
+      if (nearbyOnly) {
+        showToast('현 위치 기준 5km 이내 가까운 매장만 표시합니다');
+      }
+      renderStores();
+    }
+
+    function renderStores() {
+      const keyword = document.getElementById('storeSearchInput').value.trim().toLowerCase();
+      const container = document.getElementById('storeListContainer');
+      const emptyMsg = document.getElementById('emptyStoresMsg');
+      const countLabel = document.getElementById('storeCountLabel');
+
+      const filtered = stores.filter((s) => {
+        const matchRegion = selectedRegion === 'all' || s.region === selectedRegion;
+        const matchNearby = !nearbyOnly || s.distNum <= 5.0;
+        const matchQuery =
+          !keyword ||
+          s.name.toLowerCase().includes(keyword) ||
+          s.address.toLowerCase().includes(keyword);
+        return matchRegion && matchNearby && matchQuery;
+      });
+
+      countLabel.textContent = `총 ${filtered.length}개 매장`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        return;
+      }
+
+      emptyMsg.style.display = 'none';
+      container.innerHTML = filtered
+        .map(
+          (store) => `
+          <article class="store-card">
+            <div class="store-card-top">
+              <div class="store-name-wrap">
+                <h3 class="store-name">${store.name}</h3>
+                <span class="status-badge ${store.status === 'open' ? 'status-open' : 'status-prep'}">${store.statusText}</span>
+              </div>
+              <span class="store-dist">${store.distance}</span>
+            </div>
+
+            <div class="store-meta">
+              <div>${store.address}</div>
+              <div>운영시간: ${store.hours}</div>
+              <div class="store-phone-line">☎️ 직통번호: ${store.phone}</div>
+            </div>
+
+            <div class="store-actions">
+              <button type="button" class="store-btn btn-direct-call" onclick="openCallSheet('${store.name}', '${store.phone}', '${store.hours}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <span>전화주문</span>
+              </button>
+              <button type="button" class="store-btn btn-menu-preview" onclick="openMenuPreview('${store.name}', '${store.phone}', '${store.hours}')">
+                <span>메뉴 미리보기</span>
+              </button>
+            </div>
+          </article>
+        `
+        )
+        .join('');
+    }
+
+    // =========================================
+    // 4. 바텀시트 모달 제어 (전화 연결 & 메뉴 미리보기)
+    // =========================================
+    function openCallSheet(storeName, phone, hours) {
+      currentCallPhone = phone;
+      document.getElementById('callSheetStoreName').textContent = storeName;
+      document.getElementById('callSheetPhone').textContent = phone;
+      document.getElementById('callSheetHours').textContent = hours;
+      document.getElementById('callSheetTelLink').setAttribute('href', `tel:${phone.replace(/-/g, '')}`);
+
+      const memoText = getFormattedMemoText();
+      document.getElementById('callSheetMemoText').textContent =
+        memoText || '아직 선택한 메뉴가 없습니다. 상담원에게 원하시는 메뉴와 맵기를 말씀해 주세요!';
+
+      document.getElementById('callModal').classList.add('open');
+    }
+
+    function openMenuPreview(storeName, phone, hours) {
+      document.getElementById('previewStoreTitle').textContent = `${storeName} 주요 메뉴`;
+      const callBtn = document.getElementById('previewModalCallBtn');
+      callBtn.onclick = function () {
+        closeModal('menuPreviewModal');
+        openCallSheet(storeName, phone, hours);
+      };
+      document.getElementById('menuPreviewModal').classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(event, modalId) {
+      if (event.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    function copyCurrentPhone() {
+      copyToClipboard(currentCallPhone, `전화번호(${currentCallPhone})가 복사되었어요!`);
+    }
+
+    function copyToClipboard(text, successMsg) {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast(successMsg);
+    }
+
+    // =========================================
+    // 5. 토스트 & 뒤로가기
+    // =========================================
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 2200);
+    }
+
+    function handleBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'tteokbokki_menu.html';
+      }
+    }
+
+    // 초기 매장 리스트 렌더링
+    renderStores();
+  </script>
+</body>
+</html>

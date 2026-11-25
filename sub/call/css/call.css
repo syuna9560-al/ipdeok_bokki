@@ -1,0 +1,264 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+  color: #292929;
+}
+
+.app {
+  width: 100%;
+  max-width: 500px;
+  min-height: 100vh;
+  margin: auto;
+  background: white;
+  padding-bottom: 85px;
+}
+
+/* 상단 헤더 */
+.header {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.back {
+  font-size: 35px;
+}
+
+.header-icons {
+  display: flex;
+  gap: 15px;
+  font-size: 23px;
+}
+
+/* 카테고리 */
+.category {
+  display: flex;
+  gap: 8px;
+  padding: 15px;
+  overflow-x: auto;
+}
+
+.category button {
+  flex-shrink: 0;
+  padding: 10px 15px;
+  border: 1px solid #eee;
+  border-radius: 25px;
+  background: white;
+  font-weight: bold;
+}
+
+.category .active {
+  background: #ff5738;
+  color: white;
+  border-color: #ff5738;
+}
+
+/* 메인 영역 */
+main {
+  padding: 15px;
+}
+
+/* 이벤트 배너 */
+.banner {
+  min-height: 175px;
+  background: linear-gradient(
+    120deg,
+    #fff0ed,
+    #ffdcd9
+  );
+  border-radius: 22px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner h2 {
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.banner p {
+  color: #ff5738;
+  font-weight: bold;
+}
+
+.banner span {
+  font-size: 12px;
+  color: #ff5738;
+  font-weight: bold;
+}
+
+.banner-image {
+  font-size: 65px;
+}
+
+/* 섹션 제목 */
+.section-title {
+  font-size: 21px;
+  margin: 25px 0 15px;
+}
+
+/* 음식점 카드 */
+.store {
+  display: flex;
+  gap: 13px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+}
+
+.store img {
+  width: 115px;
+  height: 125px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.store-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.store-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+
+.store-name h3 {
+  font-size: 14px;
+  margin: 3px 0 10px;
+}
+
+.free,
+.delivery {
+  flex-shrink: 0;
+  padding: 5px 7px;
+  border-radius: 15px;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.free {
+  background: #fff0f1;
+  color: #ff574d;
+}
+
+.delivery {
+  background: #f2f2f2;
+  color: #777;
+}
+
+.rating {
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+.rating small {
+  color: #999;
+}
+
+.delivery-time {
+  font-size: 11px;
+  color: #777;
+  margin: 5px 0;
+}
+
+.description {
+  font-size: 11px;
+  color: #666;
+  margin: 8px 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tags span {
+  background: #fff0ef;
+  color: #f15b49;
+  padding: 5px 7px;
+  border-radius: 15px;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+/* 신규 회원 할인 */
+.discount {
+  background: #eaf8eb;
+  border-radius: 20px;
+  padding: 18px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.discount h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.discount p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff5738;
+  margin: 0;
+}
+
+.discount span {
+  font-size: 35px;
+}
+
+/* 하단 네비게이션 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
+  height: 75px;
+  background: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: #92929a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+}
+
+.bottom-nav a span {
+  font-size: 24px;
+}
+
+.bottom-nav .selected {
+  color: #ff5738;
+}
