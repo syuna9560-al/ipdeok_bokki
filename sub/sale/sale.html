@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입덕볶이 - 특가 할인 메뉴</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard 폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#E62E2D',
+                            redHover: '#CC2423',
+                            redLight: '#FFF0F0',
+                            orange: '#FF7A00',
+                            orangeLight: '#FFF5EB',
+                            bg: '#F5F6F8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #E9ECEF;
+            font-family: 'Pretendard', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0.4; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        .animate-pulse-slow {
+            animation: pulseGlow 2.4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <!-- 모바일 앱 뷰포트 컨테이너 (최대 너비 430px) -->
+    <div id="app-container" class="w-full max-w-[430px] bg-brand-bg min-h-screen shadow-2xl relative flex flex-col pb-12">
+
+        <!-- 1. 상단 고정 헤더 -->
+        <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 h-14 flex items-center justify-between">
+            <button type="button" onclick="goHome()" aria-label="메인으로 이동"
+                    class="w-10 h-10 -ml-2 flex items-center justify-center rounded-full hover:bg-gray-100 active:scale-95 transition text-gray-800">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-redLight text-brand-red">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 fill-brand-red"></i>
+                </span>
+                <h1 class="text-[17px] font-extrabold text-gray-900 tracking-tight">특가 할인 메뉴</h1>
+            </div>
+
+            <button type="button" onclick="openCartDrawer()" aria-label="장바구니 열기"
+                    class="relative w-10 h-10 -mr-1.5 flex items-center justify-center rounded-full hover:bg-gray-100 active:scale-95 transition text-gray-800">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span id="header-cart-badge" class="hidden absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-brand-red text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm">
+                    0
+                </span>
+            </button>
+        </header>
+
+        <!-- 2. 프로모션 히어로 배너 (입덕 특가 타임세일 & 카운트다운) -->
+        <section class="bg-gradient-to-br from-[#E62E2D] via-[#D92322] to-[#FF6B00] text-white px-4 pt-5 pb-6 relative overflow-hidden">
+            <!-- 장식용 배경 원형 그래픽 -->
+            <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-white/10 pointer-events-none"></div>
+            <div class="absolute right-6 -bottom-10 w-24 h-24 rounded-full bg-black/10 pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="flex items-center justify-between gap-2 mb-2.5">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/25 backdrop-blur-xs text-[11px] font-bold tracking-tight">
+                        <i data-lucide="timer" class="w-3.5 h-3.5 text-yellow-300"></i>
+                        <span>오늘만 한정 타임세일</span>
+                    </span>
+                    <div class="flex items-center gap-1 bg-white/15 px-2.5 py-1 rounded-lg text-xs font-extrabold tabular-nums">
+                        <span class="text-yellow-200 text-[10px] font-semibold mr-0.5">종료까지</span>
+                        <span id="countdown-timer">02:45:18</span>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between gap-3">
+                    <div>
+                        <p class="text-xs text-red-100 font-medium">매콤달콤 입덕주의보! 인기 메뉴 총출동</p>
+                        <h2 class="text-2xl font-black tracking-tight leading-tight mt-0.5">
+                            입덕 특가 <span class="text-yellow-300">최대 30% OFF</span>
+                        </h2>
+                    </div>
+                    <div class="text-4xl animate-pulse-slow select-none">🥘</div>
+                </div>
+
+                <!-- 빠른 쿠폰 다운로드 바 -->
+                <div class="mt-4 bg-white/95 text-gray-900 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-md">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-brand-redLight text-brand-red flex items-center justify-center shrink-0">
+                            <i data-lucide="ticket" class="w-5 h-5"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-extrabold text-gray-900 truncate">특가 중복 2,000원 할인 쿠폰</p>
+                            <p class="text-[11px] text-gray-500 truncate">15,000원 이상 주문 시 즉시 사용</p>
+                        </div>
+                    </div>
+                    <button type="button" id="download-coupon-btn" onclick="downloadPromoCoupon()"
+                            class="shrink-0 px-3 py-2 rounded-xl bg-brand-red hover:bg-brand-redHover text-white text-xs font-bold flex items-center gap-1 active:scale-95 transition">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        <span id="coupon-btn-label">쿠폰받기</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 카테고리 필터 탭 & 정렬 바 (Sticky) -->
+        <section class="sticky top-14 z-20 bg-white border-b border-gray-100 shadow-xs">
+            <!-- 카테고리 탭 -->
+            <div id="category-tabs" class="flex items-center gap-1.5 px-4 pt-3 pb-2.5 overflow-x-auto no-scrollbar">
+                <button type="button" onclick="setCategory('all')" data-cat="all"
+                        class="cat-tab shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white transition">
+                    전체 특가
+                </button>
+                <button type="button" onclick="setCategory('set')" data-cat="set"
+                        class="cat-tab shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                    인기 세트할인
+                </button>
+                <button type="button" onclick="setCategory('single')" data-cat="single"
+                        class="cat-tab shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                    단품 타임특가
+                </button>
+                <button type="button" onclick="setCategory('side')" data-cat="side"
+                        class="cat-tab shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                    사이드 추가할인
+                </button>
+            </div>
+
+            <!-- 결과 카운트 & 정렬 셀렉터 -->
+            <div class="px-4 py-2 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between text-xs">
+                <span class="text-gray-500 font-medium">
+                    특가 상품 <strong id="menu-count-text" class="text-gray-900 font-bold">7</strong>개
+                </span>
+                <div class="relative flex items-center">
+                    <select id="sort-select" onchange="setSortOrder(this.value)"
+                            class="appearance-none bg-transparent pr-5 py-0.5 text-xs font-bold text-gray-700 focus:outline-none cursor-pointer">
+                        <option value="discount">할인율순</option>
+                        <option value="popular">인기순</option>
+                        <option value="priceLow">낮은가격순</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-500 absolute right-0 pointer-events-none"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 할인 메뉴 리스트 컨테이너 -->
+        <main id="menu-list-container" class="flex-1 p-4 space-y-3">
+            <!-- JS로 동적 렌더링 -->
+        </main>
+
+        <!-- ==================== 5. 메뉴 상세 정보 바텀 시트 / 드로어 ==================== -->
+        <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/55 backdrop-blur-[1px]" onclick="handleBackdropClick(event, 'detail-modal')">
+            <div class="w-full max-w-[430px] h-[90vh] bg-white rounded-t-3xl flex flex-col overflow-hidden shadow-2xl animate-slide-up" onclick="event.stopPropagation()">
+                
+                <!-- 드로어 상단 핸들 & 닫기 헤더 -->
+                <div class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                    <div class="w-8"></div>
+                    <div class="w-10 h-1 rounded-full bg-gray-300"></div>
+                    <button type="button" onclick="closeModal('detail-modal')" aria-label="상세창 닫기"
+                            class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 transition">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- 상세 스크롤 영역 -->
+                <div id="detail-scroll-body" class="flex-1 overflow-y-auto no-scrollbar pb-28">
+                    <!-- 히어로 비주얼 배너 -->
+                    <div id="detail-hero-bg" class="relative h-48 bg-gradient-to-br from-red-50 via-orange-50 to-amber-50 flex flex-col items-center justify-center border-b border-gray-100">
+                        <span id="detail-discount-badge" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-brand-red text-white text-xs font-extrabold shadow-sm">
+                            30% OFF
+                        </span>
+                        <span id="detail-tag-badge" class="absolute top-4 right-4 px-2.5 py-1 rounded-lg bg-white/90 text-gray-800 text-[11px] font-bold shadow-xs">
+                            인기 세트할인
+                        </span>
+                        <div id="detail-emoji" class="text-7xl drop-shadow-sm select-none">🥘</div>
+                    </div>
+
+                    <!-- 기본 메뉴 정보 -->
+                    <div class="p-5 border-b-8 border-brand-bg space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5 text-xs">
+                                <span class="inline-flex items-center gap-0.5 font-extrabold text-amber-500">
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                                    <span id="detail-rating">4.9</span>
+                                </span>
+                                <span id="detail-reviews" class="text-gray-400">(1,284개 리뷰)</span>
+                            </div>
+                            <!-- 맵기 인디케이터 -->
+                            <div id="detail-spiciness-meter" class="flex items-center gap-1 text-xs font-bold text-brand-red bg-brand-redLight px-2.5 py-1 rounded-full">
+                                <!-- JS 동적 삽입 -->
+                            </div>
+                        </div>
+
+                        <h2 id="detail-title" class="text-xl font-extrabold text-gray-900 leading-snug">
+                            [30% 특가] 입덕 시그니처 로제 떡볶이 세트
+                        </h2>
+                        <p id="detail-desc" class="text-sm text-gray-600 leading-relaxed">
+                            꾸덕한 특제 로제 크림 소스에 쫄깃한 밀떡, 바삭 모듬튀김과 쿨피스까지 알차게 담은 입덕볶이 1위 시그니처 세트입니다.
+                        </p>
+
+                        <!-- 가격 비교 표시 -->
+                        <div class="pt-2 flex items-baseline gap-2">
+                            <span id="detail-discount-rate" class="text-xl font-black text-brand-red">30%</span>
+                            <span id="detail-sale-price" class="text-2xl font-black text-gray-900">15,400원</span>
+                            <span id="detail-orig-price" class="text-sm text-gray-400 line-through">22,000원</span>
+                        </div>
+
+                        <!-- 원산지 및 알레르기/영양정보 아코디언 -->
+                        <div class="pt-2">
+                            <button type="button" onclick="toggleNutritionAccordion()"
+                                    class="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 flex items-center justify-between text-xs font-bold text-gray-700 transition">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="info" class="w-3.5 h-3.5 text-gray-500"></i>
+                                    <span>원산지 및 알레르기 · 영양정보 안내</span>
+                                </span>
+                                <i id="accordion-chevron" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200"></i>
+                            </button>
+                            <div id="nutrition-accordion-content" class="hidden mt-2 p-3.5 rounded-xl bg-gray-50 border border-gray-100 text-[11px] text-gray-600 space-y-1.5 leading-relaxed">
+                                <p><strong class="text-gray-800">• 원산지:</strong> 쌀떡(국내산), 밀떡(밀:미국산/호주산), 고춧가루(국내산·중국산 혼합), 어묵(연육:수입산), 치즈(뉴질랜드산)</p>
+                                <p><strong class="text-gray-800">• 알레르기 유발물질:</strong> 밀, 대두, 우유, 계란, 쇠고기, 돼지고기, 닭고기, 새우, 오징어 함유</p>
+                                <p id="detail-nutrition-text"><strong class="text-gray-800">• 영양정보(1인분 기준):</strong> 열량 680kcal · 탄수화물 98g · 단백질 19g · 지방 22g · 나트륨 1,150mg</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 옵션 선택 영역 (사이드 단독 상품이 아닐 때 노출) -->
+                    <div id="detail-options-wrapper" class="divide-y-8 divide-brand-bg">
+                        
+                        <!-- 1. 맵기 선택 (필수) -->
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-[15px] font-extrabold text-gray-900">맵기 선택</h3>
+                                <span class="px-2 py-0.5 rounded bg-brand-redLight text-brand-red text-[11px] font-bold">필수</span>
+                            </div>
+                            <div id="spice-options-list" class="space-y-2">
+                                <!-- JS 동적 생성 -->
+                            </div>
+                        </div>
+
+                        <!-- 2. 떡 종류 선택 (필수) -->
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-[15px] font-extrabold text-gray-900">떡 종류 선택</h3>
+                                <span class="px-2 py-0.5 rounded bg-brand-redLight text-brand-red text-[11px] font-bold">필수</span>
+                            </div>
+                            <div id="tteok-options-list" class="space-y-2">
+                                <!-- JS 동적 생성 -->
+                            </div>
+                        </div>
+
+                        <!-- 3. 추가 토핑 선택 (선택) -->
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-[15px] font-extrabold text-gray-900">추가 토핑 선택</h3>
+                                <span class="px-2 py-0.5 rounded bg-gray-100 text-gray-500 text-[11px] font-bold">최대 4개</span>
+                            </div>
+                            <div id="topping-options-list" class="space-y-2">
+                                <!-- JS 동적 생성 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 수량 조절 영역 -->
+                    <div class="p-5 border-t-8 border-brand-bg flex items-center justify-between">
+                        <span class="text-[15px] font-extrabold text-gray-900">수량</span>
+                        <div class="flex items-center border border-gray-200 rounded-xl bg-white overflow-hidden shadow-2xs">
+                            <button type="button" onclick="changeDetailQty(-1)" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition">
+                                <i data-lucide="minus" class="w-4 h-4"></i>
+                            </button>
+                            <span id="detail-qty-text" class="w-10 text-center text-sm font-extrabold text-gray-900">1</span>
+                            <button type="button" onclick="changeDetailQty(1)" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 상세 하단 고정 CTA 버튼 -->
+                <div class="sticky bottom-0 z-20 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4">
+                    <button type="button" onclick="addCurrentDetailToCart()"
+                            class="w-full py-3.5 px-5 bg-brand-red hover:bg-brand-redHover active:scale-[0.99] text-white font-bold text-[15px] rounded-2xl shadow-lg shadow-red-500/25 flex items-center justify-center gap-2 transition">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        <span id="detail-cta-text">할인가 15,400원 장바구니 담기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 6. 미니 장바구니 드로어 ==================== -->
+        <div id="cart-drawer" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/55 backdrop-blur-[1px]" onclick="handleBackdropClick(event, 'cart-drawer')">
+            <div class="w-full max-w-[430px] max-h-[82vh] bg-white rounded-t-3xl flex flex-col overflow-hidden shadow-2xl animate-slide-up" onclick="event.stopPropagation()">
+                <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-base font-extrabold text-gray-900">특가 장바구니</h3>
+                        <span id="drawer-cart-count" class="px-2 py-0.5 rounded-full bg-brand-redLight text-brand-red text-xs font-extrabold">0</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="clearCart()" class="text-xs font-semibold text-gray-400 hover:text-gray-600">전체삭제</button>
+                        <button type="button" onclick="closeModal('cart-drawer')" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 장바구니 리스트 -->
+                <div id="cart-drawer-list" class="flex-1 overflow-y-auto p-4 divide-y divide-gray-100">
+                    <!-- JS 동적 렌더링 -->
+                </div>
+
+                <!-- 하단 결제 이동 바 -->
+                <div class="p-4 bg-gray-50 border-t border-gray-100 space-y-3">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500 font-medium">총 절약한 할인 금액</span>
+                        <span id="cart-saved-amount" class="font-extrabold text-brand-orange">-0원 할인됨</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-bold text-gray-900">예상 주문금액</span>
+                        <span id="cart-total-amount" class="text-xl font-black text-brand-red">0원</span>
+                    </div>
+                    <button type="button" onclick="proceedToCheckout()"
+                            class="w-full py-3.5 px-5 bg-brand-red hover:bg-brand-redHover active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-red-500/25 flex items-center justify-center gap-2 transition">
+                        <span>바로 결제하러 가기</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 토스트 알림 -->
+        <div id="toast" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-50 opacity-0 transition-opacity duration-300">
+            <div id="toast-msg" class="bg-gray-900/90 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap">
+                알림 메시지
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==================== 데이터 정의 ====================
+        const DISCOUNT_MENUS = [
+            {
+                id: 'rose-set',
+                category: 'set',
+                categoryLabel: '인기 세트할인',
+                title: '[30% 특가] 입덕 시그니처 로제 떡볶이 세트',
+                shortDesc: '특제 로제 떡볶이 + 바삭 모듬튀김 + 쿨피스 930ml 풀세트',
+                fullDesc: '꾸덕하고 깊은 풍미의 특제 로제 크림 소스에 쫄깃한 밀떡, 갓 튀겨낸 바삭 모듬튀김 6종과 시원한 쿨피스 930ml까지 알차게 담아낸 입덕볶이 압도적 1위 베스트 세트입니다.',
+                originalPrice: 22000,
+                discountRate: 30,
+                salePrice: 15400,
+                spicyLevel: 2,
+                rating: 4.9,
+                reviewCount: 1428,
+                popularity: 99,
+                emoji: '🥘',
+                bgClass: 'from-rose-50 via-orange-50 to-amber-50',
+                hasTteokOptions: true,
+                nutrition: '열량 1,120kcal · 탄수화물 148g · 단백질 31g · 지방 42g · 나트륨 1,890mg'
+            },
+            {
+                id: 'chadol-tteok',
+                category: 'single',
+                categoryLabel: '단품 타임특가',
+                title: '[25% 할인] 직화 불맛 차돌박이 떡볶이',
+                shortDesc: '고소한 우삼겹·차돌박이 듬뿍, 진한 직화 불향 매콤 국물',
+                fullDesc: '강한 불에 직화로 구워낸 고소한 차돌박이를 아낌없이 올렸습니다. 고기 육즙이 스며든 진한 고추장 베이스 국물이 중독성을 부르는 프리미엄 메뉴입니다.',
+                originalPrice: 16000,
+                discountRate: 25,
+                salePrice: 12000,
+                spicyLevel: 3,
+                rating: 4.8,
+                reviewCount: 864,
+                popularity: 92,
+                emoji: '🥩',
+                bgClass: 'from-red-50 via-orange-50 to-yellow-50',
+                hasTteokOptions: true,
+                nutrition: '열량 890kcal · 탄수화물 104g · 단백질 36g · 지방 35g · 나트륨 1,540mg'
+            },
+            {
+                id: 'original-time',
+                category: 'single',
+                categoryLabel: '단품 타임특가',
+                title: '[20% 타임세일] 매콤달콤 오리지널 밀떡볶이',
+                shortDesc: '매일 아침 뽑은 쫀득한 한입 밀떡과 비법 숙성 양념장',
+                fullDesc: '72시간 저온 숙성한 입덕볶이만의 황금비율 양념장이 쫀득한 한입 밀떡 속까지 깊게 배어든 클래식 오리지널 떡볶이입니다.',
+                originalPrice: 9500,
+                discountRate: 20,
+                salePrice: 7600,
+                spicyLevel: 2,
+                rating: 4.9,
+                reviewCount: 2150,
+                popularity: 96,
+                emoji: '🌶️',
+                bgClass: 'from-red-100/70 via-rose-50 to-orange-50',
+                hasTteokOptions: true,
+                nutrition: '열량 640kcal · 탄수화물 118g · 단백질 15g · 지방 11g · 나트륨 1,320mg'
+            },
+            {
+                id: 'toowoomba-cream',
+                category: 'single',
+                categoryLabel: '단품 타임특가',
+                title: '[28% 특가] 꾸덕 투움바 크림 떡볶이',
+                shortDesc: '진한 체다·생크림과 베이컨, 매콤한 페퍼론치노의 조화',
+                fullDesc: '부드러운 생크림과 진한 체다치즈에 짭짤한 베이컨과 페퍼론치노를 더해 느끼함 없이 끝까지 꾸덕하고 매콤하게 즐길 수 있는 인기 메뉴입니다.',
+                originalPrice: 15000,
+                discountRate: 28,
+                salePrice: 10800,
+                spicyLevel: 1,
+                rating: 4.8,
+                reviewCount: 739,
+                popularity: 88,
+                emoji: '🧀',
+                bgClass: 'from-amber-50 via-yellow-50 to-orange-50',
+                hasTteokOptions: true,
+                nutrition: '열량 940kcal · 탄수화물 102g · 단백질 24g · 지방 47g · 나트륨 1,410mg'
+            },
+            {
+                id: 'mala-rose-set',
+                category: 'set',
+                categoryLabel: '인기 세트할인',
+                title: '[22% 할인] 마라 로제 엽기 떡볶이 세트',
+                shortDesc: '얼얼한 마라로제 떡볶이 + 분모자 기본포함 + 날치알 주먹밥',
+                fullDesc: '알싸하게 혀끝을 자극하는 중독적인 마라 풍미와 부드러운 로제 크림의 환상적인 만남! 탱글탱글한 분모자와 고소한 날치알 주먹밥이 세트로 제공됩니다.',
+                originalPrice: 20000,
+                discountRate: 22,
+                salePrice: 15600,
+                spicyLevel: 4,
+                rating: 4.9,
+                reviewCount: 952,
+                popularity: 94,
+                emoji: '🔥',
+                bgClass: 'from-red-50 via-pink-50 to-amber-50',
+                hasTteokOptions: true,
+                nutrition: '열량 1,080kcal · 탄수화물 142g · 단백질 27g · 지방 41g · 나트륨 1,920mg'
+            },
+            {
+                id: 'solo-combo',
+                category: 'set',
+                categoryLabel: '인기 세트할인',
+                title: '[30% 특가] 1인 혼밥 알찬 떡튀순 세트',
+                shortDesc: '혼자서도 부담 없는 1인 떡볶이 + 찰순대 + 모듬튀김 3종',
+                fullDesc: '혼자 먹기엔 너무 많았던 분식 메뉴를 1인 황금 비율로 구성했습니다. 오리지널 떡볶이와 쫄깃한 찰순대, 바삭한 튀김 3종을 한 번에 즐겨보세요.',
+                originalPrice: 13000,
+                discountRate: 30,
+                salePrice: 9100,
+                spicyLevel: 2,
+                rating: 4.8,
+                reviewCount: 1120,
+                popularity: 91,
+                emoji: '🍱',
+                bgClass: 'from-orange-50 via-amber-50 to-yellow-50',
+                hasTteokOptions: true,
+                nutrition: '열량 820kcal · 탄수화물 126g · 단백질 22g · 지방 24g · 나트륨 1,460mg'
+            },
+            {
+                id: 'side-platter',
+                category: 'side',
+                categoryLabel: '사이드 추가할인',
+                title: '[25% 특가] 왕김말이 & 모듬튀김 플래터',
+                shortDesc: '수제 왕김말이2 + 통오징어튀김2 + 야채튀김1 + 군만두2',
+                fullDesc: '깨끗한 기름에 주문 즉시 바삭하게 튀겨낸 입덕볶이 인기 튀김 7피스 구성입니다. 떡볶이 국물에 푹 찍어 드시면 더욱 맛있습니다.',
+                originalPrice: 8000,
+                discountRate: 25,
+                salePrice: 6000,
+                spicyLevel: 0,
+                rating: 4.7,
+                reviewCount: 540,
+                popularity: 84,
+                emoji: '🍤',
+                bgClass: 'from-yellow-50 via-amber-50 to-orange-50',
+                hasTteokOptions: false,
+                nutrition: '열량 590kcal · 탄수화물 68g · 단백질 14g · 지방 29g · 나트륨 680mg'
+            }
+        ];
+
+        const SPICE_OPTIONS = [
+            { id: 'spice1', label: '1단계 순한맛 (진라면 순한맛 정도)', price: 0 },
+            { id: 'spice2', label: '2단계 입덕 기본맛 (신라면 정도 · 추천)', price: 0 },
+            { id: 'spice3', label: '3단계 매운맛 (불닭볶음면 정도)', price: 0 },
+            { id: 'spice4', label: '4단계 핵불맛 (화끈한 스트레스 해소)', price: 0 }
+        ];
+
+        const TTEOK_OPTIONS = [
+            { id: 'mil', label: '쫄깃 밀떡 (기본)', price: 0 },
+            { id: 'ssal', label: '쫀득 쌀떡으로 변경', price: 0 },
+            { id: 'bunmoja', label: '탱글 분모자로 변경', price: 2000 }
+        ];
+
+        const TOPPING_OPTIONS = [
+            { id: 'cheese', label: '눈꽃 모짜렐라 치즈 추가', price: 3000 },
+            { id: 'dangmyeon', label: '납작 중국당면 추가', price: 2500 },
+            { id: 'vienna', label: '비엔나 소시지 6알 추가', price: 2000 },
+            { id: 'egg', label: '삶은 계란 2알 추가', price: 1500 }
+        ];
+
+        // ==================== 앱 상태 (State) ====================
+        const appState = {
+            category: 'all',
+            sortBy: 'discount',
+            couponDownloaded: false,
+            selectedMenu: null,
+            detailSelection: {
+                spice: 'spice2',
+                tteok: 'mil',
+                toppings: [],
+                qty: 1
+            },
+            cart: []
+        };
+
+        const CART_STORAGE_KEY = 'ipdeok_cart';
+
+        // 통화 포맷
+        function formatKRW(num) {
+            return num.toLocaleString('ko-KR') + '원';
+        }
+
+        // 토스트 알림
+        let toastTimer;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.textContent = msg;
+            toast.classList.remove('opacity-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2200);
+        }
+
+        // 메인 페이지 이동
+        function goHome() {
+            if (window.history.length > 1 && document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ==================== 1. 타임세일 카운트다운 타이머 ====================
+        function startCountdown() {
+            let remainingSeconds = (2 * 3600) + (45 * 60) + 18; // 02:45:18
+            const timerEl = document.getElementById('countdown-timer');
+
+            setInterval(() => {
+                if (remainingSeconds <= 0) return;
+                remainingSeconds -= 1;
+                const hrs = String(Math.floor(remainingSeconds / 3600)).padStart(2, '0');
+                const mins = String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2, '0');
+                const secs = String(remainingSeconds % 60).padStart(2, '0');
+                timerEl.textContent = `${hrs}:${mins}:${secs}`;
+            }, 1000);
+        }
+
+        // 프로모션 쿠폰 받기
+        function downloadPromoCoupon() {
+            if (appState.couponDownloaded) {
+                showToast('이미 발급받은 특가 쿠폰입니다! 결제창에서 적용하세요.');
+                return;
+            }
+            appState.couponDownloaded = true;
+            const btn = document.getElementById('download-coupon-btn');
+            const label = document.getElementById('coupon-btn-label');
+            btn.classList.remove('bg-brand-red', 'hover:bg-brand-redHover');
+            btn.classList.add('bg-gray-800');
+            label.textContent = '발급완료';
+            showToast('🎉 특가 중복 2,000원 쿠폰이 발급되었습니다!');
+        }
+
+        // ==================== 2. 카테고리 필터 & 정렬 렌더링 ====================
+        function setCategory(cat) {
+            appState.category = cat;
+            document.querySelectorAll('.cat-tab').forEach(btn => {
+                const isSelected = btn.dataset.cat === cat;
+                if (isSelected) {
+                    btn.className = 'cat-tab shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gray-900 text-white transition';
+                } else {
+                    btn.className = 'cat-tab shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition';
+                }
+            });
+            renderMenuList();
+        }
+
+        function setSortOrder(sortVal) {
+            appState.sortBy = sortVal;
+            renderMenuList();
+        }
+
+        function renderSpicinessIcons(level) {
+            if (level === 0) {
+                return `<span class="text-[11px] font-semibold text-gray-400">순한 사이드</span>`;
+            }
+            let chilies = '';
+            for (let i = 1; i <= 4; i++) {
+                const active = i <= level;
+                chilies += `<span class="${active ? 'opacity-100' : 'opacity-25 grayscale'} text-[11px]">🌶️</span>`;
+            }
+            return `<div class="inline-flex items-center gap-0.5" title="맵기 ${level}단계">${chilies}</div>`;
+        }
+
+        function renderMenuList() {
+            const container = document.getElementById('menu-list-container');
+            const countText = document.getElementById('menu-count-text');
+
+            let filtered = appState.category === 'all'
+                ? [...DISCOUNT_MENUS]
+                : DISCOUNT_MENUS.filter(m => m.category === appState.category);
+
+            if (appState.sortBy === 'discount') {
+                filtered.sort((a, b) => b.discountRate - a.discountRate);
+            } else if (appState.sortBy === 'popular') {
+                filtered.sort((a, b) => b.popularity - a.popularity);
+            } else if (appState.sortBy === 'priceLow') {
+                filtered.sort((a, b) => a.salePrice - b.salePrice);
+            }
+
+            countText.textContent = filtered.length;
+
+            container.innerHTML = filtered.map(menu => `
+                <article onclick="openDetailModal('${menu.id}')"
+                         class="bg-white rounded-2xl p-3.5 shadow-xs border border-gray-100 hover:border-red-200 active:scale-[0.99] transition cursor-pointer flex gap-3.5">
+                    
+                    <!-- 좌측 썸네일 & 할인율 뱃지 -->
+                    <div class="relative w-24 h-24 rounded-2xl bg-gradient-to-br ${menu.bgClass} border border-gray-100 flex items-center justify-center shrink-0">
+                        <span class="absolute -top-1.5 -left-1.5 px-2 py-0.5 rounded-lg bg-brand-red text-white text-[10px] font-black shadow-xs">
+                            ${menu.discountRate}% OFF
+                        </span>
+                        <span class="text-4xl select-none">${menu.emoji}</span>
+                    </div>
+
+                    <!-- 우측 메뉴 정보 -->
+                    <div class="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-1 mb-0.5">
+                                <span class="text-[10px] font-bold text-brand-orange bg-brand-orangeLight px-1.5 py-0.5 rounded">
+                                    ${menu.categoryLabel}
+                                </span>
+                                ${renderSpicinessIcons(menu.spicyLevel)}
+                            </div>
+
+                            <h3 class="text-[15px] font-extrabold text-gray-900 leading-snug line-clamp-1 mt-1">
+                                ${menu.title}
+                            </h3>
+                            <p class="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                                ${menu.shortDesc}
+                            </p>
+                        </div>
+
+                        <!-- 가격 & 리뷰 / 담기 버튼 -->
+                        <div class="mt-2 pt-2 border-t border-gray-50 flex items-end justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs text-gray-400 line-through">${formatKRW(menu.originalPrice)}</span>
+                                    <span class="text-[11px] text-amber-500 font-bold flex items-center gap-0.5">
+                                        ★ ${menu.rating} <span class="text-gray-400 font-normal">(${menu.reviewCount.toLocaleString()})</span>
+                                    </span>
+                                </div>
+                                <div class="flex items-baseline gap-1 mt-0.5">
+                                    <span class="text-sm font-black text-brand-red">${menu.discountRate}%</span>
+                                    <span class="text-base font-black text-gray-900">${formatKRW(menu.salePrice)}</span>
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="event.stopPropagation(); openDetailModal('${menu.id}')"
+                                    class="shrink-0 px-2.5 py-1.5 rounded-xl bg-brand-redLight hover:bg-red-100 text-brand-red text-xs font-extrabold flex items-center gap-1 transition">
+                                <span>상세 / 담기</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // ==================== 3. 메뉴 상세 바텀 시트 제어 ====================
+        function openDetailModal(menuId) {
+            const menu = DISCOUNT_MENUS.find(m => m.id === menuId);
+            if (!menu) return;
+
+            appState.selectedMenu = menu;
+            appState.detailSelection = {
+                spice: `spice${Math.min(4, Math.max(1, menu.spicyLevel || 2))}`,
+                tteok: 'mil',
+                toppings: [],
+                qty: 1
+            };
+
+            // 기본 정보 바인딩
+            const heroBg = document.getElementById('detail-hero-bg');
+            heroBg.className = `relative h-48 bg-gradient-to-br ${menu.bgClass} flex flex-col items-center justify-center border-b border-gray-100`;
+
+            document.getElementById('detail-discount-badge').textContent = `${menu.discountRate}% OFF`;
+            document.getElementById('detail-tag-badge').textContent = menu.categoryLabel;
+            document.getElementById('detail-emoji').textContent = menu.emoji;
+            document.getElementById('detail-rating').textContent = menu.rating;
+            document.getElementById('detail-reviews').textContent = `(${menu.reviewCount.toLocaleString()}개 리뷰)`;
+            document.getElementById('detail-title').textContent = menu.title;
+            document.getElementById('detail-desc').textContent = menu.fullDesc;
+            document.getElementById('detail-discount-rate').textContent = `${menu.discountRate}%`;
+            document.getElementById('detail-sale-price').textContent = formatKRW(menu.salePrice);
+            document.getElementById('detail-orig-price').textContent = formatKRW(menu.originalPrice);
+            document.getElementById('detail-nutrition-text').innerHTML = `<strong class="text-gray-800">• 영양정보(1인분 기준):</strong> ${menu.nutrition}`;
+            document.getElementById('detail-qty-text').textContent = '1';
+
+            // 맵기 미터기
+            const spiceMeter = document.getElementById('detail-spiciness-meter');
+            if (menu.spicyLevel === 0) {
+                spiceMeter.innerHTML = `<span>순한 사이드 메뉴</span>`;
+            } else {
+                spiceMeter.innerHTML = `<span>맵기 ${menu.spicyLevel}단계</span> <span>${'🌶️'.repeat(menu.spicyLevel)}</span>`;
+            }
+
+            // 옵션 영역 노출 여부
+            const optionsWrapper = document.getElementById('detail-options-wrapper');
+            if (menu.hasTteokOptions) {
+                optionsWrapper.classList.remove('hidden');
+                renderDetailOptions();
+            } else {
+                optionsWrapper.classList.add('hidden');
+            }
+
+            // 아코디언 초기화
+            document.getElementById('nutrition-accordion-content').classList.add('hidden');
+            document.getElementById('accordion-chevron').style.transform = 'rotate(0deg)';
+
+            updateDetailTotalPrice();
+            document.getElementById('detail-scroll-body').scrollTop = 0;
+            document.getElementById('detail-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function renderDetailOptions() {
+            // 1. 맵기 라디오
+            document.getElementById('spice-options-list').innerHTML = SPICE_OPTIONS.map(opt => {
+                const checked = appState.detailSelection.spice === opt.id;
+                return `
+                    <label onclick="selectSpice('${opt.id}')"
+                           class="flex items-center justify-between p-3 rounded-xl border ${checked ? 'border-brand-red bg-brand-redLight/30' : 'border-gray-200 bg-white'} cursor-pointer transition">
+                        <div class="flex items-center gap-2.5">
+                            <input type="radio" name="spice" ${checked ? 'checked' : ''} class="w-4 h-4 accent-brand-red">
+                            <span class="text-xs font-bold ${checked ? 'text-gray-900' : 'text-gray-700'}">${opt.label}</span>
+                        </div>
+                        <span class="text-xs text-gray-400">+0원</span>
+                    </label>
+                `;
+            }).join('');
+
+            // 2. 떡 종류 라디오
+            document.getElementById('tteok-options-list').innerHTML = TTEOK_OPTIONS.map(opt => {
+                const checked = appState.detailSelection.tteok === opt.id;
+                return `
+                    <label onclick="selectTteok('${opt.id}')"
+                           class="flex items-center justify-between p-3 rounded-xl border ${checked ? 'border-brand-red bg-brand-redLight/30' : 'border-gray-200 bg-white'} cursor-pointer transition">
+                        <div class="flex items-center gap-2.5">
+                            <input type="radio" name="tteok" ${checked ? 'checked' : ''} class="w-4 h-4 accent-brand-red">
+                            <span class="text-xs font-bold ${checked ? 'text-gray-900' : 'text-gray-700'}">${opt.label}</span>
+                        </div>
+                        <span class="text-xs font-semibold ${opt.price > 0 ? 'text-brand-red' : 'text-gray-400'}">+${formatKRW(opt.price)}</span>
+                    </label>
+                `;
+            }).join('');
+
+            // 3. 추가 토핑 체크박스
+            document.getElementById('topping-options-list').innerHTML = TOPPING_OPTIONS.map(opt => {
+                const checked = appState.detailSelection.toppings.includes(opt.id);
+                return `
+                    <label onclick="toggleTopping(event, '${opt.id}')"
+                           class="flex items-center justify-between p-3 rounded-xl border ${checked ? 'border-brand-red bg-brand-redLight/30' : 'border-gray-200 bg-white'} cursor-pointer transition">
+                        <div class="flex items-center gap-2.5">
+                            <input type="checkbox" ${checked ? 'checked' : ''} class="w-4 h-4 accent-brand-red rounded">
+                            <span class="text-xs font-bold ${checked ? 'text-gray-900' : 'text-gray-700'}">${opt.label}</span>
+                        </div>
+                        <span class="text-xs font-semibold text-gray-700">+${formatKRW(opt.price)}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function selectSpice(spiceId) {
+            appState.detailSelection.spice = spiceId;
+            renderDetailOptions();
+        }
+
+        function selectTteok(tteokId) {
+            appState.detailSelection.tteok = tteokId;
+            renderDetailOptions();
+            updateDetailTotalPrice();
+        }
+
+        function toggleTopping(e, toppingId) {
+            e.preventDefault();
+            const list = appState.detailSelection.toppings;
+            const idx = list.indexOf(toppingId);
+            if (idx > -1) {
+                list.splice(idx, 1);
+            } else {
+                list.push(toppingId);
+            }
+            renderDetailOptions();
+            updateDetailTotalPrice();
+        }
+
+        function changeDetailQty(delta) {
+            const next = appState.detailSelection.qty + delta;
+            if (next < 1) return;
+            appState.detailSelection.qty = next;
+            document.getElementById('detail-qty-text').textContent = next;
+            updateDetailTotalPrice();
+        }
+
+        function calculateDetailUnitPrice() {
+            const menu = appState.selectedMenu;
+            if (!menu) return 0;
+
+            let unit = menu.salePrice;
+            if (menu.hasTteokOptions) {
+                const tteokObj = TTEOK_OPTIONS.find(t => t.id === appState.detailSelection.tteok);
+                if (tteokObj) unit += tteokObj.price;
+
+                appState.detailSelection.toppings.forEach(tid => {
+                    const topObj = TOPPING_OPTIONS.find(t => t.id === tid);
+                    if (topObj) unit += topObj.price;
+                });
+            }
+            return unit;
+        }
+
+        function updateDetailTotalPrice() {
+            const unitPrice = calculateDetailUnitPrice();
+            const total = unitPrice * appState.detailSelection.qty;
+            document.getElementById('detail-cta-text').textContent = `할인가 ${formatKRW(total)} 장바구니 담기`;
+        }
+
+        function toggleNutritionAccordion() {
+            const content = document.getElementById('nutrition-accordion-content');
+            const chevron = document.getElementById('accordion-chevron');
+            const isHidden = content.classList.contains('hidden');
+            if (isHidden) {
+                content.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ==================== 4. 장바구니 & localStorage 연동 ====================
+        function loadCartFromStorage() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+                appState.cart = Array.isArray(saved) ? saved : [];
+            } catch (e) {
+                appState.cart = [];
+            }
+            updateCartBadge();
+        }
+
+        function saveCartToStorage() {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(appState.cart));
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('header-cart-badge');
+            const totalQty = appState.cart.reduce((sum, item) => sum + item.qty, 0);
+            if (totalQty > 0) {
+                badge.textContent = totalQty;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function addCurrentDetailToCart() {
+            const menu = appState.selectedMenu;
+            if (!menu) return;
+
+            const unitPrice = calculateDetailUnitPrice();
+            const unitOriginalPrice = menu.originalPrice + (unitPrice - menu.salePrice);
+
+            let optionSummary = '기본 구성';
+            if (menu.hasTteokOptions) {
+                const spiceLabel = SPICE_OPTIONS.find(s => s.id === appState.detailSelection.spice)?.label.split(' ')[1] || '기본맛';
+                const tteokLabel = TTEOK_OPTIONS.find(t => t.id === appState.detailSelection.tteok)?.label.split(' ')[1] || '밀떡';
+                const toppingNames = appState.detailSelection.toppings.map(tid => {
+                    return TOPPING_OPTIONS.find(t => t.id === tid)?.label.replace(' 추가', '');
+                }).filter(Boolean);
+
+                optionSummary = [spiceLabel, tteokLabel, ...toppingNames].join(', ');
+            }
+
+            const existing = appState.cart.find(item => item.name === menu.title && item.option === optionSummary);
+            if (existing) {
+                existing.qty += appState.detailSelection.qty;
+            } else {
+                appState.cart.push({
+                    id: Date.now(),
+                    menuId: menu.id,
+                    name: menu.title,
+                    option: optionSummary,
+                    price: unitPrice,
+                    originalPrice: unitOriginalPrice,
+                    qty: appState.detailSelection.qty,
+                    emoji: menu.emoji
+                });
+            }
+
+            saveCartToStorage();
+            closeModal('detail-modal');
+            showToast(`🛒 '${menu.title}' 장바구니에 담겼습니다!`);
+        }
+
+        function openCartDrawer() {
+            renderCartDrawer();
+            document.getElementById('cart-drawer').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function renderCartDrawer() {
+            const listEl = document.getElementById('cart-drawer-list');
+            const countEl = document.getElementById('drawer-cart-count');
+            const savedEl = document.getElementById('cart-saved-amount');
+            const totalEl = document.getElementById('cart-total-amount');
+
+            const totalQty = appState.cart.reduce((sum, i) => sum + i.qty, 0);
+            countEl.textContent = totalQty;
+
+            if (appState.cart.length === 0) {
+                listEl.innerHTML = `
+                    <div class="py-12 text-center text-gray-400">
+                        <p class="text-3xl mb-2">🥘</p>
+                        <p class="text-sm font-bold text-gray-600">장바구니가 비어 있어요</p>
+                        <p class="text-xs mt-1">지금 특가 할인 떡볶이를 담아보세요!</p>
+                    </div>
+                `;
+                savedEl.textContent = '-0원 할인됨';
+                totalEl.textContent = '0원';
+                return;
+            }
+
+            let totalSale = 0;
+            let totalOrig = 0;
+
+            listEl.innerHTML = appState.cart.map(item => {
+                totalSale += item.price * item.qty;
+                totalOrig += (item.originalPrice || item.price) * item.qty;
+
+                return `
+                    <div class="py-3.5 first:pt-1 last:pb-1 flex items-start gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-redLight/60 flex items-center justify-center text-2xl shrink-0">
+                            ${item.emoji}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <h4 class="text-xs font-extrabold text-gray-900 truncate">${item.name}</h4>
+                                <button type="button" onclick="removeCartItem(${item.id})" class="text-gray-300 hover:text-gray-500">
+                                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            <p class="text-[11px] text-gray-500 truncate mt-0.5">${item.option}</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-sm font-extrabold text-gray-900">${formatKRW(item.price * item.qty)}</span>
+                                <div class="flex items-center border border-gray-200 rounded-lg bg-white">
+                                    <button type="button" onclick="updateCartItemQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-600">-</button>
+                                    <span class="w-6 text-center text-xs font-bold">${item.qty}</span>
+                                    <button type="button" onclick="updateCartItemQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-gray-600">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const savedDiff = Math.max(0, totalOrig - totalSale);
+            savedEl.textContent = `-${formatKRW(savedDiff)} 할인됨`;
+            totalEl.textContent = formatKRW(totalSale);
+        }
+
+        function updateCartItemQty(id, delta) {
+            const target = appState.cart.find(i => i.id === id);
+            if (!target) return;
+            if (target.qty + delta <= 0) {
+                removeCartItem(id);
+                return;
+            }
+            target.qty += delta;
+            saveCartToStorage();
+            renderCartDrawer();
+            lucide.createIcons();
+        }
+
+        function removeCartItem(id) {
+            appState.cart = appState.cart.filter(i => i.id !== id);
+            saveCartToStorage();
+            renderCartDrawer();
+            lucide.createIcons();
+        }
+
+        function clearCart() {
+            if (appState.cart.length === 0) return;
+            appState.cart = [];
+            saveCartToStorage();
+            renderCartDrawer();
+            showToast('장바구니를 비웠습니다.');
+        }
+
+        function proceedToCheckout() {
+            if (appState.cart.length === 0) {
+                showToast('결제할 특가 메뉴를 먼저 담아주세요!');
+                return;
+            }
+            saveCartToStorage();
+            window.location.href = 'ipdeokbokki-checkout.html';
+        }
+
+        // 모달 닫기 유틸
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function handleBackdropClick(e, modalId) {
+            if (e.target.id === modalId) {
+                closeModal(modalId);
+            }
+        }
+
+        // 초기화
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCartFromStorage();
+            renderMenuList();
+            startCountdown();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

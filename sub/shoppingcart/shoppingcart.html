@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>입덕볶이 - 장바구니</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .cart-main { padding: 16px 16px 110px; background: #f8f9fa; min-height: calc(100vh - 60px); }
+    
+    /* 상단 헤더 타이틀 */
+    .sub-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
+    .sub-header h1 { font-size: 17px; font-weight: 700; margin: 0; }
+    .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; color: #333; padding: 4px; }
+
+    /* 로그인 유도 배너 */
+    .guest-promo-box { background: #fff3f3; border: 1px solid #ffd6d6; border-radius: 12px; padding: 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #d92b2b; }
+    .guest-promo-box a { background: #e60012; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 700; text-decoration: none; font-size: 12px; white-space: nowrap; }
+
+    /* 장바구니 카드 공통 */
+    .cart-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .cart-card-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #f1f1f1; margin-bottom: 12px; font-size: 14px; font-weight: 700; }
+    
+    /* 개별 메뉴 아이템 */
+    .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
+    .cart-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .cart-item-img { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: #f2f2f2; flex-shrink: 0; }
+    .cart-item-info { flex: 1; }
+    .cart-item-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .cart-item-name { font-size: 15px; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .cart-item-opt { font-size: 12px; color: #888; margin: 0 0 10px; }
+    .btn-remove { background: none; border: none; color: #aaa; cursor: pointer; padding: 2px; }
+    
+    /* 수량 조절 및 가격 */
+    .cart-item-bottom { display: flex; justify-content: space-between; align-items: center; }
+    .qty-control { display: inline-flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+    .qty-btn { width: 28px; height: 28px; background: #fafafa; border: none; font-size: 15px; font-weight: 700; cursor: pointer; color: #333; }
+    .qty-val { width: 32px; text-align: center; font-size: 13px; font-weight: 700; }
+    .cart-item-price { font-size: 15px; font-weight: 700; color: #222; }
+
+    /* 빈 장바구니 화면 */
+    .empty-cart { text-align: center; padding: 50px 20px; }
+    .empty-cart p { color: #888; font-size: 14px; margin: 12px 0 20px; }
+    .btn-outline { display: inline-block; padding: 10px 18px; border: 1px solid #e60012; color: #e60012; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; background: #fff; cursor: pointer; }
+
+    /* 회원 할인(쿠폰/포인트) 영역 */
+    .discount-row { margin-bottom: 12px; }
+    .discount-row label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 6px; }
+    .coupon-select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; background: #fff; }
+    .point-box { display: flex; gap: 8px; }
+    .point-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+    .btn-point-all { padding: 0 12px; background: #333; color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+
+    /* 결제 금액 요약 */
+    .summary-row { display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 8px; }
+    .summary-row.discount { color: #e60012; }
+    .summary-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 12px; margin-top: 12px; font-size: 16px; font-weight: 700; color: #111; }
+    .summary-total .total-price { font-size: 20px; color: #e60012; }
+
+    /* 하단 고정 주문 버튼 */
+    .fixed-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; padding: 12px 16px; border-top: 1px solid #eee; box-sizing: border-box; z-index: 20; }
+    .btn-checkout { width: 100%; padding: 15px; background: #e60012; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 서브 헤더 -->
+    <header class="sub-header">
+      <button type="button" class="icon-btn" onclick="history.back()" aria-label="뒤로가기">
+        <i data-lucide="arrow-left"></i>
+      </button>
+      <h1>장바구니</h1>
+      <a href="../../index.html" class="icon-btn" aria-label="홈으로">
+        <i data-lucide="home"></i>
+      </a>
+    </header>
+
+    <main class="cart-main">
+      <!-- 1. 비로그인 유저 전용 혜택 안내 배너 -->
+      <div class="guest-promo-box" data-auth="guest">
+        <span>🎁 로그인하면 <strong>신규 3,000원 쿠폰</strong> 즉시 적용!</span>
+        <a href="../login/login.html">로그인</a>
+      </div>
+
+      <!-- 2. 담긴 메뉴 리스트 영역 -->
+      <div class="cart-card">
+        <div class="cart-card-header">
+          <span>주문 메뉴 (<span id="totalItemCount">0</span>개)</span>
+          <button type="button" id="clearCartBtn" style="background:none; border:none; font-size:12px; color:#888; cursor:pointer;">전체삭제</button>
+        </div>
+
+        <!-- 메뉴 목록이 렌더링되는 곳 -->
+        <div id="cartListContainer"></div>
+
+        <!-- 메뉴 추가하기 버튼 -->
+        <div id="addMoreBox" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f1f1; text-align: center;">
+          <a href="../detail/detail.html" style="font-size: 13px; font-weight: 700; color: #e60012; text-decoration: none;">+ 더 담으러 가기</a>
+        </div>
+      </div>
+
+      <!-- 3. 할인 및 쿠폰/포인트 영역 (로그인 여부에 따라 UI 분기) -->
+      <div class="cart-card" id="discountSection">
+        <div class="cart-card-header">
+          <span>할인 혜택 적용</span>
+          <span data-auth="member" style="display:none; font-size:12px; color:#e60012;"><span class="user-name"></span>님 등급: 매운맛초보</span>
+        </div>
+
+        <!-- 비로그인 상태일 때 -->
+        <div data-auth="guest" style="text-align: center; padding: 10px 0; color: #888; font-size: 13px;">
+          비회원 주문 시 쿠폰 및 포인트 할인이 제한됩니다.<br>
+          <a href="../login/login.html" style="color: #e60012; font-weight: 700; text-decoration: underline; display: inline-block; margin-top: 6px;">로그인하고 할인받기</a>
+        </div>
+
+        <!-- 로그인 상태일 때 -->
+        <div data-auth="member" style="display: none;">
+          <div class="discount-row">
+            <label for="couponSelect">보유 쿠폰 (<span class="user-coupon-count">0</span>장)</label>
+            <select id="couponSelect" class="coupon-select">
+              <option value="0">적용할 쿠폰을 선택하세요</option>
+            </select>
+          </div>
+
+          <div class="discount-row" style="margin-bottom: 0;">
+            <label for="pointInput">포인트 사용 (보유: <strong class="user-points">0</strong>P)</label>
+            <div class="point-box">
+              <input type="number" id="pointInput" class="point-input" placeholder="0" min="0" value="0">
+              <button type="button" id="useAllPointsBtn" class="btn-point-all">전액 사용</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 결제 예정 금액 요약 -->
+      <div class="cart-card" id="summarySection">
+        <div class="summary-row">
+          <span>총 주문금액</span>
+          <span id="subtotalPrice">0원</span>
+        </div>
+        <div class="summary-row">
+          <span>배달팁</span>
+          <span id="deliveryFee">3,000원</span>
+        </div>
+        <div class="summary-row discount">
+          <span>쿠폰/포인트 할인</span>
+          <span id="discountAmount">-0원</span>
+        </div>
+        <div class="summary-total">
+          <span>결제 예정금액</span>
+          <span class="total-price" id="finalPrice">0원</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 고정 주문 버튼 -->
+    <div class="fixed-bottom-bar">
+      <button type="button" class="btn-checkout" id="checkoutBtn">
+        <span id="checkoutBtnText">0원 주문하기</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 공통 인증 및 장바구니 스크립트 -->
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/cart.js"></script>
+  <script>
+    lucide.createIcons();
+
+    const DELIVERY_FEE = 3000;
+    let couponDiscount = 0;
+    let pointDiscount = 0;
+
+    // 1. 회원 쿠폰 목록을 셀렉트 박스에 채우기
+    function initMemberDiscounts() {
+      const user = AuthManager.getCurrentUser();
+      if (!user) return;
+
+      const couponSelect = document.getElementById('couponSelect');
+      couponSelect.innerHTML = '<option value="0">적용할 쿠폰을 선택하세요</option>';
+
+      user.coupons.forEach((couponName) => {
+        const option = document.createElement('option');
+        // 쿠폰 이름에 따라 할인 금액 매핑
+        if (couponName.includes('3,000원')) {
+          option.value = 3000;
+        } else if (couponName.includes('배달비')) {
+          option.value = DELIVERY_FEE;
+        } else {
+          option.value = 2000;
+        }
+        option.textContent = `${couponName} (-${Number(option.value).toLocaleString()}원)`;
+        couponSelect.appendChild(option);
+      });
+    }
+
+    // 2. 장바구니 화면 렌더링
+    function renderCart() {
+      const cart = CartManager.getCart();
+      const listContainer = document.getElementById('cartListContainer');
+      const totalItemCount = document.getElementById('totalItemCount');
+      const discountSection = document.getElementById('discountSection');
+      const summarySection = document.getElementById('summarySection');
+      const addMoreBox = document.getElementById('addMoreBox');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      totalItemCount.textContent = totalQty;
+
+      // 장바구니가 비었을 때
+      if (cart.length === 0) {
+        listContainer.innerHTML = `
+          <div class="empty-cart">
+            <i data-lucide="shopping-bag" style="width:40px; height:40px; color:#ccc;"></i>
+            <p>장바구니가 텅 비어있어요.<br>맛있는 떡볶이를 담아보세요!</p>
+            <div style="display:flex; gap:8px; justify-content:center;">
+              <a href="../detail/detail.html" class="btn-outline">메뉴 보러가기</a>
+              <button type="button" id="seedSampleBtn" class="btn-outline" style="border-color:#666; color:#666;">테스트 메뉴 담기</button>
+            </div>
+          </div>
+        `;
+        lucide.createIcons();
+        discountSection.style.display = 'none';
+        summarySection.style.display = 'none';
+        addMoreBox.style.display = 'none';
+        checkoutBtn.disabled = true;
+        document.getElementById('checkoutBtnText').textContent = '메뉴를 담아주세요';
+
+        // 시연용 샘플 버튼 이벤트
+        document.getElementById('seedSampleBtn').addEventListener('click', () => {
+          CartManager.seedSampleItems();
+          renderCart();
+        });
+        return;
+      }
+
+      // 메뉴가 있을 때 UI 복구
+      discountSection.style.display = 'block';
+      summarySection.style.display = 'block';
+      addMoreBox.style.display = 'block';
+      checkoutBtn.disabled = false;
+
+      listContainer.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <img src="${item.img}" alt="${item.name}" class="cart-item-img">
+          <div class="cart-item-info">
+            <div class="cart-item-top">
+              <div>
+                <h3 class="cart-item-name">${item.name}</h3>
+                <p class="cart-item-opt">${item.option}</p>
+              </div>
+              <button type="button" class="btn-remove" onclick="handleRemove('${item.uid}')" aria-label="삭제">
+                <i data-lucide="x" style="width:16px; height:16px;"></i>
+              </button>
+            </div>
+            <div class="cart-item-bottom">
+              <div class="qty-control">
+                <button type="button" class="qty-btn" onclick="handleQty('${item.uid}', -1)">-</button>
+                <span class="qty-val">${item.qty}</span>
+                <button type="button" class="qty-btn" onclick="handleQty('${item.uid}', 1)">+</button>
+              </div>
+              <span class="cart-item-price">${(item.price * item.qty).toLocaleString()}원</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+      updateTotals();
+    }
+
+    // 3. 금액 계산 및 업데이트
+    function updateTotals() {
+      const cart = CartManager.getCart();
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const totalDiscount = couponDiscount + pointDiscount;
+      const finalAmount = Math.max(0, subtotal + DELIVERY_FEE - totalDiscount);
+
+      document.getElementById('subtotalPrice').textContent = `${subtotal.toLocaleString()}원`;
+      document.getElementById('deliveryFee').textContent = `${DELIVERY_FEE.toLocaleString()}원`;
+      document.getElementById('discountAmount').textContent = `-${totalDiscount.toLocaleString()}원`;
+      document.getElementById('finalPrice').textContent = `${finalAmount.toLocaleString()}원`;
+
+      const user = AuthManager.getCurrentUser();
+      const prefix = user ? `${user.name}님 ` : '비회원 ';
+      document.getElementById('checkoutBtnText').textContent = `${prefix}${finalAmount.toLocaleString()}원 주문하기`;
+    }
+
+    // 수량 변경 & 삭제 핸들러
+    window.handleQty = function(uid, delta) {
+      CartManager.updateQty(uid, delta);
+      renderCart();
+    };
+
+    window.handleRemove = function(uid) {
+      CartManager.removeItem(uid);
+      renderCart();
+    };
+
+    // 전체 삭제
+    document.getElementById('clearCartBtn').addEventListener('click', () => {
+      if (confirm('장바구니를 모두 비우시겠습니까?')) {
+        CartManager.clearCart();
+        renderCart();
+      }
+    });
+
+    // 쿠폰 선택 이벤트
+    document.getElementById('couponSelect').addEventListener('change', (e) => {
+      couponDiscount = Number(e.target.value) || 0;
+      updateTotals();
+    });
+
+    // 포인트 입력 및 전액 사용 이벤트
+    const pointInput = document.getElementById('pointInput');
+    pointInput.addEventListener('input', () => {
+      const user = AuthManager.getCurrentUser();
+      const maxPoints = user ? user.points : 0;
+      let val = Number(pointInput.value) || 0;
+      if (val > maxPoints) {
+        val = maxPoints;
+        pointInput.value = maxPoints;
+      }
+      if (val < 0) val = 0;
+      pointDiscount = val;
+      updateTotals();
+    });
+
+    document.getElementById('useAllPointsBtn').addEventListener('click', () => {
+      const user = AuthManager.getCurrentUser();
+      if (!user) return;
+      pointInput.value = user.points;
+      pointDiscount = user.points;
+      updateTotals();
+    });
+
+    // 주문하기 버튼 클릭 -> 결제 페이지(payment.html)로 주문 데이터 전달
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      const user = AuthManager.getCurrentUser();
+      const cart = CartManager.getCart();
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const finalAmount = Math.max(0, subtotal + DELIVERY_FEE - (couponDiscount + pointDiscount));
+
+      // 비로그인 상태일 경우 로그인 혜택 안내 한 번 더 제공
+      if (!user) {
+        const goLogin = confirm('비회원으로 주문하시면 3,000원 쿠폰과 포인트 적립 혜택을 받을 수 없습니다.\n로그인 후 주문하시겠습니까? (취소 시 비회원 주문 진행)');
+        if (goLogin) {
+          location.href = '../login/login.html';
+          return;
+        }
+      }
+
+      // 결제 페이지에서 읽어갈 주문 요약 데이터 저장
+      const orderDraft = {
+        items: cart,
+        subtotal,
+        deliveryFee: DELIVERY_FEE,
+        discount: couponDiscount + pointDiscount,
+        finalAmount,
+        ordererType: user ? 'member' : 'guest',
+        ordererName: user ? user.name : '비회원'
+      };
+      localStorage.setItem(CartManager.ORDER_DRAFT_KEY, JSON.stringify(orderDraft));
+
+      location.href = '../payment/payment.html';
+    });
+
+    // 초기 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      initMemberDiscounts();
+      renderCart();
+    });
+  </script>
+</body>
+</html>

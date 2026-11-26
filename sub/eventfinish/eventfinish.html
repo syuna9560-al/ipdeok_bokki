@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>입덕볶이 | 이벤트 종료 안내</title>
+    <!-- Noto Sans KR 폰트 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==================== 1. 디자인 토큰 및 리셋 ==================== */
+        :root {
+            --bg-outer: #E5E8EC;
+            --bg-app-gray: #F2F4F7;
+            --bg-surface: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #5E626A;
+            --text-muted: #8B909A;
+            --brand-red: #E63946;
+            --brand-red-soft: #FFEBEF;
+            --badge-gray-bg: #E2E6EC;
+            --badge-gray-text: #626770;
+            --border-subtle: #E3E6EB;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-outer);
+            color: var(--text-primary);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* ==================== 2. 모바일 앱 컨테이너 (480px, 회색 바탕) ==================== */
+        .app-shell {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background-color: var(--bg-app-gray);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 32px rgba(0, 0, 0, 0.06);
+            overflow-x: hidden;
+        }
+
+        /* ==================== 3. 상단 내비게이션 바 ==================== */
+        .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            height: 56px;
+            background-color: rgba(242, 244, 247, 0.92);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 16.5px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .header-flame-badge {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: var(--brand-red-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ==================== 4. 메인 콘텐츠 영역 (중앙 정렬) ==================== */
+        .ended-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 24px 36px 24px;
+            text-align: center;
+        }
+
+        /* 캐릭터 원형 무대 & 애니메이션 */
+        .character-stage {
+            position: relative;
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 42%, #FFFFFF 0%, #E7EBF1 100%);
+            box-shadow: 
+                inset 0 2px 6px rgba(255, 255, 255, 0.9),
+                0 12px 28px rgba(29, 29, 31, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* 부유하는 작은 별/하트 장식 */
+        .deco-sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatSparkle 3s ease-in-out infinite;
+        }
+
+        .deco-sparkle.left {
+            top: 32px;
+            left: 20px;
+            animation-delay: 0s;
+        }
+
+        .deco-sparkle.right {
+            top: 44px;
+            right: 18px;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes floatSparkle {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-6px) scale(1.1); opacity: 1; }
+        }
+
+        /* 귀여운 떡볶이 캐릭터 '덕이' SVG 애니메이션 */
+        .deok-character-svg {
+            width: 168px;
+            height: 168px;
+            overflow: visible;
+        }
+
+        .deok-body-bounce {
+            transform-origin: 90px 135px;
+            animation: gentleBounce 2.6s ease-in-out infinite;
+        }
+
+        .deok-waving-arm {
+            transform-origin: 124px 96px;
+            animation: friendlyWave 1.5s ease-in-out infinite;
+        }
+
+        .deok-shadow {
+            transform-origin: 90px 154px;
+            animation: shadowPulse 2.6s ease-in-out infinite;
+        }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0px) scaleY(1); }
+            50% { transform: translateY(-5px) scaleY(1.02); }
+        }
+
+        @keyframes friendlyWave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-18deg); }
+            50% { transform: rotate(8deg); }
+            75% { transform: rotate(-14deg); }
+        }
+
+        @keyframes shadowPulse {
+            0%, 100% { transform: scaleX(1); opacity: 0.14; }
+            50% { transform: scaleX(0.88); opacity: 0.09; }
+        }
+
+        /* 상태 뱃지 & 텍스트 메시지 */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background-color: var(--badge-gray-bg);
+            color: var(--badge-gray-text);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 999px;
+            letter-spacing: -0.01em;
+            margin-bottom: 14px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #9AA0AA;
+        }
+
+        .main-headline {
+            font-size: 25px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .sub-description {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            letter-spacing: -0.015em;
+            max-width: 290px;
+            margin-bottom: 28px;
+        }
+
+        /* 안내 정보 미니 카드 */
+        .info-notice-box {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .info-notice-box strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        /* ==================== 5. 하단 액션 버튼 영역 ==================== */
+        .action-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-primary-notify {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 14px;
+            background-color: var(--text-primary);
+            color: #FFFFFF;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            box-shadow: 0 6px 16px rgba(29, 29, 31, 0.12);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-notify:active {
+            transform: scale(0.985);
+        }
+
+        .btn-primary-notify.subscribed {
+            background-color: #FFFFFF;
+            color: var(--text-primary);
+            border: 1.5px solid #D1D5DB;
+            box-shadow: none;
+        }
+
+        .btn-secondary-menu {
+            width: 100%;
+            height: 50px;
+            border: 1.5px solid rgba(230, 57, 70, 0.25);
+            border-radius: 14px;
+            background-color: #FFFFFF;
+            color: var(--brand-red);
+            font-family: inherit;
+            font-size: 14.5px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-secondary-menu:hover {
+            background-color: var(--brand-red-soft);
+        }
+
+        .btn-secondary-menu:active {
+            transform: scale(0.985);
+        }
+
+        /* ==================== 6. 하단 토스트 알림 ==================== */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(18px);
+            z-index: 100;
+            background-color: rgba(29, 29, 31, 0.94);
+            color: #FFFFFF;
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <!-- ==================== 1. 상단 내비게이션 바 ==================== -->
+    <header class="top-header">
+        <button type="button" class="icon-btn" onclick="handleNavigation('이전 화면으로 이동합니다.')" aria-label="뒤로 가기">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </button>
+
+        <h1 class="header-title">
+            <span class="header-flame-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#E63946">
+                    <path d="M12 2C12 2 6 8.2 6 13.5C6 17.1 8.7 20 12 20C15.3 20 18 17.1 18 13.5C18 11.4 17 9.4 15.8 8C15.5 10.2 14.1 11.3 13.2 11.3C14.1 8.5 13.4 4.8 12 2Z"/>
+                </svg>
+            </span>
+            <span>입덕볶이 이벤트</span>
+        </h1>
+
+        <button type="button" class="icon-btn" onclick="handleNavigation('입덕볶이 홈으로 이동합니다.')" aria-label="홈으로 이동">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V9.5z"/>
+            </svg>
+        </button>
+    </header>
+
+    <!-- ==================== 2. 이벤트 종료 중앙 안내 영역 ==================== -->
+    <main class="ended-main">
+        <!-- 귀여운 떡볶이 마스코트 캐릭터 ('덕이') 무대 -->
+        <div class="character-stage" aria-hidden="true">
+            <!-- 좌측 반짝이 장식 -->
+            <svg class="deco-sparkle left" width="18" height="18" viewBox="0 0 24 24" fill="#FFB800">
+                <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z"/>
+            </svg>
+            <!-- 우측 미니 하트 장식 -->
+            <svg class="deco-sparkle right" width="16" height="16" viewBox="0 0 24 24" fill="#FF7A85">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+
+            <!-- 커스텀 SVG: 손 흔드는 귀여운 가래떡/떡볶이 캐릭터 '덕이' -->
+            <svg class="deok-character-svg" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- 바닥 그림자 -->
+                <ellipse class="deok-shadow" cx="90" cy="154" rx="38" ry="7" fill="#1D1D1F"/>
+
+                <!-- 통통 뛰는 캐릭터 본체 그룹 -->
+                <g class="deok-body-bounce">
+                    <!-- 왼팔 (몸통에 귀엽게 붙은 팔) -->
+                    <path d="M56 96C45 99 42 108 47 113C51 117 57 112 60 106" fill="#FFFDF9" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+
+                    <!-- 오른팔 (반갑게 손 흔드는 팔) -->
+                    <g class="deok-waving-arm">
+                        <path d="M123 95C134 86 144 74 139 67C134 61 125 69 119 82" fill="#FFFDF9" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+                        <!-- 손 흔드는 모션 라인 -->
+                        <path d="M146 62C149 65 150 69 149 73" stroke="#9AA0AA" stroke-width="2.2" stroke-linecap="round"/>
+                        <path d="M151 58C155 62 156 68 155 74" stroke="#9AA0AA" stroke-width="2.2" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- 통통한 떡볶이 떡 몸통 -->
+                    <rect x="56" y="46" width="68" height="94" rx="34" fill="#FFFDF9" stroke="#1D1D1F" stroke-width="3.2"/>
+
+                    <!-- 떡 상단 입체감 하이라이트 -->
+                    <path d="M68 62C71 55 78 52 86 52" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+
+                    <!-- 머리에 얹은 귀여운 미니 고추 베레모 & 꼭지 -->
+                    <path d="M88 46C85 37 89 29 97 27" stroke="#2B9348" stroke-width="3.2" stroke-linecap="round"/>
+                    <path d="M75 47C77 38 89 35 101 38C108 40 112 45 109 49C102 52 81 51 75 47Z" fill="#E63946" stroke="#1D1D1F" stroke-width="2.6" stroke-linejoin="round"/>
+
+                    <!-- 귀엽게 펄럭이는 미니 매콤 목도리 -->
+                    <path d="M58 106C76 113 104 113 122 106" stroke="#E63946" stroke-width="7.5" stroke-linecap="round"/>
+                    <path d="M58 106C76 113 104 113 122 106" stroke="#1D1D1F" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="1 0"/>
+                    <path d="M107 110L113 125L103 127L99 112" fill="#E63946" stroke="#1D1D1F" stroke-width="2.4" stroke-linejoin="round"/>
+
+                    <!-- 반짝이는 두 눈 -->
+                    <circle cx="77" cy="79" r="4.6" fill="#1D1D1F"/>
+                    <circle cx="75.5" cy="77.3" r="1.6" fill="#FFFFFF"/>
+
+                    <circle cx="103" cy="79" r="4.6" fill="#1D1D1F"/>
+                    <circle cx="101.5" cy="77.3" r="1.6" fill="#FFFFFF"/>
+
+                    <!-- 발그레한 볼터치 -->
+                    <ellipse cx="69" cy="87" rx="5.5" ry="3.2" fill="#FF8FA3" fill-opacity="0.75"/>
+                    <ellipse cx="111" cy="87" rx="5.5" ry="3.2" fill="#FF8FA3" fill-opacity="0.75"/>
+
+                    <!-- 다정한 미소 입 -->
+                    <path d="M85 87C87.5 90.5 92.5 90.5 95 87" stroke="#1D1D1F" stroke-width="2.6" stroke-linecap="round"/>
+
+                    <!-- 아장아장 귀여운 두 발 -->
+                    <path d="M72 139V146C72 148.5 78 148.5 78 146V139" fill="#FFFDF9" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M102 139V146C102 148.5 108 148.5 108 146V139" fill="#FFFDF9" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 상태 뱃지 -->
+        <div class="status-pill">
+            <span class="status-dot"></span>
+            <span>이벤트 종료</span>
+        </div>
+
+        <!-- 메인 핵심 문구 -->
+        <h2 class="main-headline">다음 이벤트에서 만나요</h2>
+
+        <!-- 서브 안내 문구 -->
+        <p class="sub-description">
+            준비한 이벤트가 성황리에 종료되었어요.<br>
+            더 맛있고 알찬 혜택으로 곧 다시 찾아올게요!
+        </p>
+
+        <!-- 다음 시즌 예고 미니 카드 -->
+        <div class="info-notice-box">
+            <span>🎁 다음 혜택 오픈 예정</span>
+            <strong>매주 수요일 · 입덕데이</strong>
+        </div>
+
+        <!-- 하단 액션 버튼 그룹 -->
+        <div class="action-group">
+            <button type="button" id="notify-btn" class="btn-primary-notify" onclick="toggleEventAlert()">
+                <svg id="notify-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="notify-btn-text">다음 이벤트 오픈 알림 받기</span>
+            </button>
+
+            <button type="button" class="btn-secondary-menu" onclick="handleNavigation('인기 떡볶이 메뉴 페이지로 이동합니다.')">
+                <span>인기 메뉴 구경하러 가기</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+        </div>
+    </main>
+</div>
+
+<!-- 토스트 알림 -->
+<div class="toast" id="toast-msg"></div>
+
+<script>
+    let isAlertSubscribed = false;
+    let toastTimer;
+
+    function toggleEventAlert() {
+        const btn = document.getElementById('notify-btn');
+        const text = document.getElementById('notify-btn-text');
+        const icon = document.getElementById('notify-icon');
+
+        isAlertSubscribed = !isAlertSubscribed;
+
+        if (isAlertSubscribed) {
+            btn.classList.add('subscribed');
+            text.textContent = '알림 신청 완료 ✓';
+            icon.style.display = 'none';
+            showToast('🔔 다음 이벤트 오픈 알림이 신청되었어요!');
+        } else {
+            btn.classList.remove('subscribed');
+            text.textContent = '다음 이벤트 오픈 알림 받기';
+            icon.style.display = 'inline-block';
+            showToast('다음 이벤트 알림 신청이 해제되었어요.');
+        }
+    }
+
+    function handleNavigation(message) {
+        showToast(message);
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast-msg');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+</script>
+</body>
+</html>

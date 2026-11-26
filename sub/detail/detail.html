@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -25,6 +26,10 @@
       --badge-hot-bg: #FFEBEB;
       --badge-hot-text: #E52528;
       --badge-new-bg: #EEFDF3;
+      --badge-new-text: #18A957;
+      --shadow-header: 0 2px 8px rgba(0, 0, 0, 0.03);
+      --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
 
     * {
       box-sizing: border-box;
@@ -165,7 +170,6 @@
       border-radius: 8px;
     }
 
-    /* 가로 스크롤 카테고리 탭 */
     .category-nav {
       position: sticky;
       top: 56px;
@@ -177,11 +181,11 @@
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none;
     }
 
     .category-nav::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      display: none;
     }
 
     .category-tab {
@@ -238,7 +242,6 @@
       font-weight: 500;
     }
 
-    /* 개별 메뉴 카드 */
     .menu-card {
       background-color: var(--surface-white);
       border-radius: 18px;
@@ -256,7 +259,6 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     }
 
-    /* 왼쪽 썸네일 영역 */
     .menu-thumb {
       width: 102px;
       height: 102px;
@@ -292,7 +294,6 @@
       backdrop-filter: blur(4px);
     }
 
-    /* 메뉴별 썸네일 컬러 테마 */
     .bg-red { background: linear-gradient(135deg, #FFE4E1 0%, #FFC9C2 100%); }
     .bg-basil { background: linear-gradient(135deg, #E6F7ED 0%, #C7EED8 100%); }
     .bg-mala { background: linear-gradient(135deg, #FFE2D6 0%, #FFBFA8 100%); }
@@ -302,7 +303,6 @@
     .bg-rice { background: linear-gradient(135deg, #EAF6FF 0%, #CBE7FF 100%); }
     .bg-drink { background: linear-gradient(135deg, #FFF7E0 0%, #FFE699 100%); }
 
-    /* 오른쪽 정보 영역 */
     .menu-info {
       flex: 1;
       display: flex;
@@ -326,25 +326,10 @@
       letter-spacing: 0.02em;
     }
 
-    .badge-best {
-      background-color: var(--badge-best-bg);
-      color: var(--badge-best-text);
-    }
-
-    .badge-hot {
-      background-color: var(--badge-hot-bg);
-      color: var(--badge-hot-text);
-    }
-
-    .badge-new {
-      background-color: var(--badge-new-bg);
-      color: var(--badge-new-text);
-    }
-
-    .badge-spicy {
-      background-color: #F2F4F6;
-      color: #4E5968;
-    }
+    .badge-best { background-color: var(--badge-best-bg); color: var(--badge-best-text); }
+    .badge-hot { background-color: var(--badge-hot-bg); color: var(--badge-hot-text); }
+    .badge-new { background-color: var(--badge-new-bg); color: var(--badge-new-text); }
+    .badge-spicy { background-color: #F2F4F6; color: #4E5968; }
 
     .menu-name {
       font-size: 16px;
@@ -366,7 +351,6 @@
       margin-bottom: 10px;
     }
 
-    /* 하단 가격 & 담기 버튼 */
     .menu-bottom {
       display: flex;
       align-items: center;
@@ -418,10 +402,255 @@
       stroke-width: 2.5;
     }
 
-    /* 토스트 알림 (장바구니 담기 시 피드백) */
+    /* =========================================
+       6. 장바구니 뷰 (Cart View) 스타일
+       ========================================= */
+    .cart-view {
+      display: none;
+      padding: 18px 16px 90px;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cart-view.active {
+      display: flex;
+    }
+
+    .cart-box {
+      background-color: var(--surface-white);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid rgba(229, 232, 235, 0.7);
+      box-shadow: var(--shadow-card);
+    }
+
+    .cart-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 12px;
+    }
+
+    .cart-box-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .clear-btn {
+      background: none;
+      border: none;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .clear-btn:hover {
+      color: var(--primary-red);
+    }
+
+    .cart-item-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #F2F4F6;
+    }
+
+    .cart-item-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .cart-item-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .cart-item-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 3px;
+    }
+
+    .cart-item-unit {
+      font-size: 12.5px;
+      color: var(--text-sub);
+    }
+
+    .cart-item-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .cart-item-subtotal {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .qty-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: var(--bg-app);
+    }
+
+    .qty-btn {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .qty-btn:hover {
+      background-color: #E5E8EB;
+    }
+
+    .qty-num {
+      width: 26px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .more-menu-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px;
+      border-radius: 12px;
+      border: 1px dashed #D1D6DB;
+      background-color: #FAFBFD;
+      color: var(--primary-red);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .more-menu-btn:hover {
+      background-color: var(--primary-light);
+      border-color: var(--primary-red);
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .price-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      margin-top: 10px;
+      border-top: 1px solid var(--border-light);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .price-total-row .final-val {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--primary-red);
+    }
+
+    .min-order-notice {
+      font-size: 12px;
+      color: var(--primary-red);
+      background-color: var(--primary-light);
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+    }
+
+    .empty-state .empty-emoji {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+    }
+
+    .cart-footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      background-color: var(--surface-white);
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-light);
+      z-index: 110;
+      display: none;
+    }
+
+    .cart-footer.active {
+      display: block;
+    }
+
+    .order-submit-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary-red), var(--primary-orange));
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.28);
+    }
+
+    .order-submit-btn:disabled {
+      background: #D1D6DB;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* 토스트 알림 */
     .toast {
       position: fixed;
-      bottom: 24px;
+      bottom: 84px;
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       background-color: rgba(25, 31, 40, 0.92);
@@ -449,287 +678,507 @@
   <div class="app-container">
     <!-- 1. 상단 고정 헤더 -->
     <header class="app-header">
-      <button type="button" class="icon-btn" aria-label="뒤로가기" onclick="showToast('이전 화면으로 이동합니다')">
+      <button type="button" class="icon-btn" id="headerBackBtn" aria-label="뒤로가기">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
 
-      <h1 class="header-title">
+      <h1 class="header-title" id="headerTitle">
         입덕볶이
         <span class="brand-dot"></span>
       </h1>
 
-      <button type="button" class="icon-btn" aria-label="장바구니" onclick="showToast('장바구니에 ' + cartCount + '개의 메뉴가 담겨있어요')">
+      <button type="button" class="icon-btn" id="openCartBtn" aria-label="장바구니">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        <span class="cart-badge" id="cartBadge">2</span>
+        <span class="cart-badge" id="cartBadge">0</span>
       </button>
     </header>
 
-    <!-- 매장 미니 안내 영역 -->
-    <div class="store-banner">
-      <div class="store-info">
-        <h2>입덕볶이 본점 · 전체 메뉴</h2>
-        <p>최소주문 12,000원 · 평균 조리 15~20분</p>
+    <!-- =========================================
+         [화면 A] 메뉴 선택 뷰
+         ========================================= -->
+    <div id="menuView">
+      <div class="store-banner">
+        <div class="store-info">
+          <h2>입덕볶이 본점 · 전체 메뉴</h2>
+          <p>최소주문 12,000원 · 평균 조리 15~20분</p>
+        </div>
+        <span class="delivery-tag">배달·포장 가능</span>
       </div>
-      <span class="delivery-tag">배달·포장 가능</span>
+
+      <nav class="category-nav" aria-label="메뉴 카테고리">
+        <button type="button" class="category-tab active" data-category="all">전체</button>
+        <button type="button" class="category-tab" data-category="signature">시그니처</button>
+        <button type="button" class="category-tab" data-category="cream">크림/로제</button>
+        <button type="button" class="category-tab" data-category="side">사이드/튀김</button>
+        <button type="button" class="category-tab" data-category="drink">음료</button>
+      </nav>
+
+      <main class="menu-section">
+        <div class="section-header">
+          <h3 class="section-title" id="currentCategoryTitle">전체 메뉴</h3>
+          <span class="menu-count" id="menuCount">총 8개</span>
+        </div>
+
+        <!-- 메뉴 1 -->
+        <article class="menu-card" data-category="signature">
+          <div class="menu-thumb bg-red">
+            <span class="thumb-emoji" role="img" aria-label="떡볶이">🥘</span>
+            <span class="thumb-subtag">밀떡/쌀떡 선택</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <div class="badge-row">
+                <span class="badge badge-spicy">🌶️ 매운맛 2단계</span>
+              </div>
+              <h4 class="menu-name">오리지널 매콤 떡볶이</h4>
+              <p class="menu-desc">48시간 숙성 특제 고추장 소스와 쫄깃한 밀떡, 부산 어묵이 어우러진 기본의 정석</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">8,500<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('오리지널 매콤 떡볶이', 8500, '🥘', 'bg-red')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 2 -->
+        <article class="menu-card" data-category="signature cream">
+          <div class="menu-thumb bg-basil">
+            <span class="thumb-emoji" role="img" aria-label="바질 크림 떡볶이">🌿</span>
+            <span class="thumb-subtag">시그니처 1위</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <div class="badge-row">
+                <span class="badge badge-best">BEST</span>
+                <span class="badge badge-spicy">순한맛</span>
+              </div>
+              <h4 class="menu-name">바질 페스토 크림 떡볶이</h4>
+              <p class="menu-desc">향긋한 생바질 페스토와 진한 생크림, 베이컨 칩이 가득 올라간 입덕볶이 대표 메뉴</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">11,500<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('바질 페스토 크림 떡볶이', 11500, '🌿', 'bg-basil')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 3 -->
+        <article class="menu-card" data-category="signature cream">
+          <div class="menu-thumb bg-mala">
+            <span class="thumb-emoji" role="img" aria-label="마라로제 떡볶이">🔥</span>
+            <span class="thumb-subtag">분모자 기본포함</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <div class="badge-row">
+                <span class="badge badge-hot">HOT</span>
+                <span class="badge badge-spicy">🌶️🌶️ 얼얼매콤</span>
+              </div>
+              <h4 class="menu-name">마라로제 떡볶이</h4>
+              <p class="menu-desc">알싸한 마라 소스와 부드러운 로제 크림의 중독성 강한 만남! 넓적 분모자와 푸주 기본 제공</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">12,500<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('마라로제 떡볶이', 12500, '🔥', 'bg-mala')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 4 -->
+        <article class="menu-card" data-category="cream">
+          <div class="menu-thumb bg-cream">
+            <span class="thumb-emoji" role="img" aria-label="투움바 떡볶이">🧀</span>
+            <span class="thumb-subtag">통새우 토핑</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <div class="badge-row">
+                <span class="badge badge-new">NEW</span>
+                <span class="badge badge-spicy">🌶️ 살짝매콤</span>
+              </div>
+              <h4 class="menu-name">꾸덕 투움바 떡볶이</h4>
+              <p class="menu-desc">진한 체다치즈와 갈릭 크림 소스에 탱글탱글한 통새우와 양송이버섯을 듬뿍 넣은 메뉴</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">12,000<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('꾸덕 투움바 떡볶이', 12000, '🧀', 'bg-cream')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 5 -->
+        <article class="menu-card" data-category="side">
+          <div class="menu-thumb bg-fried">
+            <span class="thumb-emoji" role="img" aria-label="모듬 튀김">🍤</span>
+            <span class="thumb-subtag">바삭 5종 구성</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <div class="badge-row">
+                <span class="badge badge-best">BEST</span>
+              </div>
+              <h4 class="menu-name">모듬 튀김 세트</h4>
+              <p class="menu-desc">주문 즉시 튀겨내는 김말이(2), 오징어튀김(1), 왕새우(1), 야채튀김(1), 고구마(1)</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">6,500<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('모듬 튀김 세트', 6500, '🍤', 'bg-fried')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 6 -->
+        <article class="menu-card" data-category="side">
+          <div class="menu-thumb bg-sundae">
+            <span class="thumb-emoji" role="img" aria-label="찰순대">🍢</span>
+            <span class="thumb-subtag">내장 선택가능</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <h4 class="menu-name">찰순대 &amp; 내장</h4>
+              <p class="menu-desc">잡내 없이 쫀득하게 쪄낸 국내산 찰순대와 신선한 간·허파 (떡볶이 국물에 찍어 먹으면 꿀맛)</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">4,500<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('찰순대 & 내장', 4500, '🍢', 'bg-sundae')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 7 -->
+        <article class="menu-card" data-category="side">
+          <div class="menu-thumb bg-rice">
+            <span class="thumb-emoji" role="img" aria-label="주먹밥">🍙</span>
+            <span class="thumb-subtag">매운맛 중화필수</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <h4 class="menu-name">참치마요 주먹밥</h4>
+              <p class="menu-desc">고소한 마요네즈에 버무린 참치와 톡톡 터지는 날치알, 짭짤한 김가루의 환상 조합</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">4,000<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('참치마요 주먹밥', 4000, '🍙', 'bg-rice')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 메뉴 8 -->
+        <article class="menu-card" data-category="drink">
+          <div class="menu-thumb bg-drink">
+            <span class="thumb-emoji" role="img" aria-label="쿨피스 음료">🧃</span>
+            <span class="thumb-subtag">930ml 대용량</span>
+          </div>
+          <div class="menu-info">
+            <div>
+              <h4 class="menu-name">쿨피스 (파인애플/복숭아)</h4>
+              <p class="menu-desc">화끈한 떡볶이의 매운맛을 달콤하고 시원하게 식혀주는 찰떡궁합 유산균 음료</p>
+            </div>
+            <div class="menu-bottom">
+              <div class="menu-price">2,500<span>원</span></div>
+              <button type="button" class="add-btn" onclick="addToCart('쿨피스 (파인애플/복숭아)', 2500, '🧃', 'bg-drink')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                담기
+              </button>
+            </div>
+          </div>
+        </article>
+      </main>
     </div>
 
-    <!-- 2. 카테고리 탭 -->
-    <nav class="category-nav" aria-label="메뉴 카테고리">
-      <button type="button" class="category-tab active" data-category="all">전체</button>
-      <button type="button" class="category-tab" data-category="signature">시그니처</button>
-      <button type="button" class="category-tab" data-category="cream">크림/로제</button>
-      <button type="button" class="category-tab" data-category="side">사이드/튀김</button>
-      <button type="button" class="category-tab" data-category="drink">음료</button>
-    </nav>
+    <!-- =========================================
+         [화면 B] 장바구니 뷰 (우측 상단 장바구니 클릭 시 표시)
+         ========================================= -->
+    <section class="cart-view" id="cartView" aria-label="장바구니">
+      <div class="cart-box">
+        <div class="cart-box-header">
+          <h3>담은 메뉴 (<span id="cartTotalQty">0</span>개)</h3>
+          <button type="button" class="clear-btn" onclick="clearCartItems()">전체삭제</button>
+        </div>
 
-    <!-- 3. 메뉴 리스트 -->
-    <main class="menu-section">
-      <div class="section-header">
-        <h3 class="section-title" id="currentCategoryTitle">전체 메뉴</h3>
-        <span class="menu-count" id="menuCount">총 8개</span>
+        <!-- 장바구니 리스트 동적 렌더링 영역 -->
+        <div id="cartItemsContainer"></div>
+
+        <button type="button" class="more-menu-btn" onclick="closeCartView()">
+          + 다른 메뉴 더 담으러 가기
+        </button>
       </div>
 
-      <!-- 메뉴 1: 오리지널 매콤 떡볶이 -->
-      <article class="menu-card" data-category="signature">
-        <div class="menu-thumb bg-red">
-          <span class="thumb-emoji" role="img" aria-label="떡볶이">🥘</span>
-          <span class="thumb-subtag">밀떡/쌀떡 선택</span>
+      <!-- 결제 금액 요약 박스 -->
+      <div class="cart-box" id="cartSummaryBox">
+        <div class="price-row">
+          <span>총 주문금액</span>
+          <span id="summarySubtotal">0원</span>
         </div>
-        <div class="menu-info">
-          <div>
-            <div class="badge-row">
-              <span class="badge badge-spicy">🌶️ 매운맛 2단계</span>
-            </div>
-            <h4 class="menu-name">오리지널 매콤 떡볶이</h4>
-            <p class="menu-desc">48시간 숙성 특제 고추장 소스와 쫄깃한 밀떡, 부산 어묵이 어우러진 기본의 정석</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">8,500<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('오리지널 매콤 떡볶이')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
+        <div class="price-row">
+          <span>배달팁</span>
+          <span id="summaryDelivery">3,000원</span>
         </div>
-      </article>
+        <div class="price-total-row">
+          <span>결제 예정금액</span>
+          <span class="final-val" id="summaryFinal">0원</span>
+        </div>
+        <div class="min-order-notice" id="minOrderNotice" style="display: none;">
+          최소주문금액(12,000원)까지 <span id="remainAmount">0</span>원 더 담아주세요!
+        </div>
+      </div>
+    </section>
+  </div>
 
-      <!-- 메뉴 2: 바질 페스토 크림 떡볶이 -->
-      <article class="menu-card" data-category="signature cream">
-        <div class="menu-thumb bg-basil">
-          <span class="thumb-emoji" role="img" aria-label="바질 크림 떡볶이">🌿</span>
-          <span class="thumb-subtag">시그니처 1위</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <div class="badge-row">
-              <span class="badge badge-best">BEST</span>
-              <span class="badge badge-spicy">순한맛</span>
-            </div>
-            <h4 class="menu-name">바질 페스토 크림 떡볶이</h4>
-            <p class="menu-desc">향긋한 생바질 페스토와 진한 생크림, 베이컨 칩이 가득 올라간 입덕볶이 대표 메뉴</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">11,500<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('바질 페스토 크림 떡볶이')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- 메뉴 3: 마라로제 떡볶이 -->
-      <article class="menu-card" data-category="signature cream">
-        <div class="menu-thumb bg-mala">
-          <span class="thumb-emoji" role="img" aria-label="마라로제 떡볶이">🔥</span>
-          <span class="thumb-subtag">분모자 기본포함</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <div class="badge-row">
-              <span class="badge badge-hot">HOT</span>
-              <span class="badge badge-spicy">🌶️🌶️ 얼얼매콤</span>
-            </div>
-            <h4 class="menu-name">마라로제 떡볶이</h4>
-            <p class="menu-desc">알싸한 마라 소스와 부드러운 로제 크림의 중독성 강한 만남! 넓적 분모자와 푸주 기본 제공</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">12,500<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('마라로제 떡볶이')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- 메뉴 4: 꾸덕 투움바 떡볶이 -->
-      <article class="menu-card" data-category="cream">
-        <div class="menu-thumb bg-cream">
-          <span class="thumb-emoji" role="img" aria-label="투움바 떡볶이">🧀</span>
-          <span class="thumb-subtag">통새우 토핑</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <div class="badge-row">
-              <span class="badge badge-new">NEW</span>
-              <span class="badge badge-spicy">🌶️ 살짝매콤</span>
-            </div>
-            <h4 class="menu-name">꾸덕 투움바 떡볶이</h4>
-            <p class="menu-desc">진한 체다치즈와 갈릭 크림 소스에 탱글탱글한 통새우와 양송이버섯을 듬뿍 넣은 메뉴</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">12,000<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('꾸덕 투움바 떡볶이')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- 메뉴 5: 모듬 튀김 세트 -->
-      <article class="menu-card" data-category="side">
-        <div class="menu-thumb bg-fried">
-          <span class="thumb-emoji" role="img" aria-label="모듬 튀김">🍤</span>
-          <span class="thumb-subtag">바삭 5종 구성</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <div class="badge-row">
-              <span class="badge badge-best">BEST</span>
-            </div>
-            <h4 class="menu-name">모듬 튀김 세트</h4>
-            <p class="menu-desc">주문 즉시 튀겨내는 김말이(2), 오징어튀김(1), 왕새우(1), 야채튀김(1), 고구마(1)</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">6,500<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('모듬 튀김 세트')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- 메뉴 6: 찰순대 & 내장 -->
-      <article class="menu-card" data-category="side">
-        <div class="menu-thumb bg-sundae">
-          <span class="thumb-emoji" role="img" aria-label="찰순대">🍢</span>
-          <span class="thumb-subtag">내장 선택가능</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <h4 class="menu-name">찰순대 &amp; 내장</h4>
-            <p class="menu-desc">잡내 없이 쫀득하게 쪄낸 국내산 찰순대와 신선한 간·허파 (떡볶이 국물에 찍어 먹으면 꿀맛)</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">4,500<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('찰순대 & 내장')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- 메뉴 7: 참치마요 주먹밥 -->
-      <article class="menu-card" data-category="side">
-        <div class="menu-thumb bg-rice">
-          <span class="thumb-emoji" role="img" aria-label="주먹밥">🍙</span>
-          <span class="thumb-subtag">매운맛 중화필수</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <h4 class="menu-name">참치마요 주먹밥</h4>
-            <p class="menu-desc">고소한 마요네즈에 버무린 참치와 톡톡 터지는 날치알, 짭짤한 김가루의 환상 조합</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">4,000<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('참치마요 주먹밥')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- 메뉴 8: 쿨피스 (파인애플/복숭아) -->
-      <article class="menu-card" data-category="drink">
-        <div class="menu-thumb bg-drink">
-          <span class="thumb-emoji" role="img" aria-label="쿨피스 음료">🧃</span>
-          <span class="thumb-subtag">930ml 대용량</span>
-        </div>
-        <div class="menu-info">
-          <div>
-            <h4 class="menu-name">쿨피스 (파인애플/복숭아)</h4>
-            <p class="menu-desc">화끈한 떡볶이의 매운맛을 달콤하고 시원하게 식혀주는 찰떡궁합 유산균 음료</p>
-          </div>
-          <div class="menu-bottom">
-            <div class="menu-price">2,500<span>원</span></div>
-            <button type="button" class="add-btn" onclick="addToCart('쿨피스')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              담기
-            </button>
-          </div>
-        </div>
-      </article>
-    </main>
+  <!-- 장바구니 하단 고정 주문 버튼 -->
+  <div class="cart-footer" id="cartFooter">
+    <button type="button" class="order-submit-btn" id="orderSubmitBtn" onclick="submitOrder()">
+      0원 배달 주문하기
+    </button>
   </div>
 
   <!-- 하단 피드백 토스트 메시지 -->
   <div class="toast" id="toastMsg">장바구니에 담았습니다</div>
 
   <script>
-    // 장바구니 수량 및 토스트 UI 동작을 위한 간단한 스크립트
-    let cartCount = 2;
+    const CART_STORAGE_KEY = 'ipdeok_cart_items';
+    const MIN_ORDER_PRICE = 12000;
+    const DELIVERY_FEE = 3000;
+
+    let isCartOpen = false;
     let toastTimer = null;
 
+    const menuView = document.getElementById('menuView');
+    const cartView = document.getElementById('cartView');
+    const cartFooter = document.getElementById('cartFooter');
+    const headerTitle = document.getElementById('headerTitle');
+    const headerBackBtn = document.getElementById('headerBackBtn');
+    const openCartBtn = document.getElementById('openCartBtn');
     const cartBadge = document.getElementById('cartBadge');
     const toastEl = document.getElementById('toastMsg');
-    const categoryTabs = document.querySelectorAll('.category-tab');
-    const menuCards = document.querySelectorAll('.menu-card');
-    const categoryTitleEl = document.getElementById('currentCategoryTitle');
-    const menuCountEl = document.getElementById('menuCount');
 
-    // 메뉴 담기(+) 버튼 클릭 시
-    function addToCart(menuName) {
-      cartCount += 1;
-      cartBadge.textContent = cartCount;
-      showToast(`'${menuName}' 메뉴를 장바구니에 담았어요!`);
+    // 로컬스토리지에서 장바구니 불러오기
+    function getCart() {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
     }
 
-    // 하단 토스트 메시지 표시
+    // 로컬스토리지에 장바구니 저장 및 뱃지 업데이트
+    function saveCart(cart) {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      updateCartBadge();
+    }
+
+    // 상단 장바구니 뱃지 수량 갱신
+    function updateCartBadge() {
+      const cart = getCart();
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      cartBadge.textContent = totalCount;
+    }
+
+    // 메뉴 담기(+) 버튼 클릭
+    function addToCart(name, price, emoji, bgClass) {
+      const cart = getCart();
+      const existing = cart.find(item => item.name === name);
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, emoji, bgClass, qty: 1 });
+      }
+
+      saveCart(cart);
+      showToast(`'${name}' 메뉴를 장바구니에 담았어요!`);
+    }
+
+    // 장바구니 화면 열기
+    function openCartView() {
+      isCartOpen = true;
+      menuView.style.display = 'none';
+      cartView.classList.add('active');
+      cartFooter.classList.add('active');
+      headerTitle.innerHTML = '장바구니';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderCartView();
+    }
+
+    // 장바구니 화면 닫고 메뉴 선택으로 복귀
+    function closeCartView() {
+      isCartOpen = false;
+      cartView.classList.remove('active');
+      cartFooter.classList.remove('active');
+      menuView.style.display = 'block';
+      headerTitle.innerHTML = '입덕볶이 <span class="brand-dot"></span>';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 장바구니 화면 렌더링
+    function renderCartView() {
+      const cart = getCart();
+      const container = document.getElementById('cartItemsContainer');
+      const summaryBox = document.getElementById('cartSummaryBox');
+      const orderBtn = document.getElementById('orderSubmitBtn');
+      const totalQtyEl = document.getElementById('cartTotalQty');
+
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      totalQtyEl.textContent = totalQty;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <span class="empty-emoji">🛒</span>
+            <p>장바구니가 비어있어요.<br>맛있는 떡볶이를 담아보세요!</p>
+          </div>
+        `;
+        summaryBox.style.display = 'none';
+        orderBtn.disabled = true;
+        orderBtn.textContent = '메뉴를 담아주세요';
+        return;
+      }
+
+      summaryBox.style.display = 'block';
+      container.innerHTML = cart.map((item, idx) => `
+        <div class="cart-item-row">
+          <div class="cart-item-icon ${item.bgClass}">${item.emoji}</div>
+          <div class="cart-item-details">
+            <div class="cart-item-title">${item.name}</div>
+            <div class="cart-item-unit">${item.price.toLocaleString()}원</div>
+          </div>
+          <div class="cart-item-actions">
+            <div class="cart-item-subtotal">${(item.price * item.qty).toLocaleString()}원</div>
+            <div class="qty-box">
+              <button type="button" class="qty-btn" onclick="changeQty(${idx}, -1)">-</button>
+              <span class="qty-num">${item.qty}</span>
+              <button type="button" class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // 금액 계산
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const finalTotal = subtotal + DELIVERY_FEE;
+
+      document.getElementById('summarySubtotal').textContent = `${subtotal.toLocaleString()}원`;
+      document.getElementById('summaryDelivery').textContent = `${DELIVERY_FEE.toLocaleString()}원`;
+      document.getElementById('summaryFinal').textContent = `${finalTotal.toLocaleString()}원`;
+
+      // 최소주문금액 체크
+      const minNotice = document.getElementById('minOrderNotice');
+      if (subtotal < MIN_ORDER_PRICE) {
+        minNotice.style.display = 'block';
+        document.getElementById('remainAmount').textContent = (MIN_ORDER_PRICE - subtotal).toLocaleString();
+        orderBtn.disabled = true;
+        orderBtn.textContent = `${MIN_ORDER_PRICE.toLocaleString()}원 이상 주문 가능`;
+      } else {
+        minNotice.style.display = 'none';
+        orderBtn.disabled = false;
+        orderBtn.textContent = `${finalTotal.toLocaleString()}원 배달 주문하기`;
+      }
+    }
+
+    // 수량 변경
+    function changeQty(index, delta) {
+      const cart = getCart();
+      if (!cart[index]) return;
+
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      saveCart(cart);
+      renderCartView();
+    }
+
+    // 전체 삭제
+    function clearCartItems() {
+      if (getCart().length === 0) return;
+      if (confirm('장바구니에 담긴 메뉴를 모두 삭제할까요?')) {
+        saveCart([]);
+        renderCartView();
+      }
+    }
+
+    // 주문하기 버튼 클릭
+    function submitOrder() {
+      const cart = getCart();
+      if (cart.length === 0) return;
+
+      // 로그인 상태 확인 (js/auth.js 연동 시 활용 가능)
+      const sessionUser = localStorage.getItem('yeop_session');
+      const userObj = sessionUser ? JSON.parse(sessionUser) : null;
+      const orderer = userObj ? `${userObj.name}님` : '비회원';
+
+      showToast(`${orderer} 주문서로 이동합니다!`);
+      // 실제 결제 페이지 경로가 있다면 아래 주석을 해제하여 연결하세요.
+      // location.href = '../payment/payment.html';
+    }
+
+    // 헤더 장바구니 아이콘 클릭 이벤트
+    openCartBtn.addEventListener('click', () => {
+      if (isCartOpen) {
+        closeCartView();
+      } else {
+        openCartView();
+      }
+    });
+
+    // 헤더 뒤로가기 버튼 클릭 이벤트
+    headerBackBtn.addEventListener('click', () => {
+      if (isCartOpen) {
+        closeCartView();
+      } else {
+        history.back();
+      }
+    });
+
+    // 토스트 알림
     function showToast(message) {
       toastEl.textContent = message;
       toastEl.classList.add('show');
@@ -740,9 +1189,13 @@
     }
 
     // 카테고리 탭 필터링
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    const menuCards = document.querySelectorAll('.menu-card');
+    const categoryTitleEl = document.getElementById('currentCategoryTitle');
+    const menuCountEl = document.getElementById('menuCount');
+
     categoryTabs.forEach((tab) => {
       tab.addEventListener('click', () => {
-        // 활성 탭 스타일 변경
         categoryTabs.forEach((t) => t.classList.remove('active'));
         tab.classList.add('active');
 
@@ -763,6 +1216,9 @@
         menuCountEl.textContent = `총 ${visibleCount}개`;
       });
     });
+
+    // 페이지 로드 시 저장된 장바구니 수량 뱃지 동기화
+    updateCartBadge();
   </script>
 </body>
 </html>
